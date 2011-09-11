@@ -23,7 +23,7 @@ Enter the values of your setup. Check the resources folder for available locales
 
 ### Deployment ### 
 
-We recomment you to deploy the CouchApp with
+We recommend you to deploy the CouchApp with
 [soca](https://github.com/quirkey/soca). The `config.js` within the
 directory determines the structure of the design-document. You have to
 configure the path to your database to which soca should deploy. For
@@ -45,7 +45,7 @@ To install ``soca`` execute:
 You also have to create a document with the id `config` in your
 database. The content of this document should be the same as your
 `config.json`. If you don't have the document in your DB use the
-following commands to put the local `config.json` in your databse:
+following commands to put the local `config.json` in your database:
 
     sed s/\"env\"/\"_id\":\"config\",\"env\"/ config.json > /tmp/config.json 
     curl -X POST http://127.0.0.1:5984/digitalfoosball/ -H "Content-Type: application/json" -d @/tmp/config.json
