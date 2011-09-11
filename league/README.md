@@ -34,6 +34,14 @@ We recomment you to deploy the CouchApp with [soca](https://github.com/quirkey/s
 
 You also have to create a document with the id `config` in your database. The content of this document should be the same as your `config.json`.
 
+To check if the league application is running correctly, open the following URL:
+
+   http://127.0.0.1:5984/digitalfoosball/_design/league/_rewrite/
+
+and replace the IP and Port according to your personal settings. If
+you don't access CouchDB directly, but through a proxy, make sure that
+this is the URL you use as a forward directive.
+
 ### Startup ###
 First start your CouchDB server. Now you can start the `calc.js` script in the `lib` folder with NodeJS. This will recalculate your league after each game with named players.
 
