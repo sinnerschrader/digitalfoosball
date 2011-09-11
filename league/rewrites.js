@@ -11,7 +11,7 @@
     "to": "/_list/live/ranked_games",
     "method": "GET",
     "query": {
-      "descending": true
+      "descending": "true"
     }
   }, {
     "from": "/table",
@@ -19,21 +19,21 @@
     "method": "GET",
     "query": {
       "limit": 2,
-      "descending": true
+      "descending": "true"
     }
   }, {
     "from": "/statistic",
     "to": "/_list/statistic/ranked_games",
     "method": "GET",
     "query": {
-      "descending": true
+      "descending": "true"
     }
   }, {
     "from": "/statistic/:name",
     "to":"/_list/user/ranked_games",
     "method": "GET",
     "query": {
-      "descending": true,
+      "descending": "true",
       "name": ":name"
     }
   }, {
