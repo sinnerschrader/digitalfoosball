@@ -24,7 +24,8 @@ Enter the values of your setup. Check the resources folder for available locales
 ### Server startup ###
 Start the server with the `startup.bash` script in the `lib` folder.
 
-On the production server use the line with `NODE_ENV=production` to get the app in production mode (which is faster).
+On the production server modify `startup.bash` so that the ENV
+variable is set to `production` for better performance.
 
 
 ### Build Process ###
