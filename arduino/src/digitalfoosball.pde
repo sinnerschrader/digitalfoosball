@@ -35,7 +35,7 @@ char WIFLY_PASSPHRASE[] = "secret-passphrase";
 // Example: "www.example.org" and {192, 0, 43, 10}
 char SERVER_NAME[] = "www.example.org";
 byte SERVER_IP[] = {192, 0, 43, 10};
-
+int SERVER_PORT = 80;
 // Configure context path (application base path), leave empty (not slash) for root
 // Examples: "/mypath", ""
 char CONTEXT[] = "";
@@ -79,7 +79,7 @@ unsigned long token;
 
 #if defined(INTERNET_ETHERNET) || defined(INTERNET_WIFLY)
 	// The client for communication with goal server
-	Client client(SERVER_IP, 80);
+	Client client(SERVER_IP, SERVER_PORT);
 #endif
 
 // Whether we think we have associated/connected
@@ -103,7 +103,7 @@ void disconnect()
 {
 	#if defined(INTERNET_ETHERNET)
 		client.stop();
-		client = Client(SERVER_IP, 80);
+		client = Client(SERVER_IP, SERVER_PORT);
 		Ethernet.begin(ETHERNET_MAC, ETHERNET_IP, ETHERNET_GATEWAY, ETHERNET_SUBNET);
 		delay(1000);
 	#elif defined(INTERNET_WIFLY)
@@ -124,7 +124,7 @@ boolean ensureConnection(boolean checkWiFlyStatus)
 				LOG("Preconnecting to server...\n");
 
 			client.stop();
-			client = Client(SERVER_IP, 80);
+			client = Client(SERVER_IP, SERVER_PORT);
 			Ethernet.begin(ETHERNET_MAC, ETHERNET_IP, ETHERNET_GATEWAY, ETHERNET_SUBNET);
 			delay(1000);
 
@@ -279,7 +279,7 @@ void reset()
 
 	#if defined(INTERNET_ETHERNET)
 		client.stop();
-		client = Client(SERVER_IP, 80);
+		client = Client(SERVER_IP, SERVER_PORT);
 		Ethernet.begin(ETHERNET_MAC, ETHERNET_IP, ETHERNET_GATEWAY, ETHERNET_SUBNET);
 		delay(1000);
 	#elif defined(INTERNET_WIFLY)
@@ -296,7 +296,9 @@ void reset()
 
 void setup()
 {
-	Serial.begin(9600);
+	#ifdef DEBUG_APP
+		Serial.begin(9600);
+	#endif
 	LOG("Initializing...\n");
 
 	pinMode(GOAL_A_PIN, INPUT);
