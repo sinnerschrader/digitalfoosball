@@ -1,30 +1,66 @@
-#include "WiFly.h"
-
-
 /***********************
  ***  CONFIGURATION  ***
  ***********************/
 
-// Wifi SSID
-// Example: "mywifi"
-char ssid[] = "mywifi";
+// Define the table ID here. Table IDs are required if you have multiple tables for one league.
+#define TABLE_ID "main"
 
-// WPA passphrase (sorry, no spaces supported yet)
+// Define the Internet connection type, may be:
+// - INTERNET_ETHERNET (Arduino Ethernet shield),
+// - INTERNET_WIFLY (Sparkfun WiFly shield), or
+// - INTERNET_MOCKUP (simulate connection, no actual Internet communication)
+// Note: Due to the way the linker detects libraries,
+// you must also uncommect one of the library blocks below
+#define INTERNET_MOCKUP
+
+// ETHERNET only: Mac address (must be assigned manually, set bit 0 of first byte to 0, and bit 1 to 1)
+// Example: {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED}
+byte ETHERNET_MAC[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
+
+// ETHERNET only: IP address, gateway, and subnet mask (must be assigned manually)
+// Example: {192, 168, 0, 177}, {192, 168, 0, 1}, {255, 255, 0, 0}
+byte ETHERNET_IP[] = {192, 168, 0, 177};
+byte ETHERNET_GATEWAY[] = {192, 168, 0, 1};
+byte ETHERNET_SUBNET[] = {255, 255, 0, 0};
+
+// WIFLY only: Wifi SSID
+// Example: "mywifi"
+char WIFLY_SSID[] = "mywifi";
+
+// WIFLY only: WPA passphrase (sorry, no spaces supported yet)
 // Example: "secret-passphrase"
-char passphrase[] = "secret-passphrase";
+char WIFLY_PASSPHRASE[] = "secret-passphrase";
 
 // Configure server name and server IP (no DNS to reduce lag)
-// Examples: "my.digitalfoosball.net", {192, 168, 0, 1}
-char serverName[] = "my.digitalfoosball.net";
-byte serverIp[] = {192, 168, 0, 1};
+// Example: "www.example.org" and {192, 0, 43, 10}
+char SERVER_NAME[] = "www.example.org";
+byte SERVER_IP[] = {192, 0, 43, 10};
 
 // Configure context path (application base path), leave empty (not slash) for root
-// Examples: "/my/path", ""
-char context[] = "";
+// Examples: "/mypath", ""
+char CONTEXT[] = "";
 
-// Enable define to enable output messages on Serial
-#define DEBUG
-#define WIFI
+
+/*******************
+ ***  LIBRARIES  ***
+ *******************/
+
+// Uncomment when using ETHERNET:
+//#include "SPI.h"
+//#include "Ethernet.h"
+
+// Uncomment when using WIFLY:
+// Note that the Digital Foosball table requires a modified version of the WiFly library,
+// see the Wiki for details.
+//#include "WiFly.h"
+
+
+/***************************
+ ***  DEBUGGING OPTIONS  ***
+ ***************************/
+
+// Define to enable output messages on Serial
+#define DEBUG_APP
 
 
 /*******************************
@@ -41,15 +77,18 @@ const int LED_PIN = 8; // Standard LED pin 13 used by Spi
 // Uniqueness token, initialized by random, auto-incrementing
 unsigned long token;
 
-// The client for communication with goal server
-Client client(serverIp, 80);
+#if defined(INTERNET_ETHERNET) || defined(INTERNET_WIFLY)
+	// The client for communication with goal server
+	Client client(SERVER_IP, 80);
+#endif
 
 // Whether we think we have associated/connected
 boolean associated = false;
 boolean connected = false;
+int failures = 0;
 
 // Debugging
-#ifdef DEBUG
+#ifdef DEBUG_APP
 	#define LOG(message) Serial.print(message)
 #else
 	#define LOG(message) (((0)))
@@ -57,60 +96,157 @@ boolean connected = false;
 
 
 /**************************
- ***  Helper functions  ***
+ ***  HELPER FUNCTIONS  ***
  **************************/
+
+void disconnect()
+{
+	#if defined(INTERNET_ETHERNET)
+		client.stop();
+		client = Client(SERVER_IP, 80);
+		Ethernet.begin(ETHERNET_MAC, ETHERNET_IP, ETHERNET_GATEWAY, ETHERNET_SUBNET);
+		delay(1000);
+	#elif defined(INTERNET_WIFLY)
+		client.disconnect();
+	#endif
+
+	connected = false;
+}
 
 boolean ensureConnection(boolean checkWiFlyStatus)
 {
-	#ifndef WIFI
-		return true;
+	#if defined(INTERNET_ETHERNET)
+		if (!client.connected())
+		{
+			if (connected)
+				LOG("Connection LOST, reconnecting...\n");
+			else
+				LOG("Preconnecting to server...\n");
+
+			client.stop();
+			client = Client(SERVER_IP, 80);
+			Ethernet.begin(ETHERNET_MAC, ETHERNET_IP, ETHERNET_GATEWAY, ETHERNET_SUBNET);
+			delay(1000);
+
+			if (!client.connect())
+			{
+				LOG("Connection FAILED, trying again later.\n");
+				flashError(1);
+				return false;
+			}
+
+			if (!client.connected())
+			{
+				LOG("Connection FAILED, trying again later.\n");
+				flashError(2);
+				return false;
+			}
+
+			LOG("Connected.\n");
+			connected = true;
+		}
+	#elif defined(INTERNET_WIFLY)
+		WiFlyDevice::Status status = checkWiFlyStatus ? wiFly.getStatus(false) : WiFlyDevice::StatusConnected;
+		if (status == WiFlyDevice::StatusError || status == WiFlyDevice::StatusNotAssociated
+			|| status == WiFlyDevice::StatusNoIp)
+		{
+			if (associated)
+			{
+				if (status == WiFlyDevice::StatusNotAssociated)
+					LOG("ERROR: Association LOST, resetting...\n");
+				else if (status == WiFlyDevice::StatusNoIp)
+					LOG("ERROR: No WiFi IP, resetting...\n");
+				else
+					LOG("ERROR: WiFi problem, resetting...\n");
+
+				reset();
+			}
+
+			LOG("Joining network...\n");
+			if (!wiFly.join(WIFLY_SSID, WIFLY_PASSPHRASE))
+			{
+				LOG("ERROR: Joining network failed, trying again later.\n");
+				flashError(1);
+
+				if (failures++ >= 3)
+				{
+					LOG("ERROR: Three failures, resetting.\n");
+					reset();
+				}
+
+				return false;
+			}
+
+			LOG("Network joined.\n");
+			associated = true;
+			connected = false;
+			failures = 0;
+		}
+
+		status = checkWiFlyStatus ? wiFly.getStatus(false) : WiFlyDevice::StatusConnected;
+		if (!client.isConnected() || status != WiFlyDevice::StatusConnected)
+		{
+			if (connected)
+				LOG("Connection LOST, reconnecting...\n");
+			else
+				LOG("Preconnecting to server...\n");
+
+			if (!client.connect(false) || !client.isConnected())
+			{
+				LOG("Connection FAILED, trying again later.\n");
+				flashError(2);
+
+				if (failures++ >= 3)
+				{
+					LOG("ERROR: Three failures, resetting.\n");
+					reset();
+				}
+
+				return false;
+			}
+
+			LOG("Connected.\n");
+			connected = true;
+		failures = 0;
+		}
+
+		delay(250);
 	#endif
 
-	WiFlyDevice::Status status = checkWiFlyStatus ? wiFly.getStatus(false) : WiFlyDevice::StatusConnected;
-	if (status == WiFlyDevice::StatusError || status == WiFlyDevice::StatusNotAssociated
-		|| status == WiFlyDevice::StatusNoIp)
-	{
-		if (associated)
-		{
-			LOG("Association LOST, rebooting and rejoining...\n");
-			wiFly.begin();
-		}
-
-		LOG("Joining network...\n");
-		if (!wiFly.join(ssid, passphrase))
-		{
-			LOG("ERROR: Joining network failed, trying again later.\n");
-			flashError(1);
-			return false;
-		}
-
-		LOG("Network joined.\n");
-		associated = true;
-		connected = false;
-	}
-
-	status = checkWiFlyStatus ? wiFly.getStatus(false) : WiFlyDevice::StatusConnected;
-	if (!client.isConnected() || status != WiFlyDevice::StatusConnected)
-	{
-		if (connected)
-			LOG("Connection LOST, reconnecting...\n");
-		else
-			LOG("Preconnecting to server...\n");
-
-		if (!client.connect(false) || !client.isConnected())
-		{
-			LOG("Connection FAILED, trying again later.\n");
-			flashError(2);
-			return false;
-		}
-
-		LOG("Connected.\n");
-		connected = true;
-	}
-
-	delay(250);
 	return true;
 }
+
+#ifdef INTERNET_ETHERNET
+	boolean findInEthernetResponse(const char * toMatch, unsigned int timeOut)
+	{
+		int byteRead;
+		unsigned long timeOutTarget;
+		for (unsigned int offset = 0; offset < strlen(toMatch); offset++)
+		{
+			timeOutTarget = millis() + timeOut;
+	
+			while (!client.available())
+			{
+				if (millis() > timeOutTarget)
+					return false;
+	
+				//delay(1);
+			}
+	
+			byteRead = client.read();
+			if (byteRead != toMatch[offset])
+			{
+				offset = 0;
+				if (byteRead != toMatch[offset])
+					offset = -1;
+	
+				continue;
+			}
+		}
+	
+		return true;
+	}
+#endif
 
 void flashError(int errorNo)
 {
@@ -136,6 +272,23 @@ void flashError(int errorNo)
 	delay(500);
 }
 
+void reset()
+{
+	associated = false;
+	connected = false;
+
+	#if defined(INTERNET_ETHERNET)
+		client.stop();
+		client = Client(SERVER_IP, 80);
+		Ethernet.begin(ETHERNET_MAC, ETHERNET_IP, ETHERNET_GATEWAY, ETHERNET_SUBNET);
+		delay(1000);
+	#elif defined(INTERNET_WIFLY)
+		wiFly.begin();
+	#endif
+
+	failures = 0;
+}
+
 
 /*****************************
  ***  Setup and main loop  ***
@@ -156,14 +309,22 @@ void setup()
 	digitalWrite(GOAL_B_PIN, LOW);
 	digitalWrite(RESET_A_PIN, LOW);
 	digitalWrite(RESET_B_PIN, LOW);
-	digitalWrite(LED_PIN, LOW);
+
+	for (int i=0; i<10; i++)
+	{
+		digitalWrite(LED_PIN, LOW);
+		delay(50);
+		digitalWrite(LED_PIN, HIGH);
+		delay(50);
+	}
 
 	randomSeed(analogRead(0));
 	token = random(65535);
 
-	#ifdef WIFI
+	#ifdef INTERNET_WIFLY
 		wiFly.begin();
- 		while (!ensureConnection(true))
+
+		while (!ensureConnection(true))
 			delay(1000);
 	#endif
 
@@ -174,12 +335,13 @@ void setup()
 	digitalWrite(RESET_B_PIN, LOW);
 	delay(10);
 
+	digitalWrite(LED_PIN, LOW);
 	LOG("Initialization done.\n");
 }
 
 void loop()
 {
-	char string[256];
+	char string[512];
 
 	// Analyze inputs until we find a goal (HIGH is true)
 	// Also check that we are still connected to the server and access point
@@ -201,39 +363,73 @@ void loop()
 	}
 
 	digitalWrite(LED_PIN, HIGH);
-	#ifdef DEBUG
+	#ifdef DEBUG_APP
 		sprintf(string, "Goal for %s team, ID %lu\n", playerPin == GOAL_A_PIN ? "home" : "visitors", token);
 		LOG(string);
 	#endif
 
-	while (!ensureConnection(false))
-		delay(1000);
+	// Retry at most 3 times
 
-	// Send a POST to the goal server
+	boolean success = false;
+	while (!success && failures < 3)
+	{
+		while (!ensureConnection(false))
+			delay(1000);
 
-	char content[32];
-	sprintf(content, "token=%lu", token);
-	sprintf(string, "POST %s/events/goals/%s HTTP/1.1\r\n"
+		// Send a POST to the goal server
+
+		char content[128];
+		sprintf(content, "token=%lu&table=%s", token, TABLE_ID);
+		sprintf(string, "POST %s/events/goals/%s HTTP/1.1\r\n"
 		"Host: %s\r\n"
-		"User-Agent: Arduino/DigitalerKicker\r\n"
-		"Content-Type: application/x-www-form-urlencoded\r\n"
-		"Content-Length: %d\r\n\r\n%s", context,
-		playerPin == GOAL_A_PIN ? "home" : "visitors", serverName,
-		strlen(content), content);
+			"User-Agent: Arduino/DigitalerKicker\r\n"
+			"Content-Type: application/x-www-form-urlencoded\r\n"
+			"Content-Length: %d\r\n\r\n%s", CONTEXT,
+			playerPin == GOAL_A_PIN ? "home" : "visitors", SERVER_NAME,
+			strlen(content), content);
 
-	LOG("Sending request...\n");
-	LOG(string);
-	LOG("\n");
-	#ifdef WIFI
-		client.print(string);
-	#else
-		delay(500);
-	#endif
-	LOG("Request done.\n");
+		LOG("Sending request...\n");
+		LOG(string);
+		LOG("\n");
+		#if defined(INTERNET_ETHERNET) || defined(INTERNET_WIFLY)
+			client.print(string);
+		#endif
+
+		LOG("Request done, checking response...\n");
+		#if defined(INTERNET_ETHERNET)
+			success = findInEthernetResponse("200 OK", 5000);
+		#elif defined(INTERNET_WIFLY)
+			success = wiFly.findInResponse("200 OK", 5000);
+		#else
+			delay(500);
+			success = true;
+		#endif
+
+		if (success)
+		{
+			LOG("Request successful.\n");
+			failures = 0;
+		}
+		else
+		{
+			LOG("Request FAILED.\n");
+			failures++;
+
+			disconnect();
+		}
+	}
+
 	token++;
 
-	// Reset goal flip-flop and wait for input to be false (LOW) again
+	if (!success)
+	{
+		LOG("Giving up and resetting...\n");
 
+		reset();
+		ensureConnection(true);
+	}
+
+	// Reset goal flip-flop and wait for input to be false (LOW) again
 	do
 	{
 		digitalWrite(playerPin == GOAL_A_PIN ? RESET_A_PIN : RESET_B_PIN, HIGH);
@@ -247,11 +443,11 @@ void loop()
 
 	// Disconnect and preconnect again
 
-	#ifdef WIFI
-		client.disconnect();
-		connected = false;
-	#endif
-	ensureConnection(false);
+	if (success)
+	{
+		disconnect();
+		ensureConnection(false);
+	}
 
 	LOG("Ready for next goal.\n");
 }

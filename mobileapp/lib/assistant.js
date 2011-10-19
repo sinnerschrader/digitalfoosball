@@ -16,6 +16,8 @@ var options = {
   }
 };
 
+config.couchdb.user && (options.headers["Authorization"] = "Basic " + Buffer(config.couchdb.user + ":" + config.couchdb.password).toString("base64"))
+
 var saveDoc = function(doc) {
   var req = http.request(options, function(res) {
       sys.debug("STATUS: " + res.statusCode);

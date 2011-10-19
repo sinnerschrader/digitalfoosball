@@ -1,6 +1,6 @@
 <section id="content" class="userdetail">
-  <aside>
-    {{#user}}
+  {{#user}}
+    <aside>
       <div id="summary">
         <hgroup>
           <h1 class="h1" {{#avatar}}style="background-image:url({{avatar}});"{{/avatar}}>{{name}}</h1>
@@ -19,12 +19,12 @@
           {{/nemesis}}
         </li>
         <li>
-          {{#teammate}}
+          {{#buddy}}
             <hgroup>
-              <h1 class="h1">{{locales.user.teammate.hl}}</h1>
+              <h1 class="h1">{{locales.user.buddy.hl}}</h1>
             </hgroup>
-            <a href="#!/statistic/{{name}}" class="user" {{#avatar}}style="background-image:url({{avatar}});"{{/avatar}}>{{name}}<br />{{quote}}% {{locales.user.teammate.won}}</a>
-          {{/teammate}}
+            <a href="#!/statistic/{{name}}" class="user" {{#avatar}}style="background-image:url({{avatar}});"{{/avatar}}>{{name}}<br />{{quote}}% {{locales.user.buddy.won}}</a>
+          {{/buddy}}
         </li>
         <li>
           {{#challenger}}
@@ -40,7 +40,7 @@
           <hgroup>
             <h1 class="h1">{{locales.user.statistic.hl}}</h1>
           </hgroup>
-          <img src="https://chart.googleapis.com/chart?chs=595x115&amp;cht=lc&amp;chxt=y&amp;chxl=0:|{{max}}|1&amp;chd=t:{{ranks}}&amp;chds=1,{{max}}&amp;chls=3&amp;chco=82bb37&amp;chf=bg,s,00000000" width="595" height="115" />
+          <img src="https://chart.googleapis.com/chart?chs=595x115&amp;cht=lc&amp;chxt=y&amp;chxl=0:|{{low}}|0|{{high}}&amp;chm=r,82bb3750,0,0.495,0.505&amp;chd=t:{{ranks}}&amp;chds={{low}},{{high}}&amp;chls=2&amp;chco=82bb37&amp;chf=bg,s,00000000" width="595" height="115" />
         {{/graph}}
       </div>
       <div id="gamesgoals">
@@ -79,33 +79,33 @@
           {{/goals}}
         </div>
       </div>
-    {{/user}}
-  </aside>
-  <bside>
-    <nav id="tabnav">
-      <a href="#" class="active">{{locales.user.games.nav.lastgames}}</a>
-      <!-- a href="#">{{locales.user.games.nav.lastmonth}}</a -->
-      <!-- a href="#">{{locales.user.games.nav.allgames}}</a -->
-    </nav>
-    <ol id="history">
-      {{#games}}
-        <li>
-          <div class="score">{{#goals}}{{home}}:{{visitors}}{{/goals}}</div>
-          <ol>
-            {{#players}}
-              {{#home}}
-                <li>{{#.}}<a href="#!/statistic/{{.}}">{{/.}}{{.}}{{#.}}</a>{{/.}}</li>
-              {{/home}}
-              {{#visitors}}
-                <li>{{#.}}<a href="#!/statistic/{{.}}">{{/.}}{{.}}{{#.}}</a>{{/.}}</li>
-              {{/visitors}}
-            {{/players}}
-          </ol>
-          <time>{{locales.user.games.date}}: {{end}}</time>
-          <div class="points">{{score}} {{locales.user.games.points}}</div>
-        </li>
-      {{/games}}
-    </ol>
-  </bside>
+    </aside>
+    <bside>
+      <nav id="tabnav">
+        <a href="#" class="active">{{locales.user.games.nav.lastgames}}</a>
+        <!-- a href="#">{{locales.user.games.nav.lastmonth}}</a -->
+        <!-- a href="#">{{locales.user.games.nav.allgames}}</a -->
+      </nav>
+      <ol id="history">
+        {{#history}}
+          <li>
+            <div class="score">{{#goals}}{{home}}:{{visitors}}{{/goals}}</div>
+            <ol>
+              {{#players}}
+                {{#home}}
+                  <li>{{#.}}<a href="#!/statistic/{{.}}">{{/.}}{{.}}{{#.}}</a>{{/.}}</li>
+                {{/home}}
+                {{#visitors}}
+                  <li>{{#.}}<a href="#!/statistic/{{.}}">{{/.}}{{.}}{{#.}}</a>{{/.}}</li>
+                {{/visitors}}
+              {{/players}}
+            </ol>
+            <time>{{locales.user.games.date}}: {{end}}</time>
+            <div class="points">{{score}} {{locales.user.games.points}}</div>
+          </li>
+        {{/history}}
+      </ol>
+    </bside>
+  {{/user}}
 </section>
 

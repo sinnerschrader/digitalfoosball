@@ -1,0 +1,26 @@
+#content.text{
+    aside{
+        > :nth-child(1n+1){
+            margin: 0 0 10px;
+            p:last-child{
+                margin-bottom: 0;
+            }
+        }
+        article{
+            position: relative;
+            background: @s2k-box-grey;
+            padding: 20px;
+            p{
+                font-size: 14px;
+                line-height: 18px;
+                text-align: justify;
+                -webkit-hyphens: auto;
+                -moz-hyphens: auto;
+                hyphens: auto;
+            }
+            ul{
+                margin: 0 0 10px;
+            }
+        }
+    }
+}

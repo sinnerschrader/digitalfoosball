@@ -32,8 +32,8 @@
   "announcer.goal.body": "",
   "announcer.foul.head": "Abseits!",
   "announcer.foul.body": "Das letzte Tor wurde nicht gegeben! Es steht noch {{#goals}}{{home}}:{{visitors}}{{/goals}}",
-  "press.tweet.0players": "Ein Spiel ist {{#goals}}{{home}}:{{visitors}} {{/goals}}ausgegangen. #id{{id}}",
-  "press.tweet.2players": "Schönes Ding: {{#players}}{{winner}} {{/players}}gewinnt {{#goals}}{{winner}}:{{loser}} {{/goals}}gegen {{#players}}{{loser}}{{/players}}. #id{{id}}",
-  "press.tweet.4players": "Großes Teamplay: {{#players}}{{winner}} {{/players}}gewinnen {{#goals}}{{winner}}:{{loser}} {{/goals}}gegen {{#players}}{{loser}}{{/players}}. #id{{id}}"
+  "press.tweet.0players": "Ein Spiel ist {{#goals}}{{home}}:{{visitors}} {{/goals}}ausgegangen. #id{{id}}{{#hashtags}} #{{.}}{{/hashtags}}",
+  "press.tweet.2players": "Schönes Ding: {{#players}}{{winner}} {{/players}}gewinnt {{#goals}}{{winner}}:{{loser}} {{/goals}}gegen {{#players}}{{loser}}{{/players}}. #id{{id}}{{#hashtags}} #{{.}}{{/hashtags}}",
+  "press.tweet.4players": "Großes Teamplay: {{#players}}{{winner}} {{/players}}gewinnen {{#goals}}{{winner}}:{{loser}} {{/goals}}gegen {{#players}}{{loser}}{{/players}}. #id{{id}}{{#hashtags}} #{{.}}{{/hashtags}}"
 }
 

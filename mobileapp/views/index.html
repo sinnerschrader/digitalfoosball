@@ -16,7 +16,7 @@
 	<link rel="apple-touch-icon" href="/images/favicons/fi_apple_touch.png" />
 
 {{#production}}
-	<link rel="stylesheet" type="text/css" href="{{cdn}}{{#rev}}/{{rev}}{{/rev}}/extensions/css/mobileapp-min.css" media="screen,projection,print" />
+	<link rel="stylesheet" type="text/css" href="{{#cdn}}{{cdn}}{{#rev}}/{{rev}}{{/rev}}{{/cdn}}/extensions/css/mobileapp-min.css" media="screen,projection,print" />
 {{/production}}
 {{^production}}
 	<link rel="stylesheet/less" type="text/css" href="/extensions/css/mobileapp.less" media="screen,projection,print" />
@@ -57,46 +57,46 @@
 						<div><input type="email" name="team2_user2" /></div>
 					</div>
 				</fieldset>
-        <div class="buttonbar">
-          <input type="submit" class="button" value="{{locales.login.botton.go}}" />
-        </div>
+                <div class="buttonbar">
+                    <input type="submit" class="button" value="{{locales.login.botton.go}}" />
+                </div>
 			</form>
 		</section>
 		<section id="scoreboard" class="page">
 			<div class="toolbar">
-				<a href="#scoreboard" class="hide js_undo">{{locales.toolbar.undo}}</a>
+				<a href="#settings" class="settings js_setup">⚙</a>
+				<a href="#scoreboard" class="undo hide js_undo">{{locales.toolbar.undo}}</a>
 				<h1>{{locales.global.title}}</h1>
 				<a href="#summary" class="cancel js_abort">{{locales.toolbar.cancel}}</a>
 			</div>
-      {{#scoreboard}}
-        <dl class="board {{#inverted}}inverted{{/inverted}}">
-          {{^inverted}}
-            <dt>{{home}}</dt>
-            <dd id="scorehome" class="scorecard full"></dd>
-            <dt>{{visitors}}</dt>
-            <dd id="scorevisitors" class="scorecard full"></dd>
-          {{/inverted}}
-          {{#inverted}}
-            <dt>{{visitors}}</dt>
-            <dd id="scorehome" class="scorecard full"></dd>
-            <dt>{{home}}</dt>
-            <dd id="scorevisitors" class="scorecard full"></dd>
-          {{/inverted}}
-        </dl>
-      {{/scoreboard}}
-      <div class="players">
-        <div>
-          <div class="formrow">
-            <div class="home1">&nbsp;</div>
-            <div class="home2">&nbsp;</div>
-          </div>
-          <div class="formrow">
-            <div class="visitors1">&nbsp;</div>
-            <div class="visitors2">&nbsp;</div>
-          </div>
-        </div>
-      </div>
-		</section>
+            {{#scoreboard}}
+            <dl class="board {{#inverted}}inverted{{/inverted}}">
+                <dt>{{home}}</dt>
+                <dd id="scorehome" class="scorecard full"></dd>
+                <dt>{{visitors}}</dt>
+                <dd id="scorevisitors" class="scorecard full"></dd>
+            </dl>
+            {{/scoreboard}}
+            <div class="players">
+                <div>
+                    <div class="formrow">
+                        <div class="home1">&nbsp;</div>
+                        <div class="home2">&nbsp;</div>
+                    </div>
+                    <div class="formrow">
+                        <div class="visitors1">&nbsp;</div>
+                        <div class="visitors2">&nbsp;</div>
+                    </div>
+                </div>
+            </div>
+            <div class="settings">
+                <a href="#settings" class="btn change js_invert">⇔</a><!-- ⇌↔ -->
+                <a href="#settings" class="btn home plus js_homeplus">▲</a>
+                <a href="#settings" class="btn home minus js_homeminus">▼</a>
+                <a href="#settings" class="btn visitors plus js_visitorsplus">▲</a>
+                <a href="#settings" class="btn visitors minus js_visitorsminus">▼</a>
+            </div>
+        </section>
 		<section id="summary" class="page">
 			<div class="toolbar">
 				<h1>{{locales.global.title}}</h1>
@@ -110,7 +110,7 @@
 			</div>
 		</section>
 	</section>
-  
+
   <script type="text/javascript">
     df = (function(df) {
       df.config = {{{config}}};
@@ -119,7 +119,7 @@
   </script>
 
 {{#production}}
-	<script type="text/javascript" src="{{cdn}}{{#rev}}/{{rev}}{{/rev}}/extensions/js/basic-min.js"></script>
+	<script type="text/javascript" src="{{#cdn}}{{cdn}}{{#rev}}/{{rev}}{{/rev}}{{/cdn}}/extensions/js/basic-min.js"></script>
 {{/production}}
 {{^production}}
 	<script type="text/javascript" src="/extensions/js/basic.js"></script>

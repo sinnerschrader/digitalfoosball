@@ -21,27 +21,16 @@
         <li><a href="#"></a></li>
       </ol>
     </section>
-    <section id="feed">
-      {{#games}}
-        <ol>
-          {{#events}}
-            <li class="{{type}}">
-              <div>{{time}}</div>
-              <p>{{head}}<br>{{body}}</p>
-            </li>
-          {{/events}}
-        </ol>
-      {{/games}}
-    </section>
+    <section id="feed"></section>
   </aside>
   <bside>
     <hgroup>
       <h1 class="h1">{{locales.live.top10}}</h1>
     </hgroup>
     <ol>
-      {{#table}}
+      {{#players}}
         <li {{#position}}data-rank="{{position}}"{{/position}} data-score="{{score}}"><a href="#!/statistic/{{name}}">{{name}}</a></li>
-      {{/table}}
+      {{/players}}
     </ol>
     <div><a href="#!/table">{{locales.live.top10.fulltable}}</a></div>
   </bside>

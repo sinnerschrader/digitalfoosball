@@ -8,8 +8,7 @@
 
 
 #s2k-transition-time {
-	@style:color,border-color,opacity,background-color ease-out,ease-out,ease-out,ease-out;
-	
+
 	.no(){
 		@timer:none;
 		-webkit-transition: @timer;
@@ -20,6 +19,8 @@
 	}
 	.short(){
 		@timer:.2s;
+	    @easeing:ease-out;
+	    @style:color @timer @easeing,border-color @timer @easeing,opacity @timer @easeing,background-color @timer @easeing;
 		-webkit-transition: @style @timer;
 		-moz-transition: @style @timer;
 		-o-transition: @style @timer;
@@ -28,12 +29,13 @@
 	}
 	.led(){
 		@timer:1s;
-		@style:opacity;
-		-webkit-transition: @style @timer;
-		-moz-transition: @style @timer;
-		-o-transition: @style @timer;
-		-ms-transition: @style @timer;
-		transition: @style @timer;
+	    @easeing:ease-in-out;
+		@style:opacity @timer @easeing, left @timer @easeing, right @timer @easeing;
+		-webkit-transition: @style;
+		-moz-transition: @style;
+		-o-transition: @style;
+		-ms-transition: @style;
+		transition: @style;
 	}
 	.page(){
 		@timer:.5s;
@@ -44,7 +46,7 @@
 		-ms-transition: @style @timer;
 		transition: @style @timer;
 	}
-	
+
 	.lightbox(){
 		@style:all;
 		@timer:.3s ease-in-out,;
@@ -56,7 +58,7 @@
 	}
 }
 
-#s2k-transform {	
+#s2k-transform {
 	.lightbox(){
 		@transform:scale(0);
 		-webkit-transform: @transform;
@@ -64,10 +66,10 @@
 		-o-transform: @transform;
 		-ms-transform: @transform;
 		transform: @transform;
-	}	
+	}
 }
 
-#s2k-shadow{	
+#s2k-shadow{
 	.led(){
 		@shadow-color:#fff;
 		@shadow-width:10px;
@@ -76,7 +78,7 @@
 		-ms-box-shadow: 0 0 @shadow-width @shadow-color;
 		-o-box-shadow: 0 0 @shadow-width @shadow-color;
 		box-shadow: 0 0 @shadow-width @shadow-color;
-	}		
+	}
 	.dialog(){
 		@shadow-color:#000;
 		@shadow-width:10px;
@@ -85,7 +87,7 @@
 		-ms-box-shadow: 0 0 @shadow-width @shadow-color;
 		-o-box-shadow: 0 0 @shadow-width @shadow-color;
 		box-shadow: 0 0 @shadow-width @shadow-color;
-	}	
+	}
 }
 
 #s2k-reflection{

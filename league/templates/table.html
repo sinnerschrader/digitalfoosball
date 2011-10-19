@@ -1,4 +1,4 @@
-<section id="content" class="league">
+<section id="content" class="league solo">
   <aside>
     <h2 class="h1">{{locales.table.league}}</h2>
     <table>
@@ -14,7 +14,7 @@
         </tr>
       </thead>
       <tbody>
-        {{#table}}
+        {{#players}}
           <tr>
             <td>{{#position}}{{position}}.{{/position}}</td>
             <td><a href="#!/statistic/{{name}}">{{name}}</a></td>
@@ -28,43 +28,43 @@
               <td>{{lost}}</td>
             {{/games}}
           </tr>
-        {{/table}}
+        {{/players}}
       </tbody>
     </table>
   </aside>
-  <bside>
+<!--   <bside>
     <h2 class="h1">{{locales.table.league.col.header.badges}}</h2>
     <ul>
-      <li class="badgetype">
+      <li class="hunter">
         <h3 class="h2">{{locales.table.badge.hunter}}</h3>
         <p>{{locales.table.badge.hunter.message}}</p>
         <p>@s2kicker  |  17.05.2011</p>
       </li>
-      <li class="badgetype">
+      <li class="hattrik">
         <h3 class="h2">{{locales.table.badge.hattrik}}</h3>
         <p>{{locales.table.badge.hattrik.message}}</p>
         <p>@s2kicker  |  17.05.2011</p>
       </li>
-      <li class="badgetype">
+      <li class="speedy">
         <h3 class="h2">{{locales.table.badge.speedy}}</h3>
         <p>{{locales.table.badge.speedy.message}}</p>
         <p>@s2kicker  |  17.05.2011</p>
       </li>
-      <li class="badgetype">
+      <li class="patience">
         <h3 class="h2">{{locales.table.badge.patience}}</h3>
         <p>{{locales.table.badge.patience.message}}</p>
         <p>@s2kicker  |  17.05.2011</p>
       </li>
-      <li class="badgetype">
+      <li class="fan">
         <h3 class="h2">{{locales.table.badge.fan}}</h3>
         <p>{{locales.table.badge.fan.message}}</p>
         <p>@s2kicker  |  17.05.2011</p>
       </li>
-      <li class="badgetype">
+      <li class="lantern">
         <h3 class="h2">{{locales.table.badge.lantern}}</h3>
         <p>{{locales.table.badge.lantern.message}}</p>
         <p>@s2kicker  |  17.05.2011</p>
       </li>
     </ul>
-  </bside>
+  </bside> -->
 </section>

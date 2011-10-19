@@ -30,6 +30,45 @@ df.app = (function() {
     df.publish("socket:event", "start");
   });
 
+  $(".js_setup").live("click",function(e) {
+    e.preventDefault();
+    $(this).toggleClass("cancel").closest(".page").find("div.settings").toggleClass("active");
+  });
+
+  $(".js_invert").live("click",function(e) {
+    e.preventDefault();
+    localStorage.setItem("df.scoreboard.inverted",(localStorage.getItem("df.scoreboard.inverted") == "yes" )?"no":"yes");
+    $(this).closest(".page").find("dl.board").toggleClass("inverted");
+  });
+
+  $(".js_homeplus").live("click",function(e) {
+    e.preventDefault();
+    (~~(localStorage.getItem("df.scoreboard.score.home")) < 10) && actionIfPermitted(function() {
+      df.publish("socket:event", "amend",{"score": "home", "goal":"plus"});
+    });
+  });
+
+  $(".js_homeminus").live("click",function(e) {
+    e.preventDefault();
+    (~~(localStorage.getItem("df.scoreboard.score.home")) > 0) && actionIfPermitted(function() {
+      df.publish("socket:event", "amend",{"score": "home", "goal":"minus"});
+    });
+  });
+
+  $(".js_visitorsplus").live("click",function(e) {
+    e.preventDefault();
+    (~~(localStorage.getItem("df.scoreboard.score.visitors")) < 10) && actionIfPermitted(function() {
+      df.publish("socket:event", "amend",{"score": "visitors", "goal":"plus"});
+    });
+  });
+
+  $(".js_visitorsminus").live("click",function(e) {
+    e.preventDefault();
+    (~~(localStorage.getItem("df.scoreboard.score.visitors")) > 0) && actionIfPermitted(function() {
+      df.publish("socket:event", "amend",{"score": "visitors", "goal":"minus"});
+    });
+  });
+
   $(".js_rematch").live("click",function(e) {
     e.preventDefault();
     df.publish("socket:event", "start", {rematch:true});
@@ -122,11 +161,20 @@ df.app = (function() {
   if (window.navigator.standalone) {
     document.addEventListener("touchmove", function(e){
       e.preventDefault();
-    }, false); 
+    }, false);
   } else {
     $(window).bind("load orientationchange", function(e){
       window.scrollTo(0, 1);
     });
+  }
+
+  if(localStorage.getItem("df.scoreboard.inverted") == "yes") {
+     $("#scoreboard dl.board").addClass("inverted");
+  } else if(localStorage.getItem("df.scoreboard.inverted") == "no") {
+     $("#scoreboard dl.board").removeClass("inverted");
+  } else{
+    localStorage.setItem("df.scoreboard.inverted",($("#scoreboard dl.board").hasClass("inverted"))?"yes":"no");
+
   }
 
   return {};

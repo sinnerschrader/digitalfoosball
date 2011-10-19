@@ -20,14 +20,10 @@ te.subscribe("referee:finalwhistle", function(game) {
           winner: (home_won ? game.players.home : game.players.visitors).join(" " + locales["global.concat"] + " "),
           loser: (!home_won ? game.players.home : game.players.visitors).join(" " + locales["global.concat"] + " ")
         },
-        goals: goals
+        goals: goals,
+        hashtags: config.twitter.hashtags || []
       },
       tweet = mustache.to_html(locales[["press.tweet.", game.players.home.concat(game.players.visitors).length, "players"].join("")], data);
-
-  if (!/\bproduction\b/.test(process.env.NODE_ENV)) {
-    console.log("Tweet: " + tweet);
-    return;
-  }
 
   oAuth = new OAuth(
     "http://twitter.com/oauth/request_token",
@@ -48,7 +44,7 @@ te.subscribe("referee:finalwhistle", function(game) {
         te.publish("press:wrote", "-1");
       } else {
         sys.debug(data);
-        te.publish("press:wrote", JSON.parse(data).id_str);
+        te.publish("press:wrote", "https://twitter.com/#!/" + config.twitter.userId + "/status/" + JSON.parse(data).id_str);
       };
     }
   );

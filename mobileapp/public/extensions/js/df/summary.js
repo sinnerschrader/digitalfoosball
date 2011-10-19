@@ -16,12 +16,12 @@ df.summary = (function() {
     $duration.html([parseInt(duration / 60, 10), parseInt(duration % 60, 10)].join("'") + "\"");
     $score.html(score.join(":"));
 
-    if(msg.game.tweetId == -1) {
+    if(msg.game.tweetURL == -1) {
       tweetMsg = "Tweet konnte nicht gesendet werden… :-(";
-    } else if(msg.game.tweetId == -2) {
+    } else if(msg.game.tweetURL == -2) {
       tweetMsg = "";
-    } else if(msg.game.tweetId > 0) {
-      tweetMsg = '<a href="https://twitter.com/#!/s2kicker/status/' + msg.game.tweetId + '" class=\"js_target\">Yeah. Tweet wurde gesendet.</a>';
+    } else if(msg.game.tweetURL.length > 5) {
+      tweetMsg = '<a href="' + msg.game.tweetURL + '" class=\"js_target\">Yeah. Tweet wurde gesendet.</a>';
     } else {
       tweetMsg = "Tweet wird gesendet…";
     }

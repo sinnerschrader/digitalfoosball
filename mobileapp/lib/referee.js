@@ -6,6 +6,7 @@ var sys = require("sys"),
     press = require("./press"),
     te = require("./tableevents").TableEvents;
 
+
 var kickertable = {
   view: "home",
   host: null,
@@ -18,10 +19,14 @@ var kickertable = {
       visitors: []
     },
     goals: [],
-    tweetId: "",
+    tweetURL: "",
     feed: []
   }
-};
+},
+ruleset = config.rulesets[config.ruleset],
+finalTimeout;
+
+
 
 var events = {
   start: function(data) {
@@ -48,17 +53,63 @@ var events = {
     kickertable.host = undefined;
     te.publish("referee:update", kickertable);
   },
-  undo: function() {
-    kickertable.game.goals.pop();
+  undo: function(side) {
+    if(!side){
+      kickertable.game.goals.pop();
+    } else {
+      for (var idx = kickertable.game.goals.length - 1; idx >= 0; --idx) {
+        if (kickertable.game.goals[idx].scorer === side) { break; }
+      }
+      if(idx<0){
+        return;
+      }
+      var tmp = kickertable.game.goals.slice(idx+1);
+      kickertable.game.goals.length = idx;
+      kickertable.game.goals.push.apply(kickertable.game.goals, tmp);
+    }
     te.publish("referee:undo", kickertable.game);
+  },
+  amend: function(data){
+    if(data.goal == 'plus'){
+      addGoal(data.score);
+    } else if(data.goal == 'minus'){
+      events.undo(data.score);
+    }
   }
 };
+
+var addGoal = function(scorer) {
+  var goal = { 
+    type: "goal", 
+    scorer: scorer, 
+    time: new Date().getTime() 
+  };
+  
+  if (kickertable.view == "scoreboard") {
+    kickertable.game.goals.push(goal);
+    if (kickertable.game.goals.filter(function(g) { return goal.scorer === g.scorer; }).length === ruleset.max) {
+      te.publish("referee:update", kickertable);
+      finalTimeout = setTimeout(function(){
+        kickertable.view = "summary";
+        kickertable.game.tweetURL = "-2";
+        kickertable.game.end = new Date().getTime();
+        te.publish("referee:finalwhistle", kickertable.game);
+      }, 2000);
+    } else {
+      te.publish("referee:goal", kickertable.game);
+      te.publish("referee:update", kickertable);
+    }
+  } else {
+    te.publish("referee:fastgoal", goal);
+  }
+  
+}
 
 var resetGame = function(rematch) {
   kickertable.view = "home";
   kickertable.game.start = 0;
   kickertable.game.end = 0;
-  kickertable.game.tweetId = "0";
+  kickertable.game.tweetURL = "0";
 
   if (rematch) {
     var home = kickertable.game.players.home;
@@ -89,7 +140,8 @@ te.subscribe("socket:connect", function(client) {
 
 te.subscribe("socket:message", function(client, msg) {
   kickertable.host = client.sessionId;
-  events[msg.event](msg.data);
+  clearTimeout(finalTimeout);
+  (events[msg.event]) && events[msg.event](msg.data);
 });
 
 te.subscribe("socket:disconnect", function(client) {
@@ -104,8 +156,8 @@ te.subscribe("press:avatars", function(avatars) {
   te.publish("referee:update", kickertable);
 });
 
-te.subscribe("press:wrote", function(tweetId) {
-  kickertable.game.tweetId = tweetId;
+te.subscribe("press:wrote", function(tweetURL) {
+  kickertable.game.tweetURL = tweetURL;
 
   if (kickertable.view === "summary") {
     te.publish("referee:update", kickertable);
@@ -114,32 +166,15 @@ te.subscribe("press:wrote", function(tweetId) {
 
 te.subscribe("announcer:announcement", function(msg) {
   kickertable.game.feed.push(msg);
-  te.publish("referee:update", kickertable);
+  te.publish("referee:update", kickertable); 
 });
 
-te.subscribe("arduino:goal", function(scorer) { 
-  var goal = { 
-    type: "goal", 
-    scorer: scorer, 
-    time: new Date().getTime() 
-  };
+te.subscribe("arduino:goals", function(scorer) {
+  addGoal(scorer)
+});
 
-  if (kickertable.view == "scoreboard") {
-    kickertable.game.goals.push(goal);
-
-    if (kickertable.game.goals.filter(function(g) { return goal.scorer === g.scorer; }).length === 6) {
-      kickertable.view = "summary";
-      kickertable.game.tweetId = "-2";
-      kickertable.game.end = new Date().getTime();
-
-      te.publish("referee:finalwhistle", kickertable.game);
-    } else {
-      te.publish("referee:goal", kickertable.game);
-      te.publish("referee:update", kickertable);
-    }
-  } else {
-    te.publish("referee:fastgoal", goal);
-  }
+te.subscribe("arduino:undo", function(side) {
+  events.undo(side);
 });
 
 te.publish("referee:ready");

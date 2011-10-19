@@ -1,9 +1,9 @@
 /*
 .homepage{
 	header{
-		-webkit-animation-name:acceleratedReveal; 
+		-webkit-animation-name:acceleratedReveal;
 		-webkit-animation-duration:1s;
-		-moz-animation-name:acceleratedReveal; 
+		-moz-animation-name:acceleratedReveal;
 		-moz-animation-duration:1s;
 	}
 }
@@ -13,29 +13,29 @@
 	aside{
 		padding: 30px 0 0;
 		#game{
-      opacity: 0;
-      height:0;
+		    opacity: 0;
+		    height:0;
 			position: relative;
 			background: @s2k-box-grey;
 			overflow:hidden;
 			-webkit-transform: translate3d(0,0,0);
 			&.show{
-          -webkit-animation-name:slideInScoreBoard; 
-          -webkit-animation-duration:2s;
-          -moz-animation-name:slideInScoreBoard; 
-          -moz-animation-duration:2s;
-          opacity: 1;
-          height:287px;
+                -webkit-animation-name:slideInScoreBoard;
+                -webkit-animation-duration:2s;
+                -moz-animation-name:slideInScoreBoard;
+                -moz-animation-duration:2s;
+                opacity: 1;
+                height:287px;
     			margin-bottom: 30px;
     			overflow:visible;
 			}
 			&.hide{
-          -webkit-animation-name:slideOutScoreBoard; 
-          -webkit-animation-duration:2s;
-          -moz-animation-name:slideOutScoreBoard; 
-          -moz-animation-duration:2s;
-          opacity: 0;
-          height:0;
+                -webkit-animation-name:slideOutScoreBoard;
+                -webkit-animation-duration:2s;
+                -moz-animation-name:slideOutScoreBoard;
+                -moz-animation-duration:2s;
+                opacity: 0;
+                height:0;
     			margin-bottom: 0;
 			}
 			time{
@@ -55,7 +55,7 @@
 				margin: 0 auto;
 				position: relative;
 			}
-			ol{ 
+			ol{
 			    @margin:10px;
 				position: absolute;
 				top:@margin;
@@ -111,6 +111,7 @@
 					border-bottom: 1px solid @s2k-line-darkgrey;
 					line-height: 18px;
 					width: 100%;
+                    background: url("../../images/icons/ic_feedevents.svg") no-repeat 0 0;
 					div{
 					    display: table-cell;
 					    width: 140px;
@@ -127,26 +128,29 @@
 							font-weight: bold;
 						}
 					}
-					&.goal,
-					&.start,
-          &.end{
-    				    background: url("../../images/icons/ic_feedevents.svg") no-repeat 0 0;
+					&.start{
+					    background-position: 25px -55px;
 					}
 					&.goal{
-					    background-position: -4px 25px;
+					    background-position: 24px -150px;
 					}
-					&.start,
-          &.end{
-					    background-position: 25px -55px;
+					&.foul{
+					    background-position: 24px -225px;
+					}
+					&.abort{
+					    background-position: 29px -330px;
+					}
+					&.end{
+					    background-position: 24px -237px;
 					}
 					&:last-child{
 						border: none;
 					}
 					&.show{
 						-webkit-transform: translate3d(0,0,0);
-						-webkit-animation-name:acceleratedReveal; 
+						-webkit-animation-name:acceleratedReveal;
 						-webkit-animation-duration:1s;
-						-moz-animation-name:acceleratedReveal; 
+						-moz-animation-name:acceleratedReveal;
 						-moz-animation-duration:1s;
 					}
 				}
@@ -155,19 +159,19 @@
 	}
 	bside{
 		ol{
-      @paddingTB:10px;
-      @paddingLR:5px;
-      padding: @paddingTB @paddingLR;
-      background: @s2k-box-grey;
-      counter-reset: rank;
-      margin: 0 0 10px;
+            @paddingTB:10px;
+            @paddingLR:5px;
+            padding: @paddingTB @paddingLR;
+            background: @s2k-box-grey;
+            counter-reset: rank;
+            margin: 0 0 10px;
 			li{
 				@paddingV:5px;
 				position: relative;
 				padding: @paddingV 10px @paddingV 50px;
 				border-bottom: 1px solid @s2k-line-darkgrey;
 				font-weight: bold;
-        &::before{
+		    	&::before{
 					content: "\00a0";
 					position: absolute;
 					top:0;
@@ -176,7 +180,7 @@
 					width: 20px;
 					padding: @paddingV 10px 0;
 					border-right: 1px solid @s2k-line-darkgrey;
-        }
+				}
 				&[data-rank]::before{
 					content: attr(data-rank) ".";
 					counter-increment: rank;
@@ -209,7 +213,7 @@
 			        right:@paddingLR;
 			        top:350px;
     			    -webkit-transform: translate3d(0,0,0);
-              #s2k-transition-time > .newrank;
+    			    #s2k-transition-time > .newrank;
 			        &.pos1{top:@paddingTB + 0;}
 			        &.pos2{top:@paddingTB + 27px;}
 			        &.pos3{top:@paddingTB + 54px;}
@@ -221,20 +225,20 @@
 			        &.pos9{top:@paddingTB + 216px;}
 			        &.pos10{top:@paddingTB + 243px;}
 			        &.up{
-                -webkit-animation-name:moveUp; 
-                -webkit-animation-duration:2s;
-                -webkit-animation-timing-function:linear;
-                -moz-animation-name:moveUp; 
-                -moz-animation-duration:2s;
-                -moz-animation-timing-function:linear;
+                        -webkit-animation-name:moveUp;
+                        -webkit-animation-duration:2s;
+                        -webkit-animation-timing-function:linear;
+                        -moz-animation-name:moveUp;
+                        -moz-animation-duration:2s;
+                        -moz-animation-timing-function:linear;
 			        }
 			        &.down{
-                -webkit-animation-name:moveDown; 
-                -webkit-animation-duration:2s;
-                -webkit-animation-timing-function:linear;
-                -moz-animation-name:moveDown; 
-                -moz-animation-duration:2s;
-                -moz-animation-timing-function:linear;
+                        -webkit-animation-name:moveDown;
+                        -webkit-animation-duration:2s;
+                        -webkit-animation-timing-function:linear;
+                        -moz-animation-name:moveDown;
+                        -moz-animation-duration:2s;
+                        -moz-animation-timing-function:linear;
 			        }
 			    }
 			}

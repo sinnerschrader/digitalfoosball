@@ -20,6 +20,7 @@ df.scoreboard = (function() {
         cplayers = msg.game.players.home.concat(msg.game.players.visitors).join(",");
 
     ["home", "visitors"].forEach(function(side) {
+      localStorage.setItem("df.scoreboard.score."+side,goals[side]);
       $("#score" + side).attr("class", ["scorecard", ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"][goals[side]] || "full"].join(" "));
     });
 

@@ -53,8 +53,8 @@ app.post("/events/*", function(req, res){
       action = parts[3],
       opts = {"Content-Type": "text/plain"};
 
-  if (type == "goals" && {visitors: true, home: true}[action]) {
-    te.publish("arduino:goal", action);
+  if ({goals:true, undo:true}[type] && {visitors: true, home: true}[action]) {
+    te.publish("arduino:"+type, action);
 
     res.writeHead(200, opts);
     res.end("Added Goal for " + action);

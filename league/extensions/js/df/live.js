@@ -118,6 +118,9 @@ df.live = (function() {
   df.subscribe("app:live", function($content) {
     avatars = undefined;
     $content.find("#scorehome, #scorevisitors").html(scoreSign.join(""));
+    $.get("feed", function(partial) {
+      $(partial).appendTo($content.find("#feed"));
+    });
     updateScoreboard(game);
     game && updateLivefeed(game, game.start);
   });

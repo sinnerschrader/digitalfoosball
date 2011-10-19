@@ -123,6 +123,21 @@ table{
 	}
 }
 
+.btn{
+    position: absolute;
+    font-size: 20px;
+    line-height: 20px;
+    font-weight: bold;
+    background: #111;
+    padding: 5px 8px;
+    border:1px solid #fff;
+    #s2k-border-radius > .small;
+	#s2k-gradient > .button3;
+    &:active{
+        background: @s2k-button-hi;
+    }
+}
+
 input[type=submit].button{
   width:100%;
   border:none;
@@ -217,7 +232,8 @@ input[type=email]{
 			&.cancel{
 				background:@s2k-red;
 			}
-			
+
+			&.active,
 			&:active{
 				background: @s2k-button-hi;
 				&:first-of-type{

@@ -1,4 +1,4 @@
-/*! Socket.IO.js build:0.7.9, development. Copyright(c) 2011 LearnBoost <dev@learnboost.com> MIT Licensed */
+/*! Socket.IO.js build:0.8.4, development. Copyright(c) 2011 LearnBoost <dev@learnboost.com> MIT Licensed */
 
 /**
  * socket.io
@@ -22,7 +22,7 @@
    * @api public
    */
 
-  io.version = '0.7.9';
+  io.version = '0.8.4';
 
   /**
    * Protocol implemented.
@@ -317,7 +317,7 @@
    *
    * @api public
    */
-  
+
   util.merge = function merge (target, additional, deep, lastseen) {
     var seen = lastseen || []
       , depth = typeof deep == 'undefined' ? 2 : deep
@@ -342,7 +342,7 @@
    *
    * @api public
    */
-  
+
   util.mixin = function (ctor, ctor2) {
     util.merge(ctor.prototype, ctor2.prototype);
   };
@@ -404,7 +404,7 @@
       return Array.prototype.indexOf.call(arr, o, i);
     }
 
-    for (var j = arr.length, i = i < 0 ? i + j < 0 ? 0 : i + j : i || 0; 
+    for (var j = arr.length, i = i < 0 ? i + j < 0 ? 0 : i + j : i || 0;
          i < j && arr[i] !== o; i++);
 
     return j <= i ? -1 : i;
@@ -1122,7 +1122,7 @@
    * @api private
    */
 
-  var regexp = /^([^:]+):([0-9]+)?(\+)?:([^:]+)?:?(.*)?$/;
+  var regexp = /([^:]+):([0-9]+)?(\+)?:([^:]+)?:?([\s\S]*)?/;
 
   parser.decodePacket = function (data) {
     var pieces = data.match(regexp);
@@ -1316,7 +1316,7 @@
    *
    * @api private
    */
-  
+
   Transport.prototype.setCloseTimeout = function () {
     if (!this.closeTimeout) {
       var self = this;
@@ -1400,7 +1400,7 @@
   Transport.prototype.onHeartbeat = function (heartbeat) {
     this.packet({ type: 'heartbeat' });
   };
- 
+
   /**
    * Called when the transport opens.
    *
@@ -1503,6 +1503,7 @@
       , 'max reconnection attempts': 10
       , 'sync disconnect on unload': true
       , 'auto connect': true
+      , 'flash policy port': 10843
     };
 
     io.util.merge(this.options, options);
@@ -1602,7 +1603,7 @@
 
     if (this.isXDomain()) {
       var insertAt = document.getElementsByTagName('script')[0]
-        , script = document.createElement('SCRIPT');
+        , script = document.createElement('script');
 
       script.src = url + '&jsonp=' + io.j.length;
       insertAt.parentNode.insertBefore(script, insertAt);
@@ -1675,6 +1676,8 @@
       );
 
       function connect (transports){
+        if (self.transport) self.transport.clearTimeouts();
+
         self.transport = self.getTransport(transports);
         if (!self.transport) return self.publish('connect_failed');
 
@@ -1803,8 +1806,10 @@
 
   Socket.prototype.isXDomain = function () {
 
-    var locPort = window.location.port || 80;
-    return this.options.host !== document.domain || this.options.port != locPort;
+    var port = window.location.port ||
+      ('https:' == window.location.protocol ? 443 : 80);
+
+    return this.options.host !== document.domain || this.options.port != port;
   };
 
   /**
@@ -2075,7 +2080,7 @@
    *
    * @api public
    */
-  
+
   SocketNamespace.prototype.emit = function (name) {
     var args = Array.prototype.slice.call(arguments, 1)
       , lastArg = args[args.length - 1]
@@ -2276,12 +2281,17 @@
    */
 
   WS.prototype.open = function () {
-    var self = this
-      , query = io.util.query(this.socket.options.query);
+    var query = io.util.query(this.socket.options.query)
+      , self = this
+      , Socket
 
-    this.websocket = new WebSocket(this.prepareUrl() + query);
 
-    var self = this;
+    if (!Socket) {
+      Socket = window.MozWebSocket || window.WebSocket;
+    }
+
+    this.websocket = new Socket(this.prepareUrl() + query);
+
     this.websocket.onopen = function () {
       self.onOpen();
       self.socket.setBuffer(false);
@@ -2368,7 +2378,8 @@
    */
 
   WS.check = function () {
-    return 'WebSocket' in window && !('__addTask' in WebSocket);
+    return ('WebSocket' in window && !('__addTask' in WebSocket))
+          || 'MozWebSocket' in window;
   };
 
   /**
@@ -2389,7 +2400,6 @@
    */
 
   io.transports.push('websocket');
-
 
 })(
     'undefined' != typeof io ? io.Transport : module.exports
@@ -2441,8 +2451,8 @@
   Flashsocket.prototype.name = 'flashsocket';
 
   /**
-   *Disconnect the established `FlashSocket` connection. This is done by adding a 
-   * new task to the FlashSocket. The rest will be handled off by the `WebSocket` 
+   * Disconnect the established `FlashSocket` connection. This is done by adding a
+   * new task to the FlashSocket. The rest will be handled off by the `WebSocket`
    * transport.
    *
    * @returns {Transport}
@@ -2458,10 +2468,10 @@
     });
     return this;
   };
-  
+
   /**
    * Sends a message to the Socket.IO server. This is done by adding a new
-   * task to the FlashSocket. The rest will be handled off by the `WebSocket` 
+   * task to the FlashSocket. The rest will be handled off by the `WebSocket`
    * transport.
    *
    * @returns {Transport}
@@ -2502,6 +2512,7 @@
   Flashsocket.prototype.ready = function (socket, fn) {
     function init () {
       var options = socket.options
+        , port = options['flash policy port']
         , path = [
               'http' + (options.secure ? 's' : '') + ':/'
             , options.host + ':' + options.port
@@ -2516,6 +2527,10 @@
         if (typeof WEB_SOCKET_SWF_LOCATION === 'undefined') {
           // Set the correct file based on the XDomain settings
           WEB_SOCKET_SWF_LOCATION = path.join('/');
+        }
+
+        if (port !== 843) {
+          WebSocket.loadFlashPolicyFile('xmlsocket://' + options.host + ':' + port);
         }
 
         WebSocket.__initialize();
@@ -2546,11 +2561,11 @@
       || !('__initialize' in WebSocket) || !swfobject
     ) return false;
 
-    return swfobject.getFlashPlayerVersion().major >= 1;
+    return swfobject.getFlashPlayerVersion().major >= 10;
   };
 
   /**
-   * Check if the FlashSocket transport can be used as cross domain / cross origin 
+   * Check if the FlashSocket transport can be used as cross domain / cross origin
    * transport. Because we can't see which type (secure or insecure) of .swf is used
    * we will just return true.
    *
@@ -2591,14 +2606,14 @@ var swfobject = {
 // Reference: http://tools.ietf.org/html/draft-hixie-thewebsocketprotocol
 
 (function() {
-  
+
   if (window.WebSocket) return;
 
   var console = window.console;
   if (!console || !console.log || !console.error) {
     console = {log: function(){ }, error: function(){ }};
   }
-  
+
   if (!swfobject.hasFlashPlayerVersion("10.0.0")) {
     console.error("Flash Player >= 10.0.0 is required.");
     return;
@@ -2737,7 +2752,7 @@ var swfobject = {
     if ("protocol" in flashEvent) {
       this.protocol = flashEvent.protocol;
     }
-    
+
     var jsEvent;
     if (flashEvent.type == "open" || flashEvent.type == "error") {
       jsEvent = this.__createSimpleEvent(flashEvent.type);
@@ -2750,10 +2765,10 @@ var swfobject = {
     } else {
       throw "unknown event type: " + flashEvent.type;
     }
-    
+
     this.dispatchEvent(jsEvent);
   };
-  
+
   WebSocket.prototype.__createSimpleEvent = function(type) {
     if (document.createEvent && window.Event) {
       var event = document.createEvent("Event");
@@ -2763,7 +2778,7 @@ var swfobject = {
       return {type: type, bubbles: false, cancelable: false};
     }
   };
-  
+
   WebSocket.prototype.__createMessageEvent = function(type, data) {
     if (document.createEvent && window.MessageEvent && !window.opera) {
       var event = document.createEvent("MessageEvent");
@@ -2774,7 +2789,7 @@ var swfobject = {
       return {type: type, data: data, bubbles: false, cancelable: false};
     }
   };
-  
+
   /**
    * Define the WebSocket readyState enumeration.
    */
@@ -2787,7 +2802,7 @@ var swfobject = {
   WebSocket.__instances = {};
   WebSocket.__tasks = [];
   WebSocket.__nextId = 0;
-  
+
   /**
    * Load a new flash security policy file.
    * @param {string} url
@@ -2803,7 +2818,7 @@ var swfobject = {
    */
   WebSocket.__initialize = function() {
     if (WebSocket.__flash) return;
-    
+
     if (WebSocket.__swfLocation) {
       // For backword compatibility.
       window.WEB_SOCKET_SWF_LOCATION = WebSocket.__swfLocation;
@@ -2849,7 +2864,7 @@ var swfobject = {
         }
       });
   };
-  
+
   /**
    * Called by Flash to notify JS that it's fully loaded and ready
    * for communication.
@@ -2867,7 +2882,7 @@ var swfobject = {
       WebSocket.__tasks = [];
     }, 0);
   };
-  
+
   /**
    * Called by Flash to notify WebSockets events are fired.
    */
@@ -2887,17 +2902,17 @@ var swfobject = {
     }, 0);
     return true;
   };
-  
+
   // Called by Flash.
   WebSocket.__log = function(message) {
     console.log(decodeURIComponent(message));
   };
-  
+
   // Called by Flash.
   WebSocket.__error = function(message) {
     console.error(decodeURIComponent(message));
   };
-  
+
   WebSocket.__addTask = function(task) {
     if (WebSocket.__flash) {
       task();
@@ -2905,7 +2920,7 @@ var swfobject = {
       WebSocket.__tasks.push(task);
     }
   };
-  
+
   /**
    * Test if the browser is running flash lite.
    * @return {boolean} True if flash lite is running, false otherwise.
@@ -2920,7 +2935,7 @@ var swfobject = {
     }
     return mimeType.enabledPlugin.filename.match(/flashlite/i) ? true : false;
   };
-  
+
   if (!window.WEB_SOCKET_DISABLE_AUTO_INITIALIZATION) {
     if (window.addEventListener) {
       window.addEventListener("load", function(){
@@ -2932,7 +2947,7 @@ var swfobject = {
       });
     }
   }
-  
+
 })();
 
 /**
@@ -2948,7 +2963,7 @@ var swfobject = {
    *
    * @api public
    */
-  
+
   exports.XHR = XHR;
 
   /**
@@ -3065,7 +3080,7 @@ var swfobject = {
   /**
    * Disconnects the established `XHR` connection.
    *
-   * @returns {Transport} 
+   * @returns {Transport}
    * @api public
    */
 
@@ -3133,7 +3148,7 @@ var swfobject = {
 
   /**
    * Check if the XHR transport supports corss domain requests.
-   * 
+   *
    * @returns {Boolean}
    * @api public
    */
@@ -3164,7 +3179,7 @@ var swfobject = {
 
   /**
    * The HTMLFile transport creates a `forever iframe` based transport
-   * for Internet Explorer. Regular forever iframe implementations will 
+   * for Internet Explorer. Regular forever iframe implementations will
    * continuously trigger the browsers buzy indicators. If the forever iframe
    * is created inside a `htmlfile` these indicators will not be trigged.
    *
@@ -3366,7 +3381,7 @@ var swfobject = {
 
   XHRPolling.prototype.name = 'xhr-polling';
 
-  /** 
+  /**
    * Establish a connection, for iPhone and Android this will be done once the page
    * is loaded.
    *
@@ -3544,8 +3559,8 @@ var swfobject = {
         );
 
     if (!this.form) {
-      var form = document.createElement('FORM')
-        , area = document.createElement('TEXTAREA')
+      var form = document.createElement('form')
+        , area = document.createElement('textarea')
         , id = this.iframeId = 'socketio_iframe_' + this.index
         , iframe;
 
@@ -3610,7 +3625,7 @@ var swfobject = {
 
     this.socket.setBuffer(true);
   };
-  
+
   /**
    * Creates a new JSONP poll that can be used to listen
    * for messages from the Socket.IO server.
@@ -3620,7 +3635,7 @@ var swfobject = {
 
   JSONPPolling.prototype.get = function () {
     var self = this
-      , script = document.createElement('SCRIPT')
+      , script = document.createElement('script')
       , query = io.util.query(
              this.socket.options.query
           , 't='+ (+new Date) + '&i=' + this.index

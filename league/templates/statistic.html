@@ -1,112 +1,114 @@
 <section id="content" class="userdetail">
-  <aside>
-    <div id="summary">
-      <hgroup>
-        <h1 class="h1">{{locales.statistic}}</h1>
-        <h2 class="h2">{{locales.statistic.started.start}} {{since}} {{locales.statistic.started.end}}</h2>
-      </hgroup>
-    </div>
-    <ul id="nemesis">
-      {{#avg}}
-        <li>
-          <hgroup>
-            <h1 class="h1">Ø {{locales.statistic.gamesperday}}</h1>
-          </hgroup>
-          {{gamesPerDay}}
-        </li>
-        <li>
-          <hgroup>
-            <h1 class="h1">Ø {{locales.statistic.durationpergame}}</h1>
-          </hgroup>
-          {{durationPerGame}} {{locales.statistic.durationpergame.unit}}
-        </li>
-        <li>
-          <hgroup>
-            <h1 class="h1">Ø {{locales.statistic.durationperday}}</h1>
-          </hgroup>
-          {{durationPerDay}} {{locales.statistic.durationperday.unit}}
-        </li>
-      {{/avg}}
-    </ul>
-    <!--div id="performance">
-      <hgroup>
-        <h1 class="h1">Kicker Auslastung</h1>
-      </hgroup>
-      <img src="https://chart.googleapis.com/chart?chs=595x115&amp;chco=82bb37&amp;chxt=x,y&amp;chxl=0:%7CJan%7CFeb%7CMarch%7CApril%7CMay%7C1:%7CMin%7CMax&amp;cht=lc&amp;chd=s:cEAELFJHHHKUju9uuXUc&amp;chls=2.0&amp;chf=bg,s,00000000&amp;chls=3&amp;chxs=2,0000DD,13,-1,t,FF0000" alt="" width="595" height="115" />
-    </div-->
-    <div id="gamesgoals">
-      <div>
+  {{#stats}}
+    <aside>
+      <div id="summary">
         <hgroup>
-          <h1 class="h1">{{locales.statistic.goals.hl}}</h1>
+          <h1 class="h1">{{locales.statistic}}</h1>
+          <h2 class="h2">{{locales.statistic.started.start}} {{started}} {{locales.statistic.started.end}}</h2>
         </hgroup>
-        {{#goals}}
-          <dl>
-            {{#home}}
-              <dt>{{locales.statistic.goals.home}}</dt>
-              <dd><span class="meter more" data-value="{{amount}}" data-percentage="{{percentage}}"></span></dd>
-            {{/home}}
-            {{#visitors}}
-              <dt>{{locales.statistic.goals.visitors}}</dt>
-              <dd><span class="meter less" data-value="{{amount}}" data-percentage="{{percentage}}"></span></dd>
-            {{/visitors}}
-          </dl>
-        {{/goals}}
       </div>
-      <div>
+      <ul id="nemesis">
+        {{#avg}}
+          <li>
+            <hgroup>
+              <h1 class="h1">Ø {{locales.statistic.gamesperday}}</h1>
+            </hgroup>
+            {{gamesPerDay}}
+          </li>
+          <li>
+            <hgroup>
+              <h1 class="h1">Ø {{locales.statistic.durationpergame}}</h1>
+            </hgroup>
+            {{durationPerGame}} {{locales.statistic.durationpergame.unit}}
+          </li>
+          <li>
+            <hgroup>
+              <h1 class="h1">Ø {{locales.statistic.durationperday}}</h1>
+            </hgroup>
+            {{durationPerDay}} {{locales.statistic.durationperday.unit}}
+          </li>
+        {{/avg}}
+      </ul>
+      <!--div id="performance">
         <hgroup>
-          <h1 class="h1">{{locales.statistic.victories.hl}}</h1>
+          <h1 class="h1">Kicker Auslastung</h1>
         </hgroup>
-        {{#victories}}
-          <dl>
-            {{#home}}
-              <dt>{{locales.statistic.victories.home}}</dt>
-              <dd><span class="meter more" data-value="{{amount}}" data-percentage="{{percentage}}"></span></dd>
-            {{/home}}
-            {{#visitors}}
-              <dt>{{locales.statistic.victories.visitors}}</dt>
-              <dd><span class="meter less" data-value="{{amount}}" data-percentage="{{percentage}}"></span></dd>
-            {{/visitors}}
-          </dl>
-        {{/victories}}
-      </div>
-    </div>
-    <dl id="stats">
-      {{#total}}
-        <dt>{{locales.statistic.stats.total.days}}</dt><dd>{{days}}</dd>
-        <dt>{{locales.statistic.stats.total.games}}</dt><dd>{{games}}</dd>
-        <dt>{{locales.statistic.stats.total.goals}}</dt><dd>{{goals}}</dd>
-      {{/total}}
-      {{#players}}
-        <dt>{{locales.statistic.stats.players.days}}</dt><dd>{{amount}}</dd>
-        <dt>{{locales.statistic.stats.players.mostactive}}</dt><dd>{{#mostactive}}<a href="#!/statistic/{{name}}">{{name}}</a> ({{games}} {{locales.statistic.stats.players.mostactive.unit}}){{/mostactive}}</dd>
-        <dt>{{locales.statistic.stats.players.topscorer}}</dt><dd>{{#topscorer}}<a href="#!/statistic/{{name}}">{{name}}</a> ({{diff}} {{locales.statistic.stats.players.topscorer.unit}}){{/topscorer}}</dd>
-        <dt>{{locales.statistic.stats.players.loser}}</dt><dd>{{#loser}}<a href="#!/statistic/{{name}}">{{name}}</a> ({{diff}} {{locales.statistic.stats.players.loser.unit}}){{/loser}}</dd>
-      {{/players}}
-    </dl>
-  </aside>
-  <bside>
-    <nav id="tabnav">
-      <a href="#" class="active">{{locales.statistic.games.nav.lastgames}}</a>
-      <!--a href="#">Die letzten Tweets</a-->
-    </nav>
-    <ol id="history">
-      {{#games}}
-        <li>
-          <div class="score">{{#goals}}{{home}}:{{visitors}}{{/goals}}</div>
-          <ol>
-            {{#players}}
+        <img src="https://chart.googleapis.com/chart?chs=595x115&amp;chco=82bb37&amp;chxt=x,y&amp;chxl=0:%7CJan%7CFeb%7CMarch%7CApril%7CMay%7C1:%7CMin%7CMax&amp;cht=lc&amp;chd=s:cEAELFJHHHKUju9uuXUc&amp;chls=2.0&amp;chf=bg,s,00000000&amp;chls=3&amp;chxs=2,0000DD,13,-1,t,FF0000" alt="" width="595" height="115" />
+      </div-->
+      <div id="gamesgoals">
+        <div>
+          <hgroup>
+            <h1 class="h1">{{locales.statistic.goals.hl}}</h1>
+          </hgroup>
+          {{#goals}}
+            <dl>
               {{#home}}
-                <li>{{#.}}<a href="#!/statistic/{{.}}">{{/.}}{{.}}{{#.}}</a>{{/.}}</li>
+                <dt>{{locales.statistic.goals.home}}</dt>
+                <dd><span class="meter more" data-value="{{amount}}" data-percentage="{{percentage}}"></span></dd>
               {{/home}}
               {{#visitors}}
-                <li>{{#.}}<a href="#!/statistic/{{.}}">{{/.}}{{.}}{{#.}}</a>{{/.}}</li>
+                <dt>{{locales.statistic.goals.visitors}}</dt>
+                <dd><span class="meter less" data-value="{{amount}}" data-percentage="{{percentage}}"></span></dd>
               {{/visitors}}
-            {{/players}}
-          </ol>
-          <time>{{locales.statistic.games.date}}: {{end}}</time>
-        </li>
-      {{/games}}
-    </ol>
-  </bside>
+            </dl>
+          {{/goals}}
+        </div>
+        <div>
+          <hgroup>
+            <h1 class="h1">{{locales.statistic.victories.hl}}</h1>
+          </hgroup>
+          {{#victories}}
+            <dl>
+              {{#home}}
+                <dt>{{locales.statistic.victories.home}}</dt>
+                <dd><span class="meter more" data-value="{{amount}}" data-percentage="{{percentage}}"></span></dd>
+              {{/home}}
+              {{#visitors}}
+                <dt>{{locales.statistic.victories.visitors}}</dt>
+                <dd><span class="meter less" data-value="{{amount}}" data-percentage="{{percentage}}"></span></dd>
+              {{/visitors}}
+            </dl>
+          {{/victories}}
+        </div>
+      </div>
+      <dl id="stats">
+        {{#total}}
+          <dt>{{locales.statistic.stats.total.days}}</dt><dd>{{days}}</dd>
+          <dt>{{locales.statistic.stats.total.games}}</dt><dd>{{games}}</dd>
+          <dt>{{locales.statistic.stats.total.goals}}</dt><dd>{{goals}}</dd>
+        {{/total}}
+        {{#players}}
+          <dt>{{locales.statistic.stats.players.days}}</dt><dd>{{amount}}</dd>
+          <dt>{{locales.statistic.stats.players.mostactive}}</dt><dd>{{#mostactive}}<a href="#!/statistic/{{name}}">{{name}}</a> ({{games}} {{locales.statistic.stats.players.mostactive.unit}}){{/mostactive}}</dd>
+          <dt>{{locales.statistic.stats.players.topscorer}}</dt><dd>{{#topscorer}}<a href="#!/statistic/{{name}}">{{name}}</a> ({{diff}} {{locales.statistic.stats.players.topscorer.unit}}){{/topscorer}}</dd>
+          <dt>{{locales.statistic.stats.players.loser}}</dt><dd>{{#loser}}<a href="#!/statistic/{{name}}">{{name}}</a> ({{diff}} {{locales.statistic.stats.players.loser.unit}}){{/loser}}</dd>
+        {{/players}}
+      </dl>
+    </aside>
+    <bside>
+      <nav id="tabnav">
+        <a href="#" class="active">{{locales.statistic.games.nav.lastgames}}</a>
+        <!--a href="#">Die letzten Tweets</a-->
+      </nav>
+      <ol id="history">
+        {{#games}}
+          <li>
+            <div class="score">{{#goals}}{{home}}:{{visitors}}{{/goals}}</div>
+            <ol>
+              {{#players}}
+                {{#home}}
+                  <li>{{#.}}<a href="#!/statistic/{{.}}">{{/.}}{{.}}{{#.}}</a>{{/.}}</li>
+                {{/home}}
+                {{#visitors}}
+                  <li>{{#.}}<a href="#!/statistic/{{.}}">{{/.}}{{.}}{{#.}}</a>{{/.}}</li>
+                {{/visitors}}
+              {{/players}}
+            </ol>
+            <time>{{locales.statistic.games.date}}: {{end}}</time>
+          </li>
+        {{/games}}
+      </ol>
+    </bside>
+  {{/stats}}
 </section>
 

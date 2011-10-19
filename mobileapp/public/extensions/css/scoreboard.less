@@ -2,10 +2,20 @@
     .toolbar{
         a{
             #s2k-transition-time > .led();
-        }
-        a.hide{
-            opacity: 0;
-            cursor: default;
+            &.hide{
+                opacity: 0;
+                cursor: default;
+            }
+            &.undo{
+                left:50px;
+            }
+            &.settings{
+                font-size: 20px;
+				&.cancel ~ a {
+				    opacity: 0;
+				    pointer-events:none;
+				}
+            }
         }
     }
     .msg{
@@ -19,20 +29,52 @@
         background: #000;
     }
 	.board{
-		width: 400px;
+	    @width:400px;
+		width: @width;
 		min-height: 200px;
 		margin: 0 auto;
 		position: relative;
 		dt{
+		    position: absolute;
+		    top:0;
+		    right:@width / 2;
+		    left:0;
 			font-size: 22px;
 			line-height: normal;
 			color: @s2k-green;
-			float: left;
-			width: 50%;
 			text-align: center;
+			#s2k-transition-time > .led;
+			~ dt {
+                right:0;
+                left:@width / 2;
+			}
+		}
+		&.inverted{
+		    dt{
+                right:0;
+                left:@width / 2;
+		        ~ dt{
+                    right:@width / 2;
+                    left:0;
+		        }
+		    }
+		    ~ .settings{
+		        a {
+                    &.visitors{
+                        left:auto;
+                        right:50%;
+                        margin: 0 156px 0 0;
+                    }
+                    &.home{
+                        right:auto;
+                        left:50%;
+                        margin: 0 0 0 156px;
+                    }
+                }
+            }
 		}
 	}
-	
+
 	.scorecard{
 		position: absolute;
 		width:70px;
@@ -347,7 +389,7 @@
 			}
 		}
 	}
-	
+
     .scorecard#scorehome,
     .board.inverted .scorecard#scorevisitors{
         left:60px;
@@ -361,7 +403,7 @@
             right:-66px;
         }
     }
-    
+
     .scorecard#scorevisitors,
     .board.inverted .scorecard#scorehome{
         left:260px;
@@ -376,15 +418,67 @@
         }
     }
 
-	
+
 	.players{
         display:none;
+	}
+
+	> .settings{
+	    opacity: 0;
+        position: absolute;
+        top:0;
+        right:0;
+        left:0;
+        #s2k-transition-time > .led;
+	    a{
+	        position: absolute;
+	        font-size: 25px;
+	        &.change{
+                top:250px;
+                left:50%;
+                margin: 0 0 0 -20px;
+	        }
+	        &.plus{
+	            top:127px;
+	        }
+	        &.minus{
+	            top:187px;
+	        }
+	        &.home{
+	            left:auto;
+	            right:50%;
+	            margin: 0 156px 0 0;
+	        }
+	        &.visitors{
+	            right:auto;
+	            left:50%;
+	            margin: 0 0 0 156px;
+	        }
+	    }
+	}
+	> .settings.active{
+	    opacity: 1;
 	}
 }
 
 
 @media only screen and/*!yui*/(orientation:portrait){
 	#scoreboard{
+	    .toolbar{
+	        a{
+                &.settings{
+                    display: none;
+                }
+                &.undo{
+                    left:auto;
+                }
+            }
+	    }
+
+	    > .settings{
+	        display: none;
+	    }
+
 		.board{
 			width: 300px;
         }
@@ -416,7 +510,7 @@
                 right:117px;
             }
         }
-            
+
 		.players{
 		    clear:both;
             width: 200px;
@@ -478,7 +572,7 @@
                     > div{
                         background-image: url("../../images/elements/el_jersey_black.svg");
                     }
-                    
+
                 }
             }
             &.opponents2{
