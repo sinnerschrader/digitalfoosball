@@ -49,9 +49,9 @@ That's great. Before you start coding, just send us a message with your plan. We
 ### I'd like to connect it to Skynet ###
 That's fine for us.
 
+### Licence ###
+See `LICENSE` file in each of the application folders.
+
 ---
 You've read all instructions? Well done.
 Viel Spaß mit dem Projekt.
-
----
-See `LICENSE`
