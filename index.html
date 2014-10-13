@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+	<meta charset="UTF-8"/>
+	<title>Digital Foosball - Der Digitale Kickertisch - A Project by SinnerSchrader</title>
+	<meta name="language" content="en"/>
+	<meta name="description" content="SinnerSchrader digitalizes the foosball table. Learn more about the project, get the mobile webapp and join the Agency Foosball League."/>
+	<meta name="imagetoolbar" content="no"/>
+	<meta property="og:type" content="website"/>
+	<meta property="og:title" content="Digital Foosball - Der Digitale Kickertisch - A Project by SinnerSchrader"/>
+	<meta property="og:url" content="http://digitalfoosball.com"/>
+	<meta property="og:image" content="http://digitalfoosball.com/images/favicons/fi_facebookog.png"/>
+	<meta property="og:site_name" content="Digital Foosball - Der Digitale Kickertisch - A Project by SinnerSchrader"/>
+	<meta property="og:description" content="SinnerSchrader digitalizes the foosball table. Learn more about the project, get the mobile webapp and join the Agency Foosball League."/>
+	<meta property="fb:page_id" content="214360738579826"/>
+	<meta property="fb:admins" content="737073588"/>
+	<link rel="shortcut icon" href="/images/favicons/fi_standard.ico" type="image/x-icon"/>
+	<link rel="apple-touch-icon" href="/images/favicons/fi_apple_touch.png"/>
+	<!--<link rel="stylesheet/less" type="text/css" href="/extensions/css/kickerapp.less"/>
+	<script type="text/javascript" src="/extensions/lib/less-1.0.41.min.js"></script>-->
+	<link rel="stylesheet" type="text/css" href="/extensions/css/kickerapp.css?v=110630"/>
+</html>
+<body>
+	<div class="header">
+		<h1><a href="/">Digital Foosball</a></h1>
+		<ul class="main nav" id="js_nav">
+			<li><a href="#movie" title="Watch the documentary">Movie</a></li>
+			<li><a href="#about" title="About the project">About</a></li>
+			<li><a href="#demo" title="How it works">Demo</a></li>
+			<li><a href="#inaction" title="The foosball table in action">In Action</a></li>
+			<li><a href="#build" title="Build your own">Build your own</a></li>
+		</ul>
+		<ul class="meta nav">
+			<li><a href="/imprint.html">imprint</a></li>
+			<li><a href="http://sinnerschrader.com">sinnerschrader</a></li>
+			<li><a href="http://www.facebook.com/digitalfoosball?sk=app_156234127768954">join the team</a></li>
+			<li><a href="mailto:presse@sinnerschrader.de?subject=digitalfoosball.com">contact</a></li>
+			<li><a href="https://github.com/sinnerschrader/digitalfoosball">github</a></li>
+		</ul>
+	</div>
+	<div class="article">
+		<div class="section js_section" id="movie">
+			<h2>The World’s First Digital Foosball Table</h2>
+			<h3 class="note">Watch the documentary</h3>
+			<div class="shadow">
+				<iframe type="text/html" width="720" height="435" src="http://www.youtube.com/embed/BNTOpjuqT3Q" frameborder="0"></iframe>
+			</div>
+			<div style="float:left;width:110px;min-height:24px;">
+				<g:plusone href="http://digitalfoosball.com"></g:plusone>
+			</div>
+			<iframe src="http://www.facebook.com/plugins/like.php?app_id=114578091959534&amp;href=http%3A%2F%2Fdigitalfoosball.com%2F&amp;send=true&amp;layout=standard&amp;width=580&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font=arial&amp;height=80&amp;locale=en_US" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:580px; height:24px;" allowTransparency="true"></iframe>
+		</div>
+		<div class="press">
+			<h2>As seen on:</h2>
+			<ul>
+				<li><a href="http://latimesblogs.latimes.com/technology/2011/05/digitize-your-foosball-game.html"><img src="/images/logos/lg_latimes.png" width="248" height="35" alt="Los Angeles Times"></a></li>
+				<li><a href="http://www.wired.com/playbook/2011/05/diy-digital-foosball/"><img src="/images/logos/lg_wired.png" width="142" height="35" alt="Wired"></a></li>
+				<li><a href="http://www.crunchgear.com/2011/05/25/digital-foosball-table-is-a-foosball-table-that-is-digitial/"><img src="/images/logos/lg_crunchgear.png" width="186" height="35" alt="CrunchGear"></a></li>
+			</ul>
+		</div>
+		<div class="section js_section" id="about">
+			<h2>About the Project</h2>
+			<div class="line">
+				<div class="unit size1of2">
+					<p>Okay, maybe it is a crazy idea to connect a foosball table to the internet. But once you manage to get the table online, you can do all sorts of amazing things with&nbsp;it.</p>
+					<p>Since we love to play the game <em>and</em> because our job is to create digital solutions, we figured - why not combine the two and build a digital foosball table.</p>
+					<p>That was the starting point for the project. Many pizzas were ordered, late nights spent programming, and countless testruns followed.</p>
+					<p>Now we’re really excited to share our first prototype with&nbsp;you.</p>
+				</div>
+				<div class="unit lastUnit size1of2">
+					<span class="shadow">
+						<img src="/images/visuals/vs_about_team.jpg" width="350" height="232" alt=""/>
+					</span>
+					<p class="note">The Team</p>
+				</div>
+			</div>
+		</div>
+		<div class="section js_section" id="demo">
+			<h2>How it Works</h2>
+			<div class="line">
+				<div class="unit size1of2">
+					<h3>The Blueprint:</h3>
+					<p>Put simply, the table works like this: a special photo sensor recognizes and tracks when a goal is scored. As soon as the ball passes the sensor, it sends a signal to a built-in Arduino board. Then the small microcontroller notifies our server via WiFi and the data can be processed from our software. Sounds easy, doesn’t it?</p>
+				</div>
+				<div class="unit lastUnit size1of2">
+					<span class="shadow">
+						<img src="/images/visuals/vs_demo_blueprint.jpg" width="350" height="232" alt="The Masterplan"/>
+					</span>
+				</div>
+			</div>
+			<div class="subsection">
+				<div class="line">
+					<div class="unit rtl size1of2">
+						<h3>The Mobile WebApp:</h3>
+					</div>
+				</div>
+				<div class="line">
+					<div class="unit size1of2">
+						<span class="changeImage" style="background-image:url(/images/visuals/vs_demo_iphone2.jpg)">
+							<img src="/images/visuals/vs_demo_iphone.jpg" width="350" height="180" alt=""/>
+						</span>
+					</div>
+					<div class="unit lastUnit size1of2">
+						<p>An important feature to the digital foosball table is our mobile WebApp. It turns your mobile phone into a digital scoreboard. But it also serves as your personal log in screen to set up a new match before you begin a game. The great thing about the app is that it’s completely web based, which eliminates annoying installations while also making it compatible with all modern devices.</p>
+					</div>
+				</div>
+			</div>
+			<div class="subsection">
+				<h3>The Agency Foosball League:</h3>
+				<div class="line">
+					<div class="unit size1of2">
+						<p>This is the place where all the collected data comes to life. Here you can see who is really the best player of all your colleagues. On your personal profile you can access more detailed information, such as: your performance over time or who is your most feared opponent. And to make it even more fun, you can earn different badges based on how you play.</p>
+					</div>
+					<div class="unit lastUnit size1of2">
+						<span class="changeImage" style="background-image:url(/images/visuals/vs_demo_macbook2.jpg)">
+							<img src="/images/visuals/vs_demo_macbook.jpg" width="350" height="210" alt=""/>
+						</span>
+					</div>
+				</div>
+			</div>
+			<div class="line subsection">
+				<div class="unit size1of2">
+					<span class="shadow">
+						<img src="/images/visuals/vs_demo_ideas.jpg" width="350" height="232" alt=""/>
+					</span>
+				</div>
+				<div class="unit lastUnit size1of2">
+					<h3>More Ideas to Come:</h3>
+					<p>What you see here is only an early prototype. Our heads are full of crazy ideas and concepts for new features. We’re really excited to deploy them soon.</p>
+					</div>
+			</div>
+		</div>
+		<div class="section js_section" id="inaction">
+			<h2>The Foosball Table in Action</h2>
+			<div id="slideshow" class="slideshow shadow">
+				<p class="loading">Loading...</p>
+			</div>
+		</div>
+		<div class="section js_section" id="build">
+			<h2>Build Your Own</h2>
+			<div class="line">
+				<div class="unit size2of3">
+					<h3>The Hardware:</h3>
+					<p>First you need some hardware to get your foosball table online. For our prototype we used an <a href="http://www.watterott.com/de/Arduino-Uno">Arduino Uno</a> with <a href="http://www.watterott.com/de/SparkFun-WiFly-Shield">Wifly-Shield</a> plus two <a href="http://www.amazon.de/gp/product/B0002OH8SQ">infrared photo sensors</a>. The tricky part is to attach the photo sensors so you can measure when a goal is scored. Since every foosball table is designed differently, it’s tough to suggest the correct installation. But, here is how it worked for us.</p>
+				</div>
+				<div class="unit lastUnit size1of3">
+					<img src="/images/visuals/vs_shoppinglist.jpg" width="225" height="225" alt="Shopping list"/>
+				</div>
+			</div>
+			<h3>Instructions:</h3>
+			<div class="line">
+				<dl class="unit size1of3">
+					<dt>
+						<span class="shadow">
+							<img src="/images/visuals/vs_build_step1.jpg" width="227" height="170" alt=""/>
+						</span>
+					</dt>
+					<dd><b>Step 1. &nbsp;</b> Reverse engineer the photo sensor circuit</dd>
+				</dl>
+				<dl class="unit size1of3">
+					<dt>
+						<span class="shadow">
+							<img src="/images/visuals/vs_build_step2.jpg" width="227" height="170" alt=""/>
+						</span>
+					</dt>
+					<dd><b>Step 2. &nbsp;</b> Test the photo sensor in action</dd>
+				</dl>
+				<dl class="unit lastUnit size1of3">
+					<dt>
+						<span class="shadow">
+							<img src="/images/visuals/vs_build_step3.jpg" width="227" height="170" alt=""/>
+						</span>
+					</dt>
+					<dd><b>Step 3. &nbsp;</b> Install the photo sensor in the guideways behind the goals</dd>
+				</dl>
+			</div>
+			<div class="line">
+				<dl class="unit size1of3">
+					<dt>
+						<span class="shadow">
+							<img src="/images/visuals/vs_build_step4.jpg" width="227" height="170" alt=""/>
+						</span>
+					</dt>
+					<dd><b>Step 4. &nbsp;</b> Wire everything and mount it to a wooden board</dd>
+				</dl>
+				<dl class="unit size1of3">
+					<dt>
+						<span class="shadow">
+							<img src="/images/visuals/vs_build_step5.jpg" width="227" height="170" alt=""/>
+						</span>
+					</dt>
+					<dd><b>Step 5. &nbsp;</b> Program the Arduino using the provided SDK</dd>
+				</dl>
+				<dl class="unit lastUnit size1of3">
+					<dt>
+						<span class="shadow">
+							<img src="/images/visuals/vs_build_step6.jpg" width="227" height="170" alt=""/>
+						</span>
+					</dt>
+					<dd><b>Step 6. &nbsp;</b> Screw the board to the foosball table</dd>
+				</dl>
+			</div>
+			<div class="subsection">
+				<h3>The Software:</h3>
+				<div class="line">
+					<div class="unit size1of2">
+						<p>The software is completely open source. So feel free to download and use it.</p>
+						<h4>More technical details:</h4>
+						<p>The Arduino microcontroller notifies a NodeJS server via HTTP over WiFi. This data is then stored in a CouchDB.</p>
+						<p>For our Mobile WebApp we used HTML5, CSS3 and JavaScript to display the score in real time. It listens to the NodeJS server via WebSockets.</p>
+						<p>The game statistics engine is implemented as a CouchApp. Both apps are powered by Amazon’s EC2 and Cloudfront WebServices.</p>
+					</div>
+					<div class="unit lastUnit size1of2">
+						<span class="shadow">
+							<img src="/images/visuals/vs_build_software.jpg" width="350" height="232" alt=""/>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="download">
+			<a href="https://github.com/sinnerschrader/digitalfoosball">Download</a>
+		</div>
+	</div>
+
+	<!-- AddThis Button BEGIN -->
+	<div class="addthis_toolbox">
+		<a class="addthis_button_email">Email</a>
+		<a class="addthis_button_facebook">Send to Facebook</a>
+		<a class="addthis_button_twitter">Tweet This</a>
+		<a class="addthis_button_expanded">View more services</a>
+	</div>
+
+	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js"></script>
+	<script type="text/javascript">window.jQuery || document.write('<script src="js/libs/jquery-1.6.min.js">\x3C/script>')</script>
+	<script type="text/javascript" src="/extensions/js/kickerapp.js"></script>
+
+	<script type="text/javascript">var addthis_config = {"data_track_clickback":true};</script>
+	<script type="text/javascript" src="//s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4dc98831344f73a8"></script>
+	<!-- AddThis Button END -->
+
+	<div class="twtr">
+		<a href="http://twitter.com/digitalfoosball" target="_blank" title="@digitalfoosball on Twitter">@digitalfoosball</a>
+		<script type="text/javascript" src="//widgets.twimg.com/j/2/widget.js"></script>
+		<script type="text/javascript">
+			new TWTR.Widget({
+				version: 2,
+				type: 'profile',
+				rpp: 1,
+				interval: 6000,
+				width: 'auto',
+				height: 70,
+				theme: {
+					shell: {
+						background: '#f8f8f8',
+						color: '#222'
+					},
+					tweets: {
+						background: '#f8f8f8',
+						color: '#222',
+						links: '#0b0'
+					}
+				},
+				features: {
+					scrollbar: false,
+					loop: false,
+					live: false,
+					hashtags: false,
+					timestamp: true,
+					avatars: false,
+					behavior: 'all'
+				}
+			}).render().setUser('digitalfoosball').start();
+		</script>
+	</div>
+
+	<script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+
+	<script src="http://www.google.com/jsapi" type="text/javascript"></script>
+	<script src="http://www.google.com/uds/solutions/slideshow/gfslideshow.js" type="text/javascript"></script>
+	<script type="text/javascript">
+		google.load("feeds", "1");
+		google.setOnLoadCallback(function() {
+				new GFslideShow("http://picasaweb.google.com/data/feed/base/user/SinnerSchraderBilder/albumid/5605839639148650449?kind=photo&tag=Action&thumbsize=720u", "slideshow", {
+				displayTime: 6000,
+				transistionTime: 400,
+				fullControlPanel: true,
+				fullControlPanelSmallIcons: true
+			});
+		});
+	</script>
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-21912271-3']);
+		_gaq.push(['_trackPageview']);
+		_gaq.push(['_trackPageLoadTime']);
+
+		(function() {
+		var ga = document.createElement('script'); ga.type =
+		'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' :
+		'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0];
+		s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+	<!-- SiteCatalyst code version: H.23.3.
+	Copyright 1996-2011 Adobe, Inc. All Rights Reserved
+	More info available at http://www.omniture.com -->
+	<script type="text/javascript" src="/extensions/lib/s_code.js"></script>
+	<script type="text/javascript"><!--
+	/* You may give each page an identifying name, server, and channel on
+	the next lines. */
+	s.pageName="DF:Digital Foosball"
+	s.server="DF"
+	/* Conversion Variables */
+	/************* DO NOT ALTER ANYTHING BELOW THIS LINE ! **************/
+	var s_code=s.t();if(s_code)document.write(s_code)//--></script>
+	<script language="JavaScript" type="text/javascript"><!--
+	if(navigator.appVersion.indexOf('MSIE')>=0)document.write(unescape('%3C')+'\!-'+'-')
+	//--></script><noscript><img src="//sinnerschraderdeutschlandgmbh.122.2o7.net/b/ss/sschraderprod/1/H.23.3--NS/0"
+	height="1" width="1" border="0" alt="" /></noscript><!--/DO NOT REMOVE/-->
+	<!-- End SiteCatalyst code version: H.23.3. -->
+
+</body>
+</html>
+
