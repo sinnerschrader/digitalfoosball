@@ -31,11 +31,11 @@ class WiFlyDevice
 	friend class Server;
 
 	public:
-		
+
 		enum Status
 		{
 			StatusError, StatusNotAssociated, StatusNoIp, StatusDisconnected, StatusConnecting, StatusConnected
-		}; 
+		};
 
 	private:
 
@@ -44,13 +44,12 @@ class WiFlyDevice
 		#endif
 
 		boolean inCommandMode;
-		uint16_t serverPort;      
+		uint16_t serverPort;
 		SpiUartDevice & uart;
 
 		void attemptSwitchToCommandMode();
 		boolean enterCommandMode(boolean pauseRequired = true);
 		void exitCommandMode();
-		boolean findInResponse(const char * toMatch, unsigned int timeOut);
 		#if defined(DEBUG) && DEBUG > 0
 			void log(const char * text);
 			void logRead(char character);
@@ -70,6 +69,7 @@ class WiFlyDevice
 		WiFlyDevice(SpiUartDevice & uart);
 
 		void begin();
+		boolean findInResponse(const char * toMatch, unsigned int timeOut);
 		const char * getIp(boolean pauseRequired = true);
 		Status getStatus(boolean pauseRequired = true);
 		boolean join(const char * ssid);
