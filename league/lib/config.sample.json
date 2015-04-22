@@ -1,10 +1,21 @@
 {
+  "env": "development",
+  "locale": "en_US",
+  "cdn": "http://cdn.yourdomain.com",
+  "rev": "dev",
+  "ga": "",
+  "socketconf": {
+    "host": "127.0.0.1",
+    "port": 3001
+  },
+  "scoreboard": {
+    "inverted": false
+  },
   "couchdb": {
     "user": "",
     "password": "",
     "host": "127.0.0.1",
     "port": 5984,
     "database": "digitalfoosball"
-  }
+  },
 }
-
