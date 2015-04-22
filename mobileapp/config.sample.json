@@ -19,8 +19,8 @@
     "database": "digitalfoosball"
   },
   "scoreboard": {
-    "home": "Home",
-    "visitors": "Visitors",
+    "home": "Yellow",
+    "visitors": "Black",
     "inverted": false
   },
   "ruleset": "default",
@@ -33,4 +33,3 @@
     "accessTokenSecret": ""
   }
 }
-
