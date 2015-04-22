@@ -19,6 +19,11 @@
 			"min":10,
 			"diff":1,
 			"max":10
-		}
+		},
+                "fivebytwo":{
+                        "min":5,
+                        "diff":2,
+                        "max":10
+                }
 	}
 }
