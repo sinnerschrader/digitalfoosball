@@ -26,15 +26,15 @@ te.subscribe("referee:finalwhistle", function(game) {
       tweet = mustache.to_html(locales[["press.tweet.", game.players.home.concat(game.players.visitors).length, "players"].join("")], data);
 
   oAuth = new OAuth(
-    "http://twitter.com/oauth/request_token",
-    "http://twitter.com/oauth/access_token",
+    "https://twitter.com/oauth/request_token",
+    "https://twitter.com/oauth/access_token",
     config.twitter.consumerKey,
     config.twitter.consumerSecret,
     "1.0A", null, "HMAC-SHA1"
   );
 
   oAuth.post(
-    "http://api.twitter.com/1/statuses/update.json?trim_user=true",
+    "https://api.twitter.com/1.1/statuses/update.json?trim_user=true",
     config.twitter.accessToken,
     config.twitter.accessTokenSecret,
     {"status": tweet},
