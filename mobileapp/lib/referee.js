@@ -182,5 +182,9 @@ te.subscribe("arduino:undo", function(side) {
   events.undo(side);
 });
 
+te.subscribe("arduino:abort", function(side) {
+  events.abort();
+});
+
 te.publish("referee:ready");
 
