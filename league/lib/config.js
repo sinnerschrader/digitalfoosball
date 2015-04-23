@@ -2,7 +2,7 @@ var fs = require("fs");
 
 exports.config = (function() {
   var configfiles = {
-    base : __dirname+"/config.json"
+    base : __dirname+"/../config.json"
   },
   config,
   reader;
