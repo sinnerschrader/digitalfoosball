@@ -30,6 +30,7 @@ finalTimeout;
 
 var events = {
   start: function(data) {
+	console.log(data);
     resetGame(data && data.rematch);
     kickertable.game.start = new Date().getTime();
 
@@ -184,6 +185,10 @@ te.subscribe("arduino:undo", function(side) {
 
 te.subscribe("arduino:abort", function(side) {
   events.abort();
+});
+
+te.subscribe("arduino:newgame", function(data) {
+  events.start(data);
 });
 
 te.publish("referee:ready");

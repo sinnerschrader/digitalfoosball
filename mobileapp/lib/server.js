@@ -1,4 +1,5 @@
 var http = require("http"),
+    url = require("url"),
     sys = require("sys"),
     socketio = require("socket.io"),
     fs = require("fs"),
@@ -45,6 +46,21 @@ app.configure("development", function() {
     dumpExceptions: true,
     showStack: true
   }));
+});
+
+app.post("/events/newgame*", function(req, res) {
+
+  var opts = {"Content-Type": "text/plain"};
+  var query = url.parse(req.url, true).query;
+  if(query) {
+    var data = { players:query };
+    te.publish("arduino:newgame", data);
+    res.writeHead(200, opts);
+    res.end("Starting new game with!");
+  } else {
+    res.writeHead(404, opts);
+    res.end();
+  }
 });
 
 app.post("/events/*", function(req, res){
