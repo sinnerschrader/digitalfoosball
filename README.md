@@ -17,10 +17,10 @@ We *were* going to do Arduino, but someone in the office already had a Raspberry
 
 At the moment? Who knows. 
 
-Breadboard + breakout: [Eleduino](http://www.amazon.com/Eleduino-Raspberry-Model-T-Cobbler-Breakout/dp/B00NKH9S7Q/ref=cm_cr_pr_product_top?ie=UTF8)
-Goal detection: [Geetech infrared sensors](http://www.amazon.com/Geeetech-Infrared-proximity-compatible-Arduino/dp/B00AMC1V2C)
-Player detection: RFID (TBD)
-Undo/Reset button: TBD
+* Breadboard + breakout: [Eleduino](http://www.amazon.com/Eleduino-Raspberry-Model-T-Cobbler-Breakout/dp/B00NKH9S7Q/ref=cm_cr_pr_product_top?ie=UTF8)
+* Goal detection: [Geetech infrared sensors](http://www.amazon.com/Geeetech-Infrared-proximity-compatible-Arduino/dp/B00AMC1V2C)
+* Player detection: RFID (TBD)
+* Undo/Reset button: TBD
 
 ---
 See `LICENSE`
