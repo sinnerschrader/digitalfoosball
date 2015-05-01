@@ -53,14 +53,44 @@ app.post("/events/newgame*", function(req, res) {
   var opts = {"Content-Type": "text/plain"};
   var query = url.parse(req.url, true).query;
   if(query) {
-    var data = { players:query };
+
+    if(!query.home || !query.visitors) {
+      res.writeHead(404, opts);
+      res.end("Incorrect query");
+      return;
+    }
+
+    var h = [].concat(query.home);
+    var v = [].concat(query.visitors);
+
+    if(h.length < 1 || h.length > 2 || v.length < 1 || v.length > 2) {
+      res.writeHead(404, opts);
+      res.end("Only 1 or 2 players per side");
+      return;
+    }
+
+    var data =
+    {
+      players:{
+        home:h,
+        visitors:v,
+      }
+    };
+
     te.publish("arduino:newgame", data);
     res.writeHead(200, opts);
-    res.end("Starting new game with!");
+    res.end("Starting new game!");
   } else {
     res.writeHead(404, opts);
     res.end();
   }
+});
+
+app.post("/events/abort*", function(req, res) {
+  var opts = {"Content-Type": "text/plain"};
+  te.publish("arduino:abort", {});
+  res.writeHead(200, opts);
+  res.end("Game aborted");
 });
 
 app.post("/events/*", function(req, res){
