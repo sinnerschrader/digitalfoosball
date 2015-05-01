@@ -1,29 +1,29 @@
 {
-	"rulesets": {
-		"default":{
-			"min": 6,
-			"diff": 1,
-			"max": 6
-		},
-		"dtfl":{
-			"min": 5,
-			"diff": 2,
-			"max": 7
-		},
-		"hobby":{
-			"min": 6,
-			"diff": 2,
-			"max": 10
-		},
-		"noclue":{
-			"min":10,
-			"diff":1,
+    "rulesets": {
+        "default":{
+            "min": 6,
+            "diff": 1,
+            "max": 6
+        },
+        "dtfl":{
+            "min": 5,
+            "diff": 2,
+            "max": 7
+        },
+        "hobby":{
+            "min": 6,
+            "diff": 2,
+            "max": 10
+        },
+        "noclue":{
+            "min":10,
+            "diff":1,
+            "max":10
+        },
+        "fivebytwo":{
+			"min":5,
+			"diff":2,
 			"max":10
-		},
-                "fivebytwo":{
-                        "min":5,
-                        "diff":2,
-                        "max":10
-                }
-	}
+        }
+    }
 }
