@@ -53,19 +53,18 @@ app.post("/events/newgame*", function(req, res) {
   var opts = {"Content-Type": "text/plain"};
   var query = url.parse(req.url, true).query;
   if(query) {
-
-    if(!query.home || !query.visitors) {
-      res.writeHead(404, opts);
-      res.end("Incorrect query");
-      return;
+    var h = [];
+    var v = [];
+    if(query.home) {
+      h.concat(query.home);
+    }
+    if(query.visitors) {
+      v.concat(query.visitors);
     }
 
-    var h = [].concat(query.home);
-    var v = [].concat(query.visitors);
-
-    if(h.length < 1 || h.length > 2 || v.length < 1 || v.length > 2) {
+    if(h.length > 2 || v.length > 2) {
       res.writeHead(404, opts);
-      res.end("Only 1 or 2 players per side");
+      res.end("0-2 players per side");
       return;
     }
 
