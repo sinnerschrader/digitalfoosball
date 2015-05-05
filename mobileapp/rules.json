@@ -1,29 +1,34 @@
 {
     "rulesets": {
         "default":{
-            "min": 6,
+            "win": 6,
             "diff": 1,
-            "max": 6
+            "max": 6,
+            "min": 0
         },
         "dtfl":{
-            "min": 5,
+            "win": 5,
             "diff": 2,
-            "max": 7
+            "max": 7,
+            "min": 0
         },
         "hobby":{
-            "min": 6,
+            "win": 6,
             "diff": 2,
-            "max": 10
+            "max": 10,
+            "min": 0
         },
         "noclue":{
-            "min":10,
+            "win":10,
             "diff":1,
-            "max":10
+            "max":10,
+            "min": 0
         },
         "fivebytwo":{
-			"min":5,
-			"diff":2,
-			"max":10
+            "win":5,
+	    "diff":2,
+	    "max":10,
+	    "min": -3
         }
     }
 }
