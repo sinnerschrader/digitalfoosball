@@ -9,7 +9,7 @@ var sys = require("sys"),
 te.subscribe("referee:finalwhistle", function(game) {
   if(!config.twitter) { return; }
 
-  var goals = game.goals.reduce(function(prev, curr) {++prev[curr.scorer]; return prev; }, {home: 0, visitors: 0}),
+  var goals = game.goals.reduce(function(prev, curr) {prev[curr.scorer]+=curr.value; return prev; }, {home: 0, visitors: 0}),
       home_won = goals.home > goals.visitors;
   goals.winner = home_won ? goals.home : goals.visitors;
   goals.loser = !home_won ? goals.home : goals.visitors;
