@@ -93,7 +93,7 @@ var addGoal = function(scorer) {
         leader = Math.max(goals.home, goals.visitors),
         trailer = Math.min(goals.home, goals.visitors);
 
-    if (leader >= ruleset.min && leader - trailer >= ruleset.diff || leader >= ruleset.max) {
+    if (leader >= ruleset.win && leader - trailer >= ruleset.diff || leader >= ruleset.max) {
       te.publish("referee:update", kickertable);
       finalTimeout = setTimeout(function(){
         kickertable.view = "summary";
