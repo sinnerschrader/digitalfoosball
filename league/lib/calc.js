@@ -250,7 +250,7 @@ var calc = function() {
         doc.history.length < 5 || (doc.history.length = 4);
       }
 
-      var goals = currGame.goals.reduce(function(last, curr) { ++last[curr.scorer]; return last; }, { home: 0, visitors: 0 }),
+      var goals = currGame.goals.reduce(function(last, curr) { last[curr.scorer] += curr.value; return last; }, { home: 0, visitors: 0 }),
           winner = goals.home > goals.visitors ? "home" : "visitors",
           loser = goals.home < goals.visitors ? "home" : "visitors";
 
