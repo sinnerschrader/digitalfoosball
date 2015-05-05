@@ -75,6 +75,8 @@ var events = {
       addGoal(data.score);
     } else if(data.goal == 'minus'){
       events.undo(data.score);
+    } else if(data.goal == 'penalty'){
+      addGoal(data.score, -1);
     }
   }
 };
@@ -84,7 +86,7 @@ var addGoal = function(scorer, points) {
     type: "goal", 
     scorer: scorer, 
     time: new Date().getTime(),
-    value: points
+    value: points ? points : 1;
   };
   
   if (kickertable.view == "scoreboard") {
@@ -176,7 +178,7 @@ te.subscribe("announcer:announcement", function(msg) {
 });
 
 te.subscribe("arduino:goals", function(scorer) {
-  addGoal(scorer, 1);
+  addGoal(scorer);
 });
 
 te.subscribe("arduino:undo", function(side) {
