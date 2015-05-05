@@ -193,7 +193,7 @@ te.subscribe("arduino:newgame", function(data) {
   events.start(data);
 });
 
-te.subscribe("arduino:owngoal", function(side) {
+te.subscribe("arduino:penalty", function(side) {
   events.undo();
   addGoal(side, -1);
 });

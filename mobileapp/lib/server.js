@@ -98,7 +98,7 @@ app.post("/events/*", function(req, res){
       action = parts[3],
       opts = {"Content-Type": "text/plain"};
 
-  if ({goals:true, undo:true, abort:true}[type] && {visitors: true, home: true}[action]) {
+  if ({goals:true, undo:true, abort:true, penalty:true}[type] && {visitors: true, home: true}[action]) {
     te.publish("arduino:"+type, action);
 
     res.writeHead(200, opts);
