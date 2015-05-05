@@ -21,7 +21,7 @@ df.scoreboard = (function() {
 
     ["home", "visitors"].forEach(function(side) {
       localStorage.setItem("df.scoreboard.score."+side,goals[side]);
-      $("#score" + side).attr("class", ["scorecard", ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"][goals[side]] || "full"].join(" "));
+      $("#score" + side).attr("class", ["scorecard", ["negthree", "negtwo", "negone", "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"][goals[side]+3] || "full"].join(" "));
     });
 
     $("#scoreboard .js_undo")[goals.home + goals.visitors > 0 ? "removeClass" : "addClass"]("hide js_disabled");
