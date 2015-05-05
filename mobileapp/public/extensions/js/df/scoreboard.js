@@ -16,7 +16,7 @@ df.scoreboard = (function() {
   df.subscribe("socket:message", function(msg) {
     if (msg.view !== "scoreboard") { return; }
 
-    var goals = msg.game.goals.reduce(function(prev, curr) {++prev[curr.scorer]; return prev; }, {home: 0, visitors: 0}),
+    var goals = msg.game.goals.reduce(function(prev, curr) {prev[curr.scorer]+=curr.value; return prev; }, {home: 0, visitors: 0}),
         cplayers = msg.game.players.home.concat(msg.game.players.visitors).join(",");
 
     ["home", "visitors"].forEach(function(side) {
