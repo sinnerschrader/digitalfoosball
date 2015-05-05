@@ -86,15 +86,15 @@ var addGoal = function(scorer, points) {
     type: "goal", 
     scorer: scorer, 
     time: new Date().getTime(),
-    value: points ? points : 1;
+    value: points ? points : 1
   };
   
   if (kickertable.view == "scoreboard") {
     kickertable.game.goals.push(goal);
 
     var goals = kickertable.game.goals.reduce(function(prev, curr) {prev[curr.scorer] += curr.value; return prev; }, {home: 0, visitors: 0}),
-        leader = Math.min(ruleset.min, Math.max(goals.home, goals.visitors)),
-        trailer = Math.min(ruleset.min, Math.min(goals.home, goals.visitors));
+        leader = Math.max(goals.home, goals.visitors),
+        trailer = Math.min(goals.home, goals.visitors);
 
     if (leader >= ruleset.win && leader - trailer >= ruleset.diff || leader >= ruleset.max) {
       te.publish("referee:update", kickertable);
