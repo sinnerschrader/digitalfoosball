@@ -79,19 +79,20 @@ var events = {
   }
 };
 
-var addGoal = function(scorer) {
+var addGoal = function(scorer, points) {
   var goal = { 
     type: "goal", 
     scorer: scorer, 
-    time: new Date().getTime() 
+    time: new Date().getTime(),
+    value: points
   };
   
   if (kickertable.view == "scoreboard") {
     kickertable.game.goals.push(goal);
 
-    var goals = kickertable.game.goals.reduce(function(prev, curr) {++prev[curr.scorer]; return prev; }, {home: 0, visitors: 0}),
-        leader = Math.max(goals.home, goals.visitors),
-        trailer = Math.min(goals.home, goals.visitors);
+    var goals = kickertable.game.goals.reduce(function(prev, curr) {prev[curr.scorer] += curr.value; return prev; }, {home: 0, visitors: 0}),
+        leader = Math.min(ruleset.min, Math.max(goals.home, goals.visitors)),
+        trailer = Math.min(ruleset.min, Math.min(goals.home, goals.visitors));
 
     if (leader >= ruleset.win && leader - trailer >= ruleset.diff || leader >= ruleset.max) {
       te.publish("referee:update", kickertable);
@@ -108,7 +109,6 @@ var addGoal = function(scorer) {
   } else {
     te.publish("referee:fastgoal", goal);
   }
-  
 }
 
 var resetGame = function(rematch) {
@@ -176,7 +176,7 @@ te.subscribe("announcer:announcement", function(msg) {
 });
 
 te.subscribe("arduino:goals", function(scorer) {
-  addGoal(scorer)
+  addGoal(scorer, 1);
 });
 
 te.subscribe("arduino:undo", function(side) {
@@ -191,5 +191,9 @@ te.subscribe("arduino:newgame", function(data) {
   events.start(data);
 });
 
-te.publish("referee:ready");
+te.subscribe("arduino:owngoal", function(side) {
+  events.undo();
+  addGoal(side, -1);
+});
 
+te.publish("referee:ready");
