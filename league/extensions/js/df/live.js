@@ -33,7 +33,7 @@ df.live = (function() {
           cplayers = game.players.home.concat(game.players.visitors).join(",");
 
       ["home", "visitors"].forEach(function(side) {
-        $("#score" + side).attr("class", ["scorecard", ["negthree", "negtwo", "negone", "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"][goals[side]+3] || "full"].join(" "));
+        $("#score" + side).attr("class", ["scorecard", ["neg nine", "neg eight", "neg seven", "neg six", "neg fiv", "neg four", "neg three", "neg two", "neg one", "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"][goals[side]+9] || "full"].join(" "));
       });
 
       updateTimer(game.start);

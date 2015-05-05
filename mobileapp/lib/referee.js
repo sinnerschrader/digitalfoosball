@@ -76,10 +76,18 @@ var events = {
     } else if(data.goal == 'minus'){
       events.undo(data.score);
     } else if(data.goal == 'penalty'){
-      addGoal(data.score, -1);
+      addPenalty(data.score);
     }
   }
 };
+
+var addPenalty = function(side) {
+  var last = kickertable.game.goals.slice(-1)[0];
+  if(last && last.value > 0) {
+    kickertable.game.goals.pop();
+  }
+  addGoal(side, -1);
+}
 
 var addGoal = function(scorer, points) {
   var goal = { 
@@ -90,10 +98,18 @@ var addGoal = function(scorer, points) {
   };
   
   if (kickertable.view == "scoreboard") {
-    kickertable.game.goals.push(goal);
 
-    var goals = kickertable.game.goals.reduce(function(prev, curr) {prev[curr.scorer] += curr.value; return prev; }, {home: 0, visitors: 0}),
-        leader = Math.max(goals.home, goals.visitors),
+    var goals = kickertable.game.goals.reduce(function(prev, curr) {prev[curr.scorer] += curr.value; return prev; }, {home: 0, visitors: 0});
+
+    if(goal.value < 0 && goals[goal.scorer] <= ruleset.min) {
+      //Don't allow penalty points to drive score below minimum
+      return;
+    }
+
+    kickertable.game.goals.push(goal);
+    goals[goal.scorer] += goal.value;
+
+    var leader = Math.max(goals.home, goals.visitors),
         trailer = Math.min(goals.home, goals.visitors);
 
     if (leader >= ruleset.win && leader - trailer >= ruleset.diff || leader >= ruleset.max) {
@@ -194,8 +210,7 @@ te.subscribe("arduino:newgame", function(data) {
 });
 
 te.subscribe("arduino:penalty", function(side) {
-  events.undo();
-  addGoal(side, -1);
+  addPenalty(side);
 });
 
 te.publish("referee:ready");
