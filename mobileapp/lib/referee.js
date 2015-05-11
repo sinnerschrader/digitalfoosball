@@ -114,7 +114,7 @@ var addGoal = function(scorer, points) {
     if (leader >= ruleset.win && leader - trailer >= ruleset.diff || leader >= ruleset.max) {
       te.publish("referee:update", kickertable);
       finalTimeout = setTimeout(function(){
-        kickertable.view = "summary";
+        kickertable.view = "home";
         kickertable.game.tweetURL = "-2";
         kickertable.game.end = new Date().getTime();
         te.publish("referee:finalwhistle", kickertable.game);
@@ -209,7 +209,7 @@ te.subscribe("arduino:penalty", function(side) {
 });
 
 te.subscribe("assistant:newgame", function(data) {
-  if(kickertable.game.start == 0) {
+  if(kickertable.game.start == 0 || kickertable.game.end > 0) {
     events.start(data);
   } else {
     //Refuse to start a new game if one is already in progress
