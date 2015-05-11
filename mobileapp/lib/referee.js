@@ -30,7 +30,6 @@ finalTimeout;
 
 var events = {
   start: function(data) {
-	console.log(data);
     resetGame(data && data.rematch);
     kickertable.game.start = new Date().getTime();
 
@@ -205,12 +204,17 @@ te.subscribe("arduino:abort", function(side) {
   events.abort();
 });
 
-te.subscribe("arduino:newgame", function(data) {
-  events.start(data);
-});
-
 te.subscribe("arduino:penalty", function(side) {
   addPenalty(side);
+});
+
+te.subscribe("assistant:newgame", function(data) {
+  if(kickertable.game.start == 0) {
+    events.start(data);
+  } else {
+    //Refuse to start a new game if one is already in progress
+    te.publish("referee:refusenewgame");
+  }
 });
 
 te.publish("referee:ready");
