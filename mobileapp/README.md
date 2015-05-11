@@ -18,12 +18,12 @@ Add a goal to either side
 Remove a goal from either side
 `curl -X POST $HOST/events/undo/home`  
 `curl -X POST $HOST/events/undo/visitors`  
-### owngoal ###
+### penalty ###
 Remove latest goal from either side, apply a -1 penalty to the reporting side  
 This is a house rule that allows penalties to be applied for whatever arbitrary reason  
 rules.json sets the minimum score value (default is 0)  
-`curl -X POST $HOST/events/owngoal/home`  
-`curl -X POST $HOST/events/owngoal/visitors`  
+`curl -X POST $HOST/events/penalty/home`  
+`curl -X POST $HOST/events/penalty/visitors`  
 ### abort ###
 Cancel game in progress  
 `curl -X POST $HOST/events/abort`  
