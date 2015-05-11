@@ -217,4 +217,9 @@ te.subscribe("assistant:newgame", function(data) {
   }
 });
 
+te.subscribe("assistant:pending", function(data) {
+  kickertable.pending = data;
+  te.publish("referee:update", kickertable);
+});
+
 te.publish("referee:ready");

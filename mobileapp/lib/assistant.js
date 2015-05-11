@@ -49,6 +49,7 @@ var resetPending = function() {
             visitors:[]
         }
     };
+    te.publish("assistant:pending", pendingGame);
 };
 
 var lookupPlayer = function(key, callback) {
@@ -124,6 +125,8 @@ te.subscribe("arduino:addplayer", function(data) {
     }
     if(pendingGame.players.home.length == 2 && pendingGame.players.visitors.length == 2) {
         te.publish("assistant:newgame", pendingGame);
+    } else {
+        te.publish("assistant:pending", pendingGame);
     }
   });
 });
