@@ -5,10 +5,11 @@ See [Wiki](https://github.com/sinnerschrader/digitalfoosball/wiki/Installation-I
 ## Talking to Mobile Webapp ##
 Certain commands are supported via rest calls to the webapp. Examples given with curl. Replace `$HOST` with connection info for your mobileapp. Ex: `http://localhost:3000`
 ### add player ###
-Currently, exactly 4 players are expected (no support yet for 2)  
+Currently, exactly 4 players are expected (no support for 2)  
 Players are mached in CouchDB by their RFID tag ID  
 Call this API by RFID ID and player will be added by their CouchDB ID  
 `curl -X POST http://foosbot.mt.sri.com:3000/events/addplayer/visitors?id=0009653896`  
+`curl -X POST http://foosbot.mt.sri.com:3000/events/addplayer/home?id=0009653896`  
 After 4 players are matched, a new game will automatically start  
 If a game is already in progress, adding 4 players will do nothing  
 ### goals ###
