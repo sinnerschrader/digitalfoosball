@@ -4,6 +4,9 @@ import RPi.GPIO as GPIO
 import time, traceback, sys
 import requests
 import threading
+import usb.core
+from multiprocessing import Process
+from keyboard_alike import reader
 
 SERVER_URL = "http://foosbot.mt.sri.com:3000"
 BUTTON_ABORT_TIME = 5.0
@@ -21,6 +24,11 @@ button_visitors_press = 0.0
 button_visitors_timer = None
 
 def main():
+    home_rfid = Process(target=rfid_reader_proc, args=("home",))
+    home_rfid.start()
+    visitors_rfid = Process(target=rfid_reader_proc, args=("visitors",))
+    visitors_rfid.start()
+    
     try:
         #set up GPIO using BCM numbering
         GPIO.setmode(GPIO.BCM)
@@ -51,6 +59,40 @@ def main():
     finally:
         print "Cleanup"
         GPIO.cleanup()
+        home_rfid.join()
+        visitors_rfid.join()
+
+class RFIDReader(reader.Reader):
+    """
+    This class supports common black RFID Readers for 125 kHz read only tokens
+    http://www.dx.com/p/intelligent-id-card-usb-reader-174455
+    """
+    pass
+
+def rfid_reader_proc(side):
+    try:
+        # find RFID USB devices
+        devices = tuple(usb.core.find(find_all=True, idVendor=0x08ff, idProduct=0x0009))
+        if (len(devices) != 2):
+            print "Both RFID Readers are not found!"
+            raise RuntimeError
+        if (side == "home"):
+            device = devices[0] if (devices[0].address < devices[1].address) else devices[1]
+        else:
+            device = devices[1] if (devices[0].address < devices[1].address) else devices[0]
+    
+        reader = RFIDReader(0x08ff, 0x0009, 84, 16, should_reset=False, debug=False, device=device)
+        reader.initialize()
+
+        while True:
+            id = reader.read().strip()
+            print(side + " " + id)
+            r = requests.post(SERVER_URL + "/events/addplayer/" + side, {'id' :id} )
+            print r.text
+            
+    except KeyboardInterrupt:
+        pass
+
 
 def goal(channel):
     side = "home" if channel == GOAL_HOME_GPIO else "visitors"
