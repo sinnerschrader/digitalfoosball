@@ -39,7 +39,8 @@ var pendingGame = {
     players: {
         home:[],
         visitors:[]
-    }
+    },
+    msg:""
 };
 
 var resetPending = function() {
@@ -47,7 +48,8 @@ var resetPending = function() {
         players: {
             home:[],
             visitors:[]
-        }
+        },
+        msg:""
     };
     te.publish("assistant:pending", pendingGame);
 };
@@ -57,6 +59,7 @@ var lookupPlayer = function(key, callback) {
     couch.get(database, viewURL, function(err, resData) {
         if(err) {
             console.error(err);
+            pendingGame.msg = err;
             callback([]);
         }
         var ret = resData.data.rows.filter(function(e) {
@@ -113,14 +116,15 @@ te.subscribe("arduino:addplayer", function(data) {
   lookupPlayer(data.id, function(res) {
     if(res.length != 1) {
         console.error("Player RFID lookup failed: found: "+res.length);
-        //TODO event to front end
+        pendingGame.msg = "RFID lookup failed!";
     } else {
         var player = res[0].id;
         if(pendingGame.players[data.team].length < 2) {
             pendingGame.players[data.team].push(player);
-            //TODO event to front end
+            pendingGame.msg = player+" added to "+data.team;
         } else {
             console.error("Cannot add "+player+" to "+data.team+" because team already has "+pendingGame.players[data.team].length);
+            pendingGame.msg = player+" ignored: "+data.team+" is full";
         }
     }
     if(pendingGame.players.home.length == 2 && pendingGame.players.visitors.length == 2) {

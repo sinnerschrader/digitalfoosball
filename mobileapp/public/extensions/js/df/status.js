@@ -10,6 +10,9 @@ df.status = (function() {
     if(msg.pending) {
       $("#statusdebug").append("<div>Pending game: "+JSON.stringify(msg.pending)+"</div>");
     }
+
+    var diff = Date.now() - (msg.dogkick ? msg.dogkick : 0);
+    $("#statusdebug").append("<div>Raspberry last ping was "+diff+"ms ago</div>");
   });
 
   return {};
