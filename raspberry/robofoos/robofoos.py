@@ -87,7 +87,7 @@ def rfid_reader_proc(side):
         while True:
             id = reader.read().strip()
             print(side + " " + id)
-            r = requests.post(SERVER_URL + "/events/addplayer/" + side, {'id' :id} )
+            r = requests.post(SERVER_URL + "/events/addplayer/" + side, params={'id' :id} )
             print r.text
             
     except KeyboardInterrupt:
