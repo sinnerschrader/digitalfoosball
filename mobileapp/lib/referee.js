@@ -10,6 +10,7 @@ var sys = require("sys"),
 var kickertable = {
   view: "home",
   host: undefined,
+  dogkick: 0,
   game: {
     type: "game",
     start: 0,
@@ -219,6 +220,11 @@ te.subscribe("assistant:newgame", function(data) {
 
 te.subscribe("assistant:pending", function(data) {
   kickertable.pending = data;
+  te.publish("referee:update", kickertable);
+});
+
+te.subscribe("arduino:dogkick", function() {
+  kickertable.dogkick = Date.now();
   te.publish("referee:update", kickertable);
 });
 

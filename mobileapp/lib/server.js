@@ -48,6 +48,13 @@ app.configure("development", function() {
   }));
 });
 
+app.post("/events/*kick*", function(req, res) {
+  var opts = {"Content-Type": "text/plain"};
+  te.publish("arduino:dogkick", {});
+  res.writeHead(200, opts);
+  res.end("YIP!");
+});
+
 app.post("/events/addplayer*", function(req, res) {
   var parse = url.parse(req.url, true),
       query = parse.query,
