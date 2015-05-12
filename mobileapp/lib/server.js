@@ -48,39 +48,19 @@ app.configure("development", function() {
   }));
 });
 
-app.post("/events/newgame*", function(req, res) {
+app.post("/events/addplayer*", function(req, res) {
+  var parse = url.parse(req.url, true),
+      query = parse.query,
+      parts = parse.pathname.split("/"),
+      team = parts[3],
+      opts = {"Content-Type": "text/plain"};
 
-  var opts = {"Content-Type": "text/plain"};
-  var query = url.parse(req.url, true).query;
-  if(query) {
-    var h = [];
-    var v = [];
-    if(query.home) {
-      h.concat(query.home);
-    }
-    if(query.visitors) {
-      v.concat(query.visitors);
-    }
-
-    if(h.length > 2 || v.length > 2) {
-      res.writeHead(404, opts);
-      res.end("0-2 players per side");
-      return;
-    }
-
-    var data =
-    {
-      players:{
-        home:h,
-        visitors:v,
-      }
-    };
-
-    te.publish("arduino:newgame", data);
+  if({visitors: true, home: true}[team] && query.id) {
+    te.publish("arduino:addplayer", {id:query.id, team:team});
     res.writeHead(200, opts);
-    res.end("Starting new game!");
+    res.end("Added player by ID");
   } else {
-    res.writeHead(404, opts);
+    res.writeHead(400, opts);
     res.end();
   }
 });
