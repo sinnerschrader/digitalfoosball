@@ -4,12 +4,13 @@ See [Wiki](https://github.com/sinnerschrader/digitalfoosball/wiki/Installation-I
 
 ## Talking to Mobile Webapp ##
 Certain commands are supported via rest calls to the webapp. Examples given with curl. Replace `$HOST` with connection info for your mobileapp. Ex: `http://localhost:3000`
-### new game ###
-Creates a new game (disrupting any game in progress)  
-To create an unranked game with no named players:  
-`curl -X POST $HOST/events/newgame`  
-To create a ranked game:  
-`curl -X POST $HOST/events/newgame?home=name1&home=name2&visitors=name3&visitors=name4`  
+### add player ###
+Currently, exactly 4 players are expected (no support yet for 2)  
+Players are mached in CouchDB by their RFID tag ID  
+Call this API by RFID ID and player will be added by their CouchDB ID  
+`curl -X POST http://foosbot.mt.sri.com:3000/events/addplayer/visitors?id=0009653896`  
+After 4 players are matched, a new game will automatically start  
+If a game is already in progress, adding 4 players will do nothing  
 ### goals ###
 Add a goal to either side  
 `curl -X POST $HOST/events/goals/home`  
@@ -27,3 +28,8 @@ rules.json sets the minimum score value (default is 0)
 ### abort ###
 Cancel game in progress  
 `curl -X POST $HOST/events/abort`  
+### kick the dog ###
+Send a ping to the front-end to help debug offline raspberry  
+`curl -X POST http://foosbot.mt.sri.com:3000/events/*kick*`
+ex:
+`curl -X POST http://foosbot.mt.sri.com:3000/events/kickthedog`
