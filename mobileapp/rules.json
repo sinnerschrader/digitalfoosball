@@ -4,31 +4,36 @@
             "win": 6,
             "diff": 1,
             "max": 6,
-            "min": 0
+            "min": 0,
+            "penalties": false
         },
         "dtfl":{
             "win": 5,
             "diff": 2,
             "max": 7,
-            "min": 0
+            "min": 0,
+            "penalties": false
         },
         "hobby":{
             "win": 6,
             "diff": 2,
             "max": 10,
-            "min": 0
+            "min": 0,
+            "penalties": false
         },
         "noclue":{
             "win":10,
             "diff":1,
             "max":10,
-            "min": 0
+            "min": 0,
+            "penalties": false
         },
-        "fivebytwo":{
+        "cybernated":{
             "win":5,
 	    "diff":2,
 	    "max":10,
-	    "min": -3
+	    "min": -3,
+            "penalties": true
         }
     }
 }
