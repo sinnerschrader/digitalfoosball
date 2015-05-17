@@ -82,11 +82,13 @@ var events = {
 };
 
 var addPenalty = function(side) {
-  var last = kickertable.game.goals.slice(-1)[0];
-  if(last && last.value > 0) {
-    kickertable.game.goals.pop();
+  if(ruleset.penalties === true) {
+      var last = kickertable.game.goals.slice(-1)[0];
+      if(last && last.value > 0) {
+        kickertable.game.goals.pop();
+      }
+      addGoal(side, -1);
   }
-  addGoal(side, -1);
 }
 
 var addGoal = function(scorer, points) {
