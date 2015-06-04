@@ -61,9 +61,11 @@ def main():
         GPIO.add_event_detect(GOAL_VISITORS_GPIO, GPIO.FALLING, callback=goal, bouncetime=1000)
 
         while True:
-            # TODO: Kick dog via rest API here
-            r = requests.post(SERVER_URL + "/events/kickthedog")
-            time.sleep(30)
+            try:
+                time.sleep(30)
+                r = requests.post(SERVER_URL + "/events/kickthedog")
+            except Exception:
+                sys.stderr.write("WARNIGN: Unable to contact server to kick the dog\n")
 
 
     except KeyboardInterrupt:
@@ -113,8 +115,8 @@ def rfid_reader_proc(side):
 
 def goal(channel):
     side = "home" if channel == GOAL_HOME_GPIO else "visitors"
-    r = requests.post(SERVER_URL + "/events/goals/" + side)
     print side + " goal!!!"
+    r = requests.post(SERVER_URL + "/events/goals/" + side)
 
 def button(channel):
     side = "home" if channel == BUTTON_HOME_GPIO else "visitors"
@@ -140,8 +142,8 @@ def button_press(side):
         button_info[side].timer.cancel()
         button_info[side].timer = None
         button_info[side].press_time = NAN
-        r = requests.post(SERVER_URL + "/events/undo/" + side)
         print side + " undo!!!"
+        r = requests.post(SERVER_URL + "/events/undo/" + side)
     else:
         # this is an error state
         button_info[side].press_time = NAN
@@ -158,8 +160,8 @@ def button_release(side):
 
 def penalty(side):
     button_info[side].press_time = NAN
-    r = requests.post(SERVER_URL + "/events/penalty/" + side)
     print side + " penalty!!!"
+    r = requests.post(SERVER_URL + "/events/penalty/" + side)
 
 if __name__ == "__main__":
     main()
