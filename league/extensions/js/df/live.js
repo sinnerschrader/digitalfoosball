@@ -5,13 +5,13 @@ df.live = (function() {
 
   var formatTime = function(t) {
     var d = new Date(t);
-    return [format2digits(d.getHours()), format2digits(d.getMinutes())].join(":") + " Uhr";
+    return [format2digits(d.getHours()), format2digits(d.getMinutes())].join(":");
   };
 
   var formatTimespan = function(t1, t2) {
     var diff = t2 - t1,
         d = new Date(diff > 0 ? diff : 0);
-    return [format2digits(d.getMinutes()), format2digits(d.getSeconds())].join(":") + " Min";
+    return format2digits(d.getMinutes()) + " min, " + format2digits(d.getSeconds()) + " sec";
   };
 
   var updateTimer = function(time) {
