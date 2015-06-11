@@ -40,5 +40,6 @@ We *were* going to do Arduino, but someone in the office already had a Raspberry
 ![](images/IMG_20150605_083541989.jpg?raw=true)
 ![](images/IMG_20150605_083550730.jpg?raw=true)
 ![](images/IMG_20150605_083558708.jpg?raw=true)
+
 ---
 See `LICENSE`
