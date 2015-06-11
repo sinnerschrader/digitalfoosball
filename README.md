@@ -28,5 +28,17 @@ We *were* going to do Arduino, but someone in the office already had a Raspberry
 
 ## Schematic ##
 ![](images/schematic.png?raw=true)
+
+## Images ##
+![](images/IMG_20150430_090902148.jpg?raw=true)
+![](images/IMG_20150430_091015148.jpg?raw=true)
+![](images/IMG_20150430_091039475.jpg?raw=true)
+![](images/IMG_20150604_164850463.jpg?raw=true)
+![](images/IMG_20150604_164901678.jpg?raw=true)
+![](images/IMG_20150604_164912012.jpg?raw=true)
+![](images/IMG_20150604_164924444.jpg?raw=true)
+![](images/IMG_20150605_083541989.jpg?raw=true)
+![](images/IMG_20150605_083550730.jpg?raw=true)
+![](images/IMG_20150605_083558708.jpg?raw=true)
 ---
 See `LICENSE`
