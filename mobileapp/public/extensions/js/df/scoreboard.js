@@ -4,7 +4,6 @@ df.scoreboard = (function() {
       $visitors = [$players.find(".visitors1"), $players.find(".visitors2")],
       scoreSign = [],
       players = "";
-
   for (var i = 0; i < 45; ++i) {
     scoreSign.push("<span class=\"rly\"></span>");
   }
@@ -15,10 +14,9 @@ df.scoreboard = (function() {
 
   df.subscribe("socket:message", function(msg) {
     if (msg.view !== "scoreboard") { return; }
-
     var goals = msg.game.goals.reduce(function(prev, curr) {prev[curr.scorer]+=curr.value; return prev; }, {home: 0, visitors: 0}),
         cplayers = msg.game.players.home.concat(msg.game.players.visitors).join(",");
-
+        
     ["home", "visitors"].forEach(function(side) {
       localStorage.setItem("df.scoreboard.score."+side,goals[side]);
       $("#score" + side).attr("class", ["scorecard", ["neg nine", "neg eight", "neg seven", "neg six", "neg fiv", "neg four", "neg three", "neg two", "neg one", "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"][goals[side]+9] || "full"].join(" "));

@@ -30,8 +30,6 @@ df.status = (function() {
     
     //displays message when goals are scored
     var numGoals = msg.game.goals.length-1;
-    console.log(visitorsScore);
-    console.log(goals.visitors);
     if(visitorsScore != goals.visitors && msg.view == "scoreboard"){
       homeScore = goals.home; 
       visitorsScore = goals.visitors;

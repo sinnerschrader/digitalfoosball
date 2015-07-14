@@ -1,5 +1,6 @@
 df.dev = (function() {
   $(window).bind("keyup", function(e) {
+    console.log("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
     if ($(".page.active form").length === 0) {
       if (e.keyCode === 72) {
         $.post("/events/goals/home")
@@ -12,7 +13,7 @@ df.dev = (function() {
         //console.log("Abort game");
       } else if (e.keyCode === 78) {
         $(".js_newmatch").trigger("click");
-        //console.log("Start quickgame")
+        console.log("Start quickgame")
       } else if (e.keyCode === 50) {
         /*$(".js_login[data-opponents=2]").trigger("click");
         console.log("Login 2");*/
