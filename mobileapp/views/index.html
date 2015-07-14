@@ -25,6 +25,7 @@
 	<link rel="stylesheet/less" type="text/css" href="/extensions/css/mobileapp.less" media="screen,projection,print" />
 	<script type="text/javascript" src="/extensions/js/ext/less-1.1.3.min.js"></script>
 {{/production}}
+	<!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js "></script>-->
 </head>
 
 
@@ -113,10 +114,11 @@
 			</div>
 		</section>
 	</section>
-	<div id="status">
-		<p id="statusdebug">TestingTesting</p>
-	</div>
 
+	<div id="status">
+		<div id="dylanDiv" style="display:none"></div>
+		<p id="statusdebug">TestingTesting</p>	
+	</div>
   <script type="text/javascript">
     df = (function(df) {
       df.config = {{{config}}};
