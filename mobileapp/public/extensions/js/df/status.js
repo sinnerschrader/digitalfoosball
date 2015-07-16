@@ -1,15 +1,25 @@
 df.status = (function() {
   var lastPing = 0;
-  var pending = null;
-  var visitorsScore = 0;
-  var homeScore = 0;
+  var pending = "";
   df.subscribe("socket:message", function(msg) {
-    if(pending != msg.pending.msg){
+
+    if(pending != msg.pending && msg.pending.msg != ""){
       //different than previous message
-      pending = msg.pending.msg;
-      $("#dylanDiv").show();
-      $("#dylanDiv").append("<div id = tempDivPending style='height:50px; text-align:center;'><font size='50' text-align = center>"+pending+"</div>");
-      setTimeout(function(){$('#tempDivPending').remove();if($('#dylanDiv').is(':empty')){$("#dylanDiv").hide();}},5000);
+      pending = msg.pending;
+      displayTempMessage(pending.msg,"White");
+    }
+    if(msg.changeMessage == "start game"){
+      if(msg.game.players.home.length == 1){
+        displayTempMessage("Game Started: ","White");
+        displayTempMessage(msg.game.players.home[0]+" vs "+msg.game.players.visitors[0],"White");
+      }
+      else if(msg.game.players.home.length == 2){
+        displayTempMessage("Game Started: ","White");
+        displayTempMessage(msg.game.players.home[0]+" and "+msg.game.players.home[1]+" vs "+msg.game.players.visitors[0]+" and "+msg.game.players.visitors[1],"White");
+      }
+    }
+    if(msg.changeMessage == "game aborted"){
+        displayTempMessage("Game aborted","White");
     }
     $("#statusdebug").text(JSON.stringify(msg));
     var goals = msg.game.goals.reduce(function(prev, curr) {prev[curr.scorer]+=curr.value; return prev; }, {home: 0, visitors: 0}),
@@ -20,40 +30,38 @@ df.status = (function() {
     }
     var ping = (msg.dogkick ? msg.dogkick : 0);
     if(ping>0 && ping-lastPing>60000){
-      $("#dylanDiv").show();
-      $("#dylanDiv").append("<div id = tempDivRaspberry style='height:50px; text-align:center;'><font size='50' text-align = center>Raspberry Started</div>");
-      setTimeout(function(){$('#tempDivRaspberry').remove();if($('#dylanDiv').is(':empty')){$("#dylanDiv").hide();}},5000);
+      displayTempMessage("Raspberry Started","Green");
     }
     lastPing = ping;
     var diff = Date.now() - (msg.dogkick ? msg.dogkick : 0);
     $("#statusdebug").append("<div>Raspberry last ping was "+diff+"ms ago</div>");
     
+
+
     //displays message when goals are scored
     var numGoals = msg.game.goals.length-1;
-    if(visitorsScore != goals.visitors && msg.view == "scoreboard"){
-      homeScore = goals.home; 
-      visitorsScore = goals.visitors;
-      $("#dylanDiv").show();
-      $("#dylanDiv").append("<div id = tempDiv"+numGoals+" style='height:50px; text-align:center;'><font size='50' color = Black  text-align = center>Black Scored!!</font></div>");
-      setTimeout(function(){$('#tempDiv'+numGoals).remove();if($('#dylanDiv').is(':empty')){$("#dylanDiv").hide();}},5000);
-      if(goals.visitors>5 && goals.visitors>goals.home+1){
-        $("#dylanDiv").append("<div id = tempDivGO style='height:50px; text-align:center;'><font size='50' color = Black  text-align = center>Game Over: Black Wins</font></div>");
-        setTimeout(function(){$('#tempDivGO').remove();if($('#dylanDiv').is(':empty')){$("#dylanDiv").hide();}},5000); 
-      }
+    if(msg.changeMessage == "visitors scored"){
+      displayTempMessage("Black Scored!!","Black");
     }
-    else if (homeScore != goals.home && msg.view == "scoreboard"){
-      homeScore = goals.home; 
-      visitorsScore = goals.visitors;
-      $("#dylanDiv").show();
-      $("#dylanDiv").append("<div id = tempDiv"+numGoals+" style='height:50px;text-align:center;'><font size='50' color = Yellow text-align = center>Yellow Scored!!</font></div>");
-      setTimeout(function(){$('#tempDiv'+numGoals).remove();if($('#dylanDiv').is(':empty')){$("#dylanDiv").hide();}},5000);
-      if(goals.home>5 && goals.home>goals.visitors+1){
-        $("#dylanDiv").append("<div id = tempDivGO style='height:50px; text-align:center;'><font size='50' color = Yellow  text-align = center>Game Over: Yellow Wins</font></div>");
-        setTimeout(function(){$('#tempDivGO').remove();if($('#dylanDiv').is(':empty')){$("#dylanDiv").hide();}},5000);
-      }
+    if(msg.changeMessage == "visitors scored game over"){
+      displayTempMessage("Black Scored!!","Black");
+      displayTempMessage("Game Over: Black Wins","Black");
+    }   
+    if (msg.changeMessage == "home scored"){
+      displayTempMessage("Yellow Scored!!","Yellow");
+    }
+    if(msg.changeMessage == "home scored game over"){
+      displayTempMessage("Yellow Scored!!","Yellow");
+      displayTempMessage("Game Over: Yellow Wins","Yellow");
+    }
 
-    }
   });
 
   return {};
 })();
+function displayTempMessage(message,color){
+      var rand = Math.round(Math.random()*100000);
+      $("#dylanDiv").show();
+      $("#dylanDiv").append("<div id = tempDiv"+rand+" style='height:50px;text-align:center;'><font size='50' color = "+color+" text-align = center>"+message+"</font></div>");
+      setTimeout(function(){$('#tempDiv'+rand).remove();if($('#dylanDiv').is(':empty')){$("#dylanDiv").hide();}},5000);
+}

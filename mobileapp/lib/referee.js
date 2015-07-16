@@ -11,6 +11,7 @@ var kickertable = {
   view: "home",
   host: undefined,
   dogkick: 0,
+  changeMessage: "",
   game: {
     type: "game",
     start: 0,
@@ -39,14 +40,17 @@ var events = {
     }
 
     kickertable.view = "scoreboard";
+    kickertable.changeMessage = "start game";
     te.publish("referee:openingwhistle", kickertable.game);
   },
   abort: function() {
     kickertable.game.end = new Date().getTime();
+    kickertable.changeMessage = "";
     te.publish("referee:abort", kickertable.game);
 
     resetGame();
     kickertable.host = undefined;
+    kickertable.changeMessage = "game aborted";
     te.publish("referee:update", kickertable);
   },
   quit: function() {
@@ -55,6 +59,7 @@ var events = {
     te.publish("referee:update", kickertable);
   },
   undo: function(side) {
+    kickertable.changeMessage = "";
     if(!side){
       kickertable.game.goals.pop();
     } else {
@@ -88,16 +93,20 @@ var addPenalty = function(side) {
         kickertable.game.goals.pop();
       }
       addGoal(side, -1);
+      kickertable.changeMessage = "penalty on "+side;
+      
   }
 }
 
 var addGoal = function(scorer, points) {
+  kickertable.changeMessage = scorer+" scored";
   var goal = { 
     type: "goal", 
     scorer: scorer, 
     time: new Date().getTime(),
     value: points ? points : 1
   };
+
   
   if (kickertable.view == "scoreboard") {
 
@@ -115,9 +124,11 @@ var addGoal = function(scorer, points) {
         trailer = Math.min(goals.home, goals.visitors);
 
     if (leader >= ruleset.win && leader - trailer >= ruleset.diff || leader >= ruleset.max) {
+        kickertable.changeMessage += " game over";
       te.publish("referee:update", kickertable);
       finalTimeout = setTimeout(function(){
         kickertable.view = "home";
+        kickertable.changeMessage = "";
         kickertable.game.tweetURL = "-2";
         kickertable.game.end = new Date().getTime();
         te.publish("referee:finalwhistle", kickertable.game);
@@ -132,6 +143,7 @@ var addGoal = function(scorer, points) {
 }
 
 var resetGame = function(rematch) {
+  kickertable.changeMessage = "";
   kickertable.view = "home";
   kickertable.game.start = 0;
   kickertable.game.end = 0;
@@ -209,11 +221,14 @@ te.subscribe("arduino:abort", function(side) {
 
 te.subscribe("arduino:penalty", function(side) {
   addPenalty(side);
+  te.publish("referee:update", kickertable);
 });
 
 te.subscribe("assistant:newgame", function(data) {
   if(kickertable.game.start == 0 || kickertable.game.end > 0) {
     events.start(data);
+
+
   } else {
     //Refuse to start a new game if one is already in progress
     te.publish("referee:refusenewgame");
