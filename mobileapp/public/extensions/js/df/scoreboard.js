@@ -4,7 +4,7 @@ df.scoreboard = (function() {
       $visitors = [$players.find(".visitors1"), $players.find(".visitors2")],
       scoreSign = [],
       players = "";
-  for (var i = 0; i < 45; ++i) {
+  for (var i = 0; i < 190; ++i) {
     scoreSign.push("<span class=\"rly\"></span>");
   }
 

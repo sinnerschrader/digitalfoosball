@@ -4,11 +4,10 @@ df.status = (function() {
   df.subscribe("socket:message", function(msg) {
 
     if(pending != msg.pending && msg.pending.msg != ""){
-      //different than previous message
       pending = msg.pending;
       displayTempMessage(pending.msg,"White");
     }
-    if(msg.changeMessage == "start game"){
+   /* if(msg.changeMessage == "start game"){
       if(msg.game.players.home.length == 1){
         displayTempMessage("Game Started: ","White");
         displayTempMessage(msg.game.players.home[0]+" vs "+msg.game.players.visitors[0],"White");
@@ -17,7 +16,7 @@ df.status = (function() {
         displayTempMessage("Game Started: ","White");
         displayTempMessage(msg.game.players.home[0]+" and "+msg.game.players.home[1]+" vs "+msg.game.players.visitors[0]+" and "+msg.game.players.visitors[1],"White");
       }
-    }
+    }*/
     if(msg.changeMessage == "game aborted"){
         displayTempMessage("Game aborted","White");
     }
@@ -36,16 +35,13 @@ df.status = (function() {
     var diff = Date.now() - (msg.dogkick ? msg.dogkick : 0);
     $("#statusdebug").append("<div>Raspberry last ping was "+diff+"ms ago</div>");
     
-
-
     //displays message when goals are scored
-    var numGoals = msg.game.goals.length-1;
     if(msg.changeMessage == "visitors scored"){
-      displayTempMessage("Black Scored!!","Black");
+      displayTempMessage("Black Scored!!","White");
     }
     if(msg.changeMessage == "visitors scored game over"){
-      displayTempMessage("Black Scored!!","Black");
-      displayTempMessage("Game Over: Black Wins","Black");
+      displayTempMessage("Black Scored!!","White");
+      displayTempMessage("Game Over: Black Wins","White");
     }   
     if (msg.changeMessage == "home scored"){
       displayTempMessage("Yellow Scored!!","Yellow");
@@ -53,6 +49,15 @@ df.status = (function() {
     if(msg.changeMessage == "home scored game over"){
       displayTempMessage("Yellow Scored!!","Yellow");
       displayTempMessage("Game Over: Yellow Wins","Yellow");
+    }
+
+    if(msg.changeMessage == "penalty on visitors"){
+      console.log("visitors penalty");
+      displayTempMessage("Penalty on Black","Red");
+    }
+    if(msg.changeMessage == "penalty on home"){
+      console.log("home penalty");
+      displayTempMessage("Penalty on Yellow","Red");
     }
 
   });

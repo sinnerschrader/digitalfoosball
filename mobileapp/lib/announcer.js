@@ -31,7 +31,6 @@ var makeAnnouncement = function(type, game, time) {
 
 te.subscribe("referee:openingwhistle", function(game) {
   makeAnnouncement("start", game);
-  console.log("hello");
 });
 
 te.subscribe("referee:finalwhistle", function(game) {

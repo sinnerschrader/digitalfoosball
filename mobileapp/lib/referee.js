@@ -87,11 +87,13 @@ var events = {
 };
 
 var addPenalty = function(side) {
+
   if(ruleset.penalties === true) {
       var last = kickertable.game.goals.slice(-1)[0];
       if(last && last.value > 0) {
         kickertable.game.goals.pop();
       }
+      changeMessage = "";
       addGoal(side, -1);
       kickertable.changeMessage = "penalty on "+side;
       
@@ -100,6 +102,9 @@ var addPenalty = function(side) {
 
 var addGoal = function(scorer, points) {
   kickertable.changeMessage = scorer+" scored";
+  if(points == -1){
+    kickertable.changeMessage = "";
+  }
   var goal = { 
     type: "goal", 
     scorer: scorer, 
@@ -122,7 +127,6 @@ var addGoal = function(scorer, points) {
 
     var leader = Math.max(goals.home, goals.visitors),
         trailer = Math.min(goals.home, goals.visitors);
-
     if (leader >= ruleset.win && leader - trailer >= ruleset.diff || leader >= ruleset.max) {
         kickertable.changeMessage += " game over";
       te.publish("referee:update", kickertable);
@@ -139,6 +143,7 @@ var addGoal = function(scorer, points) {
     }
   } else {
     te.publish("referee:fastgoal", goal);
+
   }
 }
 
@@ -242,6 +247,7 @@ te.subscribe("assistant:pending", function(data) {
 
 te.subscribe("arduino:dogkick", function() {
   kickertable.dogkick = Date.now();
+  kickertable.changeMessage = "";
   te.publish("referee:update", kickertable);
 });
 
