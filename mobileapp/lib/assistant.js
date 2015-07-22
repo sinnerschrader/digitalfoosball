@@ -40,8 +40,10 @@ var pendingGame = {
         home:[],
         visitors:[]
     },
-    msg:""
+    msg:"",
+    stats:"home 1"
 };
+
 
 var resetPending = function() {
      pendingGame = {
@@ -49,7 +51,8 @@ var resetPending = function() {
             home:[],
             visitors:[]
         },
-        msg:""
+        msg:"",
+        stats:""
     };
     te.publish("assistant:pending", pendingGame);
 };
@@ -60,7 +63,7 @@ var lookupPlayer = function(key, callback) {
         if(err) {
             console.error(err);
             pendingGame.msg = err;
-            callback([]);
+            return callback([]);
         }
         var ret = resData.data.rows.filter(function(e) {
             return e.key == key;
@@ -69,6 +72,114 @@ var lookupPlayer = function(key, callback) {
         callback(ret);
     });
 };
+var playerWinPercent = function(key, callback) {
+    var viewURL = "_design/league/_view/players";
+    var ret;
+    couch.get(database, viewURL, function(err, resData) {
+      if(err) {
+            console.error(err);
+            pendingGame.msg = err;
+            return callback([]);
+        }
+      ret = resData.data.rows.filter(function(e) {
+          return e.key == key;
+      });
+      console.log("Couch search returned ", ret[0].value);
+            var wins = ret[0].value.games.won;
+            var losses = ret[0].value.games.lost;
+            var winPercent = Math.round(100*wins/(wins+losses));
+      callback(winPercent);
+    });
+};
+var compareTeam = function(team1,team2){
+  return ((team1[0] == team2[0] && team1[1] == team2[1])
+    ||(team1[0] == team2[1] && team1[1] == team2[0]))
+}
+var teamStats = function(team,callback){
+    var viewURL = "_design/league/_view/ranked_games";
+    var winCounter = 0;
+    var lossCounter = 0;
+    var homeGoals = 0;
+    var visitorsGoals = 0;
+    var teamWinPercent = 0;
+    couch.get(database, viewURL, function(err, resData) {
+      if(err) {
+            console.error(err);
+            pendingGame.msg = err;
+            return callback([]);
+        }
+      resData.data.rows.filter(function(e) {
+        if(compareTeam(e.value.players.home,team))
+        {
+          for(var i = 0;i<e.value.goals.length;i++)
+          {
+              if(e.value.goals[i].scorer == "home"){homeGoals++;}
+              else if(e.value.goals[i].scorer == "visitors"){visitorsGoals++;}
+          }
+          if(homeGoals>visitorsGoals){winCounter++;}
+          else{lossCounter++;}
+          homeGoals = 0;
+          visitorsGoals = 0;
+        } 
+        else if(compareTeam(e.value.players.visitors,team)){
+          for(var i = 0;i<e.value.goals.length;i++)
+          {
+              if(e.value.goals[i].scorer == "home"){visitorsGoals++;}
+              else if(e.value.goals[i].scorer == "visitors"){homeGoals++;}
+          }
+          if(homeGoals>visitorsGoals){winCounter++;}
+          else{lossCounter++;}
+          homeGoals = 0;
+          visitorsGoals = 0;
+        }      
+      });
+      if(lossCounter == 0){teamWinPercent = 100}
+      else{teamWinPercent = Math.round(100*winCounter/(winCounter+lossCounter));}
+      callback(teamWinPercent);
+    });
+}
+
+var matchupStats = function(homeTeam,visitorsTeam,callback){
+    var viewURL = "_design/league/_view/ranked_games";
+    var homeWinCounter = 0;
+    var homeLossCounter = 0;
+    var homeGoals = 0;
+    var visitorsGoals = 0;
+    couch.get(database, viewURL, function(err, resData) {
+      if(err) {
+            console.error(err);
+            pendingGame.msg = err;
+            return callback([]);
+        }
+      resData.data.rows.filter(function(e) {
+        if(compareTeam(e.value.players.home,homeTeam) && compareTeam(e.value.players.visitors,visitorsTeam))
+        {
+          for(var i = 0;i<e.value.goals.length;i++)
+          {
+              if(e.value.goals[i].scorer == "home"){homeGoals++;}
+              else if(e.value.goals[i].scorer == "visitors"){visitorsGoals++;}
+          }
+          if(homeGoals>visitorsGoals){homeWinCounter++;}
+          else{homeLossCounter++;}
+          homeGoals = 0;
+          visitorsGoals = 0;
+        }
+        else if(compareTeam(e.value.players.visitors,homeTeam) && compareTeam(e.value.players.home, visitorsTeam)){
+          for(var i = 0;i<e.value.goals.length;i++)
+          {
+              if(e.value.goals[i].scorer == "home"){visitorsGoals++;}
+              else if(e.value.goals[i].scorer == "visitors"){homeGoals++;}
+          }
+          if(homeGoals<visitorsGoals){homeWinCounter++;}
+          else{homeLossCounter++;}
+          homeGoals = 0;
+          visitorsGoals = 0;
+        }
+      });
+      callback(homeWinCounter+" "+homeLossCounter);
+    });
+
+}
 
 te.subscribe("referee:abort", function(game) {
   game.goals.forEach(function(goal) {
@@ -111,28 +222,48 @@ te.subscribe("referee:ready", function() {
   } catch(e){}
   resetPending();
 });
-
 te.subscribe("arduino:addplayer", function(data) {
+
+  var sendMessage = function(){
+    if(pendingGame.players.home.length == 2 && pendingGame.players.visitors.length == 2) {
+      te.publish("assistant:pending", pendingGame);
+      
+      teamStats(pendingGame.players.home,function(percent1){
+        pendingGame.stats = ""+percent1;
+        teamStats(pendingGame.players.visitors,function(percent2){
+          pendingGame.stats += " "+percent2;
+          matchupStats(pendingGame.players.home,pendingGame.players.visitors,function(percent3){
+            pendingGame.stats += " "+percent3;
+            te.publish("assistant:newgame", pendingGame);
+          });
+        });
+      });
+    } else {
+        te.publish("assistant:pending", pendingGame);
+    }
+  }
+
   lookupPlayer(data.id, function(res) {
     if(res.length != 1) {
         console.error("Player RFID lookup failed: found: "+res.length);
         pendingGame.msg = "RFID lookup failed!";
+        sendMessage();
     } else {
         var player = res[0].id;
-        if(pendingGame.players[data.team].length < 2) {
+        playerWinPercent(res[0].id,function(myPercent){
+          if(pendingGame.players[data.team].length < 2) {
             pendingGame.players[data.team].push(player);
             pendingGame.msg = player+" added to "+data.team;
+            pendingGame.stats = "Win percent: "+myPercent+"%";
         } else {
             console.error("Cannot add "+player+" to "+data.team+" because team already has "+pendingGame.players[data.team].length);
             pendingGame.msg = player+" ignored: "+data.team+" is full";
         }
+          sendMessage();
+        });
+
     }
-    if(pendingGame.players.home.length == 2 && pendingGame.players.visitors.length == 2) {
-        te.publish("assistant:pending", pendingGame);
-        te.publish("assistant:newgame", pendingGame);
-    } else {
-        te.publish("assistant:pending", pendingGame);
-    }
+
   });
 });
 

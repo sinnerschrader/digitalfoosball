@@ -5,19 +5,20 @@ df.status = (function() {
 
     if(pending != msg.pending && msg.pending.msg != ""){
       pending = msg.pending;
+
       displayTempMessage(pending.msg,"White");
+      displayTempMessage(pending.stats,"White");
+
     }
     else{
-         /* if(msg.changeMessage == "start game"){
-      if(msg.game.players.home.length == 1){
-        displayTempMessage("Game Started: ","White");
-        displayTempMessage(msg.game.players.home[0]+" vs "+msg.game.players.visitors[0],"White");
+      if(msg.changeMessage == "start game"){
+        var myStats = msg.statsMessage.split(" ");
+        setTimeout(function(){displayTempMessage("Home overall win %: "+myStats[0],"White");},1500);
+        setTimeout(function(){displayTempMessage("Visitors overall win %: "+myStats[1],"White");},1500);
+        setTimeout(function(){displayTempMessage("This Matchup:","Yellow");},3000);
+        setTimeout(function(){displayTempMessage("Home Wins: "+myStats[2],"Yellow");},3000);
+        setTimeout(function(){displayTempMessage("Visitor Wins: "+myStats[3],"Yellow");},3000);
       }
-      else if(msg.game.players.home.length == 2){
-        displayTempMessage("Game Started: ","White");
-        displayTempMessage(msg.game.players.home[0]+" and "+msg.game.players.home[1]+" vs "+msg.game.players.visitors[0]+" and "+msg.game.players.visitors[1],"White");
-      }
-    }*/
       if(msg.changeMessage == "game aborted"){
           displayTempMessage("Game aborted","White");
       }
@@ -36,7 +37,6 @@ df.status = (function() {
       var diff = Date.now() - (msg.dogkick ? msg.dogkick : 0);
       $("#statusdebug").append("<div>Raspberry last ping was "+diff+"ms ago</div>");
       
-      //displays message when goals are scored
       if(msg.changeMessage == "visitors scored"){
         displayTempMessage("Black Scored!!","White");
       }

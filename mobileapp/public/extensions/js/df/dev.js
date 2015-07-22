@@ -1,6 +1,5 @@
 df.dev = (function() {
   $(window).bind("keyup", function(e) {
-    console.log("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
     if ($(".page.active form").length === 0) {
       if (e.keyCode === 72) {
         $.post("/events/goals/home")

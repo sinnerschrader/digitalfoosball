@@ -12,6 +12,7 @@ var kickertable = {
   host: undefined,
   dogkick: 0,
   changeMessage: "",
+  statsMessage: "",
   game: {
     type: "game",
     start: 0,
@@ -38,9 +39,11 @@ var events = {
     if (data && data.players) {
       kickertable.game.players = data.players;
     }
-
+    console.log("data");
+    console.log(data)
     kickertable.view = "scoreboard";
     kickertable.changeMessage = "start game";
+    kickertable.statsMessage = data.stats;
     te.publish("referee:openingwhistle", kickertable.game);
   },
   abort: function() {
@@ -102,6 +105,7 @@ var addPenalty = function(side) {
 
 var addGoal = function(scorer, points) {
   kickertable.changeMessage = scorer+" scored";
+  kickertable.statsMessage = "hnnnnng";
   if(points == -1){
     kickertable.changeMessage = "";
   }
@@ -232,8 +236,6 @@ te.subscribe("arduino:penalty", function(side) {
 te.subscribe("assistant:newgame", function(data) {
   if(kickertable.game.start == 0 || kickertable.game.end > 0) {
     events.start(data);
-
-
   } else {
     //Refuse to start a new game if one is already in progress
     te.publish("referee:refusenewgame");
