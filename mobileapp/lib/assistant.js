@@ -93,7 +93,37 @@ var playerWinPercent = function(key, callback) {
 };
 var compareTeam = function(team1,team2){
   return ((team1[0] == team2[0] && team1[1] == team2[1])
-    ||(team1[0] == team2[1] && team1[1] == team2[0]))
+        ||(team1[0] == team2[1] && team1[1] == team2[0]))
+}
+var gameOdds = function(home1,home2,visitors1,visitors2,callback){
+    var viewURL = "_design/league/_view/players";
+    var ret;
+    var homeScore = 0;
+    var visitorsScore = 0;
+    couch.get(database, viewURL, function(err, resData) {
+      if(err) {
+            console.error(err);
+            pendingGame.msg = err;
+            return callback([]);
+        }
+      ret = resData.data.rows.filter(function(e) {
+        if(e.key == home1 || e.key == home2)
+        {
+          homeScore += e.value.score;
+        }
+        else if(e.key == visitors1 || e.key == visitors2)
+        {
+          visitorsScore += e.value.score;
+        }
+      });
+      //console.log("Couch search returned ", ret[0].value);
+      console.log("h: "+homeScore+" v: "+visitorsScore);
+      var prob = 1/(1+Math.pow(10,-1*Math.abs((homeScore- visitorsScore)/400)));
+      prob = Math.round(prob*100);
+      if(homeScore<visitorsScore && prob > 50){prob = 100-prob;}
+      console.log("prob: "+prob);
+      callback(prob);
+    });
 }
 var teamStats = function(team,callback){
     var viewURL = "_design/league/_view/ranked_games";
@@ -232,9 +262,12 @@ te.subscribe("arduino:addplayer", function(data) {
         pendingGame.stats = ""+percent1;
         teamStats(pendingGame.players.visitors,function(percent2){
           pendingGame.stats += " "+percent2;
-          matchupStats(pendingGame.players.home,pendingGame.players.visitors,function(percent3){
-            pendingGame.stats += " "+percent3;
-            te.publish("assistant:newgame", pendingGame);
+          matchupStats(pendingGame.players.home,pendingGame.players.visitors,function(winsLosses){
+            pendingGame.stats += " "+winsLosses;
+            gameOdds(pendingGame.players.home[0],pendingGame.players.home[1],pendingGame.players.visitors[0],pendingGame.players.visitors[1],function(odds){
+              pendingGame.stats += " "+odds;
+              te.publish("assistant:newgame", pendingGame);
+            });
           });
         });
       });
@@ -242,6 +275,8 @@ te.subscribe("arduino:addplayer", function(data) {
         te.publish("assistant:pending", pendingGame);
     }
   }
+  
+
 
   lookupPlayer(data.id, function(res) {
     if(res.length != 1) {
