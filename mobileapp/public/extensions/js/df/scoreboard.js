@@ -25,12 +25,17 @@ df.scoreboard = (function() {
     $("#scoreboard .js_undo")[goals.home + goals.visitors > 0 ? "removeClass" : "addClass"]("hide js_disabled");
 
     if (players != cplayers) {
+      if(typeof msg.game.players.home[0] === 'undefined' ){$home[0].text("");}
+      else{$home[0].text(msg.game.players.home[0]+": "+msg.playerStats.home[0]+"%");}
+      if(typeof msg.game.players.home[1] === 'undefined' ){$home[1].text("");}
+      else{$home[1].text(msg.game.players.home[1]+": "+msg.playerStats.home[1]+"%");}
+      if(typeof msg.game.players.visitors[0] === 'undefined' ){$visitors[0].text("");}
+      else{$visitors[0].text(msg.game.players.visitors[0]+": "+msg.playerStats.visitors[0]+"%");}
+      if(typeof msg.game.players.visitors[1] === 'undefined' ){$visitors[1].text("");}
+      else{$visitors[1].text(msg.game.players.visitors[1]+": "+msg.playerStats.visitors[1]+"%");}
+      
       var l = msg.game.players.home.length;
       if (l > 0) {
-        for (var i = 0; i < l; ++i) {
-          $home[i].text(msg.game.players.home[i]);
-          $visitors[i].text(msg.game.players.visitors[i]);
-        }
         if (l == 1) {
          $players.addClass("opponents2");
         } else {

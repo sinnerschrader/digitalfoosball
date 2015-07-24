@@ -41,20 +41,30 @@ var pendingGame = {
         visitors:[]
     },
     msg:"",
-    stats:"home 1"
+    playerStats: {
+      home: [],
+      visitors: []
+    },
+    teamStats: [],
+    matchupStats: []
 };
 
 
 var resetPending = function() {
-     pendingGame = {
-        players: {
-            home:[],
-            visitors:[]
-        },
-        msg:"",
-        stats:""
-    };
-    te.publish("assistant:pending", pendingGame);
+  pendingGame = {
+    players: {
+      home:[],
+      visitors:[]
+    },
+    msg:"",
+    playerStats: {
+      home: [],
+      visitors: []
+    },
+    teamStats: [],
+    matchupStats: []
+  };
+  te.publish("assistant:pending", pendingGame);
 };
 
 var lookupPlayer = function(key, callback) {
@@ -116,12 +126,12 @@ var gameOdds = function(home1,home2,visitors1,visitors2,callback){
           visitorsScore += e.value.score;
         }
       });
-      //console.log("Couch search returned ", ret[0].value);
-      console.log("h: "+homeScore+" v: "+visitorsScore);
-      var prob = 1/(1+Math.pow(10,-1*Math.abs((homeScore- visitorsScore)/400)));
+      console.log("hs: "+homeScore+" vs: "+visitorsScore);
+      homeScore+=10000;
+      visitorsScore+=10000;
+      var prob = 1/(1+Math.pow(10,-1*Math.abs((homeScore- visitorsScore)/1000)));
       prob = Math.round(prob*100);
       if(homeScore<visitorsScore && prob > 50){prob = 100-prob;}
-      console.log("prob: "+prob);
       callback(prob);
     });
 }
@@ -163,13 +173,19 @@ var teamStats = function(team,callback){
           visitorsGoals = 0;
         }      
       });
-      if(lossCounter == 0){teamWinPercent = 100}
+      if(winCounter == 0){
+        if(lossCounter == 0){
+          teamWinPercent = "no data";
+        }
+        else{teamWinPercent = 0;}
+      }
+      else if(lossCounter == 0){teamWinPercent = 100;}
       else{teamWinPercent = Math.round(100*winCounter/(winCounter+lossCounter));}
       callback(teamWinPercent);
     });
 }
 
-var matchupStats = function(homeTeam,visitorsTeam,callback){
+var calcMatchupStats = function(homeTeam,visitorsTeam,callback){
     var viewURL = "_design/league/_view/ranked_games";
     var homeWinCounter = 0;
     var homeLossCounter = 0;
@@ -259,13 +275,15 @@ te.subscribe("arduino:addplayer", function(data) {
       te.publish("assistant:pending", pendingGame);
       
       teamStats(pendingGame.players.home,function(percent1){
-        pendingGame.stats = ""+percent1;
+        pendingGame.teamStats.push(percent1);
         teamStats(pendingGame.players.visitors,function(percent2){
-          pendingGame.stats += " "+percent2;
-          matchupStats(pendingGame.players.home,pendingGame.players.visitors,function(winsLosses){
-            pendingGame.stats += " "+winsLosses;
-            gameOdds(pendingGame.players.home[0],pendingGame.players.home[1],pendingGame.players.visitors[0],pendingGame.players.visitors[1],function(odds){
-              pendingGame.stats += " "+odds;
+          pendingGame.teamStats.push(percent2);
+          calcMatchupStats(pendingGame.players.home,pendingGame.players.visitors,function(winsLosses){
+            var myWinsLosses = winsLosses.split(" ");
+            pendingGame.matchupStats.push(myWinsLosses[0]);
+            pendingGame.matchupStats.push(myWinsLosses[1]);
+            gameOdds(pendingGame.players.home[0],pendingGame.players.home[1],pendingGame.players.visitors[0],pendingGame.players.visitors[1],function(myOdds){
+              pendingGame.odds = myOdds;
               te.publish("assistant:newgame", pendingGame);
             });
           });
@@ -288,8 +306,10 @@ te.subscribe("arduino:addplayer", function(data) {
         playerWinPercent(res[0].id,function(myPercent){
           if(pendingGame.players[data.team].length < 2) {
             pendingGame.players[data.team].push(player);
-            pendingGame.msg = player+" added to "+data.team;
-            pendingGame.stats = "Win percent: "+myPercent+"%";
+            //pendingGame.msg = player+" added to "+data.team;
+            if(data.team == "home"){
+              pendingGame.playerStats.home.push(myPercent);
+            }else{pendingGame.playerStats.visitors.push(myPercent);}
         } else {
             console.error("Cannot add "+player+" to "+data.team+" because team already has "+pendingGame.players[data.team].length);
             pendingGame.msg = player+" ignored: "+data.team+" is full";

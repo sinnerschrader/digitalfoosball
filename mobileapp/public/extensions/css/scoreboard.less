@@ -1201,9 +1201,22 @@
 	> .settings.active{
 	    opacity: 1;
 	}
-	.wrapper{
-		margin: 0 0 0 30px;
+	.playerWrapper{
+		margin: 0 0 330px 30px;
 		.playerList{
+			float: left;
+			width:50%;
+		}
+	}
+	.statsWrapper{
+		margin: 0 30px 0 30px;
+		padding-top: 20px;
+		font-weight: bold;
+		font-size: 45px;
+		line-height: 50px;
+		#s2k-gradient > .box();
+		#s2k-border-radius > .button;
+		.statsList{
 			float: left;
 			width:50%;
 		}
@@ -1266,7 +1279,9 @@
 
 
 @media only screen and/*!yui*/(orientation:portrait){
+	/*
 	#scoreboard{
+	
 	    .toolbar{
 	        a{
                 &.settings{
@@ -1322,5 +1337,5 @@
         #scoreboard .players.opponents2 .formrow > div:last-of-type{
             background-image: url("../../images/elements/el_jersey_black.png");
         }
-    }
+    }*/
 }

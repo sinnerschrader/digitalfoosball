@@ -82,7 +82,7 @@
                 <dd id="scorevisitors" class="scorecard full"></dd>
             </dl>
             {{/scoreboard}}
-            <div class = "wrapper">
+            <div class = "playerWrapper">
             	<ul>
             		<li class = "playerList">
 			            <div class="players">
@@ -102,7 +102,35 @@
 		            </li>
 		        </ul>
 	        </div>
-
+	        <div class = "statsWrapper">
+            	Team Win Percentage
+	        	<ul>
+	        		<li class = "statsList">
+	        			<div class = "homeWinPercent"></div>
+	        		</li>
+	        		<li class = "statsList">
+	        			<div class = "visitorsWinPercent"></div>
+	        		</li>
+        		</ul>
+        		Matchup Stats
+	        	<ul>
+	        		<li class = "statsList">
+	        			<div class = "homeMatchupWins"></div>
+	        		</li>
+	        		<li class = "statsList">
+	        			<div class = "visitorsMatchupWins"></div>
+	        		</li>
+        		</ul>
+        		Odds
+	        	<ul>
+	        		<li class = "statsList">
+	        			<div class = "homeOdds"></div>
+	        		</li>
+	        		<li class = "statsList">
+	        			<div class = "visitorsOdds"></div>
+	        		</li>
+        		</ul>
+	        </div>
 
             <div class="settings">
                 <a href="#settings" class="btn change js_invert">⇔</a><!-- ⇌↔ -->
@@ -127,7 +155,7 @@
 	</section>
 
 	<div id="status">
-		<div id="dylanDiv" style="display:none"></div>
+		<div id="tempMessages" style="display:none"></div>
 		<p id="statusdebug">TestingTesting</p>	
 	</div>
   <script type="text/javascript">

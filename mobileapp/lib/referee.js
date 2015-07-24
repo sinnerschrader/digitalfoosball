@@ -12,7 +12,13 @@ var kickertable = {
   host: undefined,
   dogkick: 0,
   changeMessage: "",
-  statsMessage: "",
+  playerStats: {
+    home:[],
+    visitors:[]
+  },
+  teamStats: [],
+  matchupStats: [],
+  odds:"",
   game: {
     type: "game",
     start: 0,
@@ -39,11 +45,12 @@ var events = {
     if (data && data.players) {
       kickertable.game.players = data.players;
     }
-    console.log("data");
-    console.log(data)
     kickertable.view = "scoreboard";
     kickertable.changeMessage = "start game";
-    kickertable.statsMessage = data.stats;
+    kickertable.playerStats = data.playerStats;
+    kickertable.teamStats = data.teamStats;
+    kickertable.matchupStats = data.matchupStats;
+    kickertable.odds = data.odds;
     te.publish("referee:openingwhistle", kickertable.game);
   },
   abort: function() {
@@ -105,7 +112,6 @@ var addPenalty = function(side) {
 
 var addGoal = function(scorer, points) {
   kickertable.changeMessage = scorer+" scored";
-  kickertable.statsMessage = "hnnnnng";
   if(points == -1){
     kickertable.changeMessage = "";
   }
@@ -244,6 +250,12 @@ te.subscribe("assistant:newgame", function(data) {
 
 te.subscribe("assistant:pending", function(data) {
   kickertable.pending = data;
+  kickertable.game.players = data.players;
+  kickertable.playerStats = data.playerStats;
+  if(typeof data.players.home[0] != 'undefined' || typeof data.players.visitors[0] != 'undefined'){
+    kickertable.view = "scoreboard";
+    kickertable.changeMessage = "";
+  }
   te.publish("referee:update", kickertable);
 });
 
