@@ -145,6 +145,7 @@ var addGoal = function(scorer, points) {
         kickertable.changeMessage = "";
         kickertable.game.tweetURL = "-2";
         kickertable.game.end = new Date().getTime();
+        resetGame(false);
         te.publish("referee:finalwhistle", kickertable.game);
       }, 2000);
     } else {
@@ -174,7 +175,9 @@ var resetGame = function(rematch) {
       visitors: []
     }
   };
-
+  kickertable.teamStats = [];
+  kickertable.matchupStats = [];
+  kickertable.odds = "";
   kickertable.game.goals = [];
   kickertable.game.feed = [];
 
@@ -254,7 +257,7 @@ te.subscribe("assistant:pending", function(data) {
   kickertable.playerStats = data.playerStats;
   if(typeof data.players.home[0] != 'undefined' || typeof data.players.visitors[0] != 'undefined'){
     kickertable.view = "scoreboard";
-    kickertable.changeMessage = "";
+    kickertable.changeMessage = "player added";
   }
   te.publish("referee:update", kickertable);
 });

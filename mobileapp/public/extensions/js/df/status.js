@@ -13,13 +13,6 @@ df.status = (function() {
 
     }
     if(msg.changeMessage == "start game"){
-      /*setTimeout(function(){displayTempMessage("Home overall win %: "+msg.teamStats[0],"White",5000);},2500);
-      setTimeout(function(){displayTempMessage("Visitors overall win %: "+msg.teamStats[1],"White",5000);},2500);
-      setTimeout(function(){displayTempMessage("This Matchup:","Yellow",7000);},4500);
-      setTimeout(function(){displayTempMessage("Home Wins: "+msg.matchupStats[0]+"/"+(parseInt(msg.matchupStats[0])+parseInt(msg.matchupStats[1])),"Yellow",7000);},4500);
-      setTimeout(function(){displayTempMessage("Visitor Wins: "+msg.matchupStats[1]+"/"+(parseInt(msg.matchupStats[1])+parseInt(msg.matchupStats[0])),"Yellow",7000);},4500);
-      setTimeout(function(){displayTempMessage("Home teams odds: "+msg.odds+"%","Yellow",7000);},6500);
-      */
       $(".homeWinPercent").text(msg.teamStats[0]+"%");
       $(".visitorsWinPercent").text(msg.teamStats[1]+"%");
       $(".homeMatchupWins").text(msg.matchupStats[0]+"/"+(parseInt(msg.matchupStats[0])+parseInt(msg.matchupStats[1])));
@@ -29,6 +22,13 @@ df.status = (function() {
     }
     if(msg.changeMessage == "game aborted"){
         displayTempMessage("Game aborted","White",5000);
+
+      $(".homeWinPercent").text("");
+      $(".visitorsWinPercent").text("");
+      $(".homeMatchupWins").text("");
+      $(".visitorsMatchupWins").text("");
+      $(".homeOdds").text("");
+      $(".visitorsOdds").text("");
     }
     $("#statusdebug").text(JSON.stringify(msg));
     var goals = msg.game.goals.reduce(function(prev, curr) {prev[curr.scorer]+=curr.value; return prev; }, {home: 0, visitors: 0}),
@@ -51,6 +51,13 @@ df.status = (function() {
     if(msg.changeMessage == "visitors scored game over"){
       displayTempMessage("Black Scored!!","White",5000);
       displayTempMessage("Game Over: Black Wins","White",5000);
+
+      $(".homeWinPercent").text("");
+      $(".visitorsWinPercent").text("");
+      $(".homeMatchupWins").text("");
+      $(".visitorsMatchupWins").text("");
+      $(".homeOdds").text("");
+      $(".visitorsOdds").text("");
     }   
     if (msg.changeMessage == "home scored"){
       displayTempMessage("Yellow Scored!!","Yellow",5000);
@@ -58,6 +65,13 @@ df.status = (function() {
     if(msg.changeMessage == "home scored game over"){
       displayTempMessage("Yellow Scored!!","Yellow",5000);
       displayTempMessage("Game Over: Yellow Wins","Yellow",5000);
+
+      $(".homeWinPercent").text("");
+      $(".visitorsWinPercent").text("");
+      $(".homeMatchupWins").text("");
+      $(".visitorsMatchupWins").text("");
+      $(".homeOdds").text("");
+      $(".visitorsOdds").text("");
     }
 
     if(msg.changeMessage == "penalty on visitors"){
