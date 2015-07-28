@@ -16,6 +16,8 @@ var kickertable = {
     home:[],
     visitors:[]
   },
+  homeScoreHistory: [],
+  visitorsScoreHistory: [],
   teamStats: [],
   matchupStats: [],
   odds:"",
@@ -48,6 +50,8 @@ var events = {
     kickertable.view = "scoreboard";
     kickertable.changeMessage = "start game";
     kickertable.playerStats = data.playerStats;
+    kickertable.homeScoreHistory = data.homeScoreHistory;
+    kickertable.visitorsScoreHistory = data.visitorsScoreHistory;
     kickertable.teamStats = data.teamStats;
     kickertable.matchupStats = data.matchupStats;
     kickertable.odds = data.odds;
@@ -145,7 +149,6 @@ var addGoal = function(scorer, points) {
         kickertable.changeMessage = "";
         kickertable.game.tweetURL = "-2";
         kickertable.game.end = new Date().getTime();
-        resetGame(false);
         te.publish("referee:finalwhistle", kickertable.game);
       }, 2000);
     } else {
@@ -175,6 +178,12 @@ var resetGame = function(rematch) {
       visitors: []
     }
   };
+  kickertable.playerStats= {
+    home:[],
+    visitors:[]
+  }
+  kickertable.homeScoreHistory = [];
+  kickertable.visitorsScoreHistory = [];
   kickertable.teamStats = [];
   kickertable.matchupStats = [];
   kickertable.odds = "";

@@ -45,6 +45,8 @@ var pendingGame = {
       home: [],
       visitors: []
     },
+    homeScoreHistory: [],
+    visitorsScoreHistory: [],
     teamStats: [],
     matchupStats: []
 };
@@ -61,6 +63,8 @@ var resetPending = function() {
       home: [],
       visitors: []
     },
+    homeScoreHistory: [],
+    visitorsScoreHistory: [],
     teamStats: [],
     matchupStats: []
   };
@@ -101,6 +105,32 @@ var playerWinPercent = function(key, callback) {
       callback(winPercent);
     });
 };
+var playerScoreHistory = function(key,callback){
+  var viewURL = "_design/league/_view/players";
+  var ret;
+  couch.get(database, viewURL, function(err, resData) {
+    if(err) {
+          console.error(err);
+          pendingGame.msg = err;
+          return callback([]);
+      }
+    ret = resData.data.rows.filter(function(e) {
+        return e.key == key;
+    });
+    var graphSize = ret[0].value.graph.length;
+    var scoreHistory;
+    if(graphSize < 5){scoreHistory = "not enough data";}
+    else{
+      console.log("Graph Size: "+graphSize);
+      scoreHistory = [ret[0].value.graph[graphSize-5].score,
+                      ret[0].value.graph[graphSize-4].score,
+                      ret[0].value.graph[graphSize-3].score,
+                      ret[0].value.graph[graphSize-2].score,
+                      ret[0].value.graph[graphSize-1].score];
+    }
+    callback(scoreHistory);
+  });
+};
 var compareTeam = function(team1,team2){
   return ((team1[0] == team2[0] && team1[1] == team2[1])
         ||(team1[0] == team2[1] && team1[1] == team2[0]))
@@ -126,7 +156,6 @@ var gameOdds = function(home1,home2,visitors1,visitors2,callback){
           visitorsScore += e.value.score;
         }
       });
-      console.log("hs: "+homeScore+" vs: "+visitorsScore);
       homeScore+=10000;
       visitorsScore+=10000;
       var prob = 1/(1+Math.pow(10,-1*Math.abs((homeScore- visitorsScore)/1000)));
@@ -298,27 +327,33 @@ te.subscribe("arduino:addplayer", function(data) {
 
   lookupPlayer(data.id, function(res) {
     if(res.length != 1) {
-        console.error("Player RFID lookup failed: found: "+res.length);
-        pendingGame.msg = "RFID lookup failed!";
-        sendMessage();
+      console.error("Player RFID lookup failed: found: "+res.length);
+      pendingGame.msg = "RFID lookup failed!";
+      sendMessage();
     } else {
-        var player = res[0].id;
-        playerWinPercent(res[0].id,function(myPercent){
+      var player = res[0].id;
+      playerWinPercent(player,function(myPercent){
+        playerScoreHistory(player,function(myScoreHistory){
+          console.log("My Score History: "+myScoreHistory);
           if(pendingGame.players[data.team].length < 2) {
+
             pendingGame.players[data.team].push(player);
-            //pendingGame.msg = player+" added to "+data.team;
+
             if(data.team == "home"){
               pendingGame.playerStats.home.push(myPercent);
-            }else{pendingGame.playerStats.visitors.push(myPercent);}
-        } else {
+              pendingGame.homeScoreHistory.push(myScoreHistory);
+            }else{
+              pendingGame.playerStats.visitors.push(myPercent);
+              pendingGame.visitorsScoreHistory.push(myScoreHistory);
+            }
+          }else {
             console.error("Cannot add "+player+" to "+data.team+" because team already has "+pendingGame.players[data.team].length);
             pendingGame.msg = player+" ignored: "+data.team+" is full";
-        }
+          }
           sendMessage();
         });
-
+      });
     }
-
   });
 });
 

@@ -1,8 +1,16 @@
 df.status = (function() {
   var lastPing = 0;
   var pending = "";
+  var homeScoreHistory;
+  var visitorsScoreHistory;
   df.subscribe("socket:message", function(msg) {
+    
+    if(msg.pending.homeScoreHistory.length != 0)
+    {
+      homeScoreHistory = msg.pending.homeScoreHistory;
+      visitorsScoreHistory = msg.pending.visitorsScoreHistory;
 
+    }
     if(pending != msg.pending && msg.pending.msg != ""){
       pending = msg.pending;
 
@@ -19,6 +27,66 @@ df.status = (function() {
       $(".visitorsMatchupWins").text(msg.matchupStats[1]+"/"+(parseInt(msg.matchupStats[1])+parseInt(msg.matchupStats[0])));
       $(".homeOdds").text(msg.odds+"%");
       $(".visitorsOdds").text(100 - parseInt(msg.odds)+"%");
+
+
+    var lineChartData = {
+      labels : ["","","","",""],
+      datasets : [
+        {
+          label: "Home 1",
+          fillColor : "rgba(0,0,0,0)",
+          strokeColor : "rgba(0,0,220,1)",
+          pointColor : "rgba(220,220,220,1)",
+          pointStrokeColor : "#fff",
+          pointHighlightFill : "#fff",
+          pointHighlightStroke : "rgba(220,220,220,1)",
+          data : homeScoreHistory[0]
+        },
+        {
+          label: "Home 2",
+          fillColor : "rgba(0,0,0,0)",
+          strokeColor : "rgba(0,220,0,1)",
+          pointColor : "rgba(220,220,220,1)",
+          pointStrokeColor : "#fff",
+          pointHighlightFill : "#fff",
+          pointHighlightStroke : "rgba(220,220,220,1)",
+          data : homeScoreHistory[1]
+        },
+        {
+          label: "Visitors 1",
+          fillColor : "rgba(0,0,0,0)",
+          strokeColor : "rgba(151,187,205,1)",
+          pointColor : "rgba(151,187,205,1)",
+          pointStrokeColor : "#fff",
+          pointHighlightFill : "#fff",
+          pointHighlightStroke : "rgba(151,187,205,1)",
+          data : visitorsScoreHistory[0]
+        },
+        {
+          label: "Visitors 2",
+          fillColor : "rgba(0,0,0,0)",
+          strokeColor : "rgba(220,0,0,1)",
+          pointColor : "rgba(220,220,220,1)",
+          pointStrokeColor : "#fff",
+          pointHighlightFill : "#fff",
+          pointHighlightStroke : "rgba(220,220,220,1)",
+          data : visitorsScoreHistory[1]
+        },
+      ]
+
+    }
+
+    var ctx = document.getElementById("canvas").getContext("2d");
+    window.myLine = new Chart(ctx).Line(lineChartData, {
+      responsive: true
+    });
+
+
+
+
+
+
+
     }
     if(msg.changeMessage == "game aborted"){
         displayTempMessage("Game aborted","White",5000);

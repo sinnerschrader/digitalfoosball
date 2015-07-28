@@ -25,14 +25,74 @@ df.scoreboard = (function() {
     $("#scoreboard .js_undo")[goals.home + goals.visitors > 0 ? "removeClass" : "addClass"]("hide js_disabled");
 
     if (players != cplayers) {
-      if(typeof msg.game.players.home[0] === 'undefined' ){$home[0].text("");}
-      else{$home[0].text(msg.game.players.home[0]+": "+msg.playerStats.home[0]+"%");}
-      if(typeof msg.game.players.home[1] === 'undefined' ){$home[1].text("");}
-      else{$home[1].text(msg.game.players.home[1]+": "+msg.playerStats.home[1]+"%");}
-      if(typeof msg.game.players.visitors[0] === 'undefined' ){$visitors[0].text("");}
-      else{$visitors[0].text(msg.game.players.visitors[0]+": "+msg.playerStats.visitors[0]+"%");}
-      if(typeof msg.game.players.visitors[1] === 'undefined' ){$visitors[1].text("");}
-      else{$visitors[1].text(msg.game.players.visitors[1]+": "+msg.playerStats.visitors[1]+"%");}
+      if(typeof msg.game.players.home[0] === 'undefined' ){$home[0].text("");document.getElementById("canvas1").style.display = "none";}
+      else{
+        $home[0].text(msg.game.players.home[0]+": "+msg.playerStats.home[0]+"%")
+        var lineChartData = {
+          labels : ["","","","",""],
+          datasets : [
+          {
+            fillColor : "rgba(0,0,0,0)",
+            strokeColor : "rgba(0,0,220,1)",
+            data : msg.pending.homeScoreHistory[0]
+          }]
+        };
+        var options = {width : "50"};
+        document.getElementById("canvas1").style.display = "block";
+        var ctx = document.getElementById("canvas1").getContext("2d");
+        window.myLine = new Chart(ctx).Line(lineChartData,options);
+      }
+      if(typeof msg.game.players.home[1] === 'undefined' ){$home[1].text("");document.getElementById("canvas2").style.display = "none";}
+      else{
+        $home[1].text(msg.game.players.home[1]+": "+msg.playerStats.home[1]+"%");
+        var lineChartData = {
+          labels : ["","","","",""],
+          datasets : [
+          {
+            fillColor : "rgba(0,0,0,0)",
+            strokeColor : "rgba(0,220,0,1)",
+            data : msg.pending.homeScoreHistory[1]
+          }]
+        };
+        var options = {width : "50"};
+        document.getElementById("canvas2").style.display = "block";
+        var ctx = document.getElementById("canvas2").getContext("2d");
+        window.myLine = new Chart(ctx).Line(lineChartData,options);
+      }
+      if(typeof msg.game.players.visitors[0] === 'undefined' ){$visitors[0].text("");document.getElementById("canvas3").style.display = "none";}
+      else{
+        $visitors[0].text(msg.game.players.visitors[0]+": "+msg.playerStats.visitors[0]+"%");
+        var lineChartData = {
+          labels : ["","","","",""],
+          datasets : [
+          {
+            fillColor : "rgba(0,0,0,0)",
+            strokeColor : "rgba(151,187,205,1)",
+            data : msg.pending.visitorsScoreHistory[0]
+          }]
+        };
+        var options = {width : "50"};
+        document.getElementById("canvas3").style.display = "block";
+        var ctx = document.getElementById("canvas3").getContext("2d");
+        window.myLine = new Chart(ctx).Line(lineChartData,options);
+      }
+      if(typeof msg.game.players.visitors[1] === 'undefined' ){$visitors[1].text("");document.getElementById("canvas4").style.display = "none";}
+      else{
+        $visitors[1].text(msg.game.players.visitors[1]+": "+msg.playerStats.visitors[1]+"%");
+        var lineChartData = {
+          labels : ["","","","",""],
+          datasets : [
+          {
+            fillColor : "rgba(0,0,0,0)",
+            strokeColor : "rgba(220,0,0,1)",
+            data : msg.pending.visitorsScoreHistory[1]
+          }]
+        };
+        var options = {width : "50"};
+        document.getElementById("canvas4").style.display = "block";
+        var ctx = document.getElementById("canvas4").getContext("2d");
+        window.myLine = new Chart(ctx).Line(lineChartData,options);
+      }
       
       var l = msg.game.players.home.length;
       if (l > 0) {
