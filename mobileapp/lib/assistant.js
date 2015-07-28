@@ -118,22 +118,14 @@ var playerScoreHistory = function(key,callback){
         return e.key == key;
     });
     var graphSize = ret[0].value.graph.length;
-    var scoreHistory;
-    if(graphSize < 12){scoreHistory = "not enough data";}
-    else{
-      console.log("Graph Size: "+graphSize);
-      scoreHistory = [ret[0].value.graph[graphSize-12].score,
-                      ret[0].value.graph[graphSize-11].score,
-                      ret[0].value.graph[graphSize-10].score,
-                      ret[0].value.graph[graphSize-9].score,
-                      ret[0].value.graph[graphSize-8].score,
-                      ret[0].value.graph[graphSize-7].score,
-                      ret[0].value.graph[graphSize-6].score,
-                      ret[0].value.graph[graphSize-5].score,
-                      ret[0].value.graph[graphSize-4].score,
-                      ret[0].value.graph[graphSize-3].score,
-                      ret[0].value.graph[graphSize-2].score,
-                      ret[0].value.graph[graphSize-1].score];
+    var scoreHistory =[];
+    for(var counter = 12; counter > 0; counter--){
+      if(graphSize - counter < 0){
+        scoreHistory.push("0");
+      }
+      else{
+        scoreHistory.push(ret[0].value.graph[graphSize-counter].score);
+      }
     }
     callback(scoreHistory);
   });
