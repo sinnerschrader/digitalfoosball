@@ -42,12 +42,6 @@
 				<h2 class="h1">{{locales.home.headline}}</h2>
 				<h2 class="h2">{{locales.home.text}}</h2>
 			</div>
-			<!--<ul id="gametypes">
-				<li class="two"><a href="#login2" class="js_login" data-opponents="2">{{locales.home.gametype.2}}</a></li>
-				<li class="four"><a href="#login4" class="js_login" data-opponents="4">{{locales.home.gametype.4}}</a></li>
-				<li class="quick"><a href="#scoreboard" class="js_quickstart">{{locales.home.gametype.0}}</a></li>
-			</ul>
-			-->
 		</section>
 		
 		<section id="login" class="page">
@@ -74,13 +68,6 @@
 			</form>
 		</section>
 		<section id="scoreboard" class="page">
-			<div class="toolbar">
-				<a href="#settings" class="settings js_setup" position = "left">⚙</a>
-				<a href="#scoreboard" class="undo hide js_undo">{{locales.toolbar.undo}}</a>
-				<h1>{{locales.global.title}}</h1>
-				<a href="#summary" class="cancel js_abort">{{locales.toolbar.cancel}}</a>
-			</div>
-
             {{#scoreboard}}
             <dl class="board {{#inverted}}inverted{{/inverted}}">
                 <dt>{{home}}</dt>
@@ -94,48 +81,20 @@
             		<li class = "playerList">
 			            <div class="players">
 			                <div class="formrowHome">
-			                	<div>
-				                    <ul>
-				                    	<li style="float: left; margin-right: 40px;">
-				                    		<div class="home1">&nbsp;</div>
-				                    	</li>
-				                    	<li>
-				                    		<div><canvas id="canvas1"></canvas></div>
-				                    	</li>
-				                    </ul>
-			                    </div>
-			                    <div>
-				                    <ul>
-				                    	<li>
-	    				                    <div class="home2" style="left: 0px; bottom: 0px;">&nbsp;</div>
-				                    	</li>
-				                    	<li>
-				                    		<canvas id="canvas2"></canvas>
-				                    	</li>
-				                    </ul>
-			                    </div>
+			                    <div class="home1">&nbsp;</div>
+			                    <div><canvas id="canvas1"></canvas></div>
+    				            <div class="home2">&nbsp;</div>
+			                    <div><canvas id="canvas2"></canvas></div>
 			                </div>
 			            </div>
 		            </li>
             		<li class = "playerList">
 			            <div class="players">
 			                <div class="formrowVisitors">
-			                    <ul>
-			                    	<li style="float: left; margin-right: 40px;">
-			                    		<div class="visitors1">&nbsp;</div>
-			                    	</li>
-			                    	<li>
-			                    		<canvas id="canvas3"></canvas>
-			                    	</li>
-			                    </ul>
-			                    <ul>
-			                    	<li>
-    				                    <div class="visitors2">&nbsp;</div>
-			                    	</li>
-			                    	<li>
-			                    		<canvas id="canvas4"></canvas>
-			                    	</li>
-			                    </ul>
+	                    		<div class="visitors1">&nbsp;</div>
+			                    <canvas id="canvas3"></canvas>
+			                    <div class="visitors2">&nbsp;</div>
+	                    		<canvas id="canvas4"></canvas>
 			                </div>
 			            </div>
 		            </li>
@@ -170,13 +129,6 @@
 	        		</li>
         		</ul>
 	        </div>
-		
-
-			<div>
-				<canvas id="canvas"></canvas>
-			</div>
-			<div id = "itsMe"></div>
-
             <div class="settings">
                 <a href="#settings" class="btn change js_invert">⇔</a><!-- ⇌↔ -->
                 <a href="#settings" class="btn home plus js_homeplus">▲</a>

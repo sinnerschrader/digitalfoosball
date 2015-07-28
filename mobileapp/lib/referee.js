@@ -36,7 +36,28 @@ var kickertable = {
 },
 ruleset = config.rulesets[config.ruleset],
 finalTimeout;
-
+var resetKicker = function(){
+  kickertable.view = "home";
+  kickertable.changeMessage = "";
+  kickertable.playerStats = {home:[],visitors:[]};
+  kickertable.homeScoreHistory = [];
+  kickertable.visitorsScoreHistory = [];
+  kickertable.teamStats = [];
+  kickertable.matchupStats = [];
+  kickertable.odds = "";
+  kickertable.game = {
+    type: "game",
+    start: 0,
+    end: 0,
+    players: {
+      home: [],
+      visitors: []
+    },
+    goals: [],
+    tweetURL: "",
+    feed: []
+  }
+}
 
 
 var events = {
@@ -63,6 +84,7 @@ var events = {
     te.publish("referee:abort", kickertable.game);
 
     resetGame();
+    //resetKicker();
     kickertable.host = undefined;
     kickertable.changeMessage = "game aborted";
     te.publish("referee:update", kickertable);
@@ -162,34 +184,15 @@ var addGoal = function(scorer, points) {
 }
 
 var resetGame = function(rematch) {
-  kickertable.changeMessage = "";
-  kickertable.view = "home";
-  kickertable.game.start = 0;
-  kickertable.game.end = 0;
-  kickertable.game.tweetURL = "0";
-
   if (rematch) {
     var home = kickertable.game.players.home;
+    var visitors = kickertable.game.players.visitors;
+    resetKicker();
     kickertable.game.players.home = kickertable.game.players.visitors;
     kickertable.game.players.visitors = home;
   } else {
-    kickertable.game.players = {
-      home: [],
-      visitors: []
-    }
+    resetKicker();
   };
-  kickertable.playerStats= {
-    home:[],
-    visitors:[]
-  }
-  kickertable.homeScoreHistory = [];
-  kickertable.visitorsScoreHistory = [];
-  kickertable.teamStats = [];
-  kickertable.matchupStats = [];
-  kickertable.odds = "";
-  kickertable.game.goals = [];
-  kickertable.game.feed = [];
-
   te.publish("referee:reset");
 };
 
@@ -261,9 +264,14 @@ te.subscribe("assistant:newgame", function(data) {
 });
 
 te.subscribe("assistant:pending", function(data) {
+  resetKicker();
   kickertable.pending = data;
   kickertable.game.players = data.players;
   kickertable.playerStats = data.playerStats;
+  kickertable.playerStats = data.playerStats;
+  kickertable.homeScoreHistory = data.homeScoreHistory;
+  kickertable.visitorsScoreHistory = data.visitorsScoreHistory;
+
   if(typeof data.players.home[0] != 'undefined' || typeof data.players.visitors[0] != 'undefined'){
     kickertable.view = "scoreboard";
     kickertable.changeMessage = "player added";

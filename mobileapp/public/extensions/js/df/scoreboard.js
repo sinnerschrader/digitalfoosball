@@ -29,16 +29,16 @@ df.scoreboard = (function() {
       else{
         $home[0].text(msg.game.players.home[0]+": "+msg.playerStats.home[0]+"%")
         var lineChartData = {
-          labels : ["","","","",""],
+          labels : ["","","","","","","","","","","",""],
           datasets : [
           {
             fillColor : "rgba(0,0,0,0)",
-            strokeColor : "rgba(0,0,220,1)",
-            data : msg.pending.homeScoreHistory[0]
+            strokeColor : "rgba(51, 173, 255,1)",
+            data : msg.homeScoreHistory[0]
           }]
         };
-        var options = {width : "50"};
-        document.getElementById("canvas1").style.display = "block";
+        document.getElementById("canvas1").style.display = "inline";
+        var options = {scaleFontColor: "rgba(51, 173, 255,1)"};
         var ctx = document.getElementById("canvas1").getContext("2d");
         window.myLine = new Chart(ctx).Line(lineChartData,options);
       }
@@ -46,16 +46,16 @@ df.scoreboard = (function() {
       else{
         $home[1].text(msg.game.players.home[1]+": "+msg.playerStats.home[1]+"%");
         var lineChartData = {
-          labels : ["","","","",""],
+          labels : ["","","","","","","","","","","",""],
           datasets : [
           {
             fillColor : "rgba(0,0,0,0)",
-            strokeColor : "rgba(0,220,0,1)",
-            data : msg.pending.homeScoreHistory[1]
+            strokeColor : "rgba(102, 255, 51,1)",
+            data : msg.homeScoreHistory[1]
           }]
         };
-        var options = {width : "50"};
-        document.getElementById("canvas2").style.display = "block";
+        document.getElementById("canvas2").style.display = "inline";
+        var options = {scaleFontColor: "rgba(102, 255, 51,1)"};
         var ctx = document.getElementById("canvas2").getContext("2d");
         window.myLine = new Chart(ctx).Line(lineChartData,options);
       }
@@ -63,16 +63,16 @@ df.scoreboard = (function() {
       else{
         $visitors[0].text(msg.game.players.visitors[0]+": "+msg.playerStats.visitors[0]+"%");
         var lineChartData = {
-          labels : ["","","","",""],
+          labels : ["","","","","","","","","","","",""],
           datasets : [
           {
             fillColor : "rgba(0,0,0,0)",
-            strokeColor : "rgba(151,187,205,1)",
-            data : msg.pending.visitorsScoreHistory[0]
+            strokeColor : "rgba(255, 255, 102,1)",
+            data : msg.visitorsScoreHistory[0]
           }]
         };
-        var options = {width : "50"};
-        document.getElementById("canvas3").style.display = "block";
+        document.getElementById("canvas3").style.display = "inline";
+        var options = {scaleFontColor : "rgba(255, 255, 102,1)"};
         var ctx = document.getElementById("canvas3").getContext("2d");
         window.myLine = new Chart(ctx).Line(lineChartData,options);
       }
@@ -80,16 +80,16 @@ df.scoreboard = (function() {
       else{
         $visitors[1].text(msg.game.players.visitors[1]+": "+msg.playerStats.visitors[1]+"%");
         var lineChartData = {
-          labels : ["","","","",""],
+          labels : ["","","","","","","","","","","",""],
           datasets : [
           {
             fillColor : "rgba(0,0,0,0)",
-            strokeColor : "rgba(220,0,0,1)",
-            data : msg.pending.visitorsScoreHistory[1]
+            strokeColor : "rgba(255, 92, 51,1)",
+            data : msg.visitorsScoreHistory[1]
           }]
         };
-        var options = {width : "50"};
-        document.getElementById("canvas4").style.display = "block";
+        document.getElementById("canvas4").style.display = "inline";
+        var options = {scaleFontColor: "rgba(255, 92, 51,1)"};
         var ctx = document.getElementById("canvas4").getContext("2d");
         window.myLine = new Chart(ctx).Line(lineChartData,options);
       }

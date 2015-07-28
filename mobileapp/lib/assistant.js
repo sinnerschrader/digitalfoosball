@@ -119,10 +119,17 @@ var playerScoreHistory = function(key,callback){
     });
     var graphSize = ret[0].value.graph.length;
     var scoreHistory;
-    if(graphSize < 5){scoreHistory = "not enough data";}
+    if(graphSize < 12){scoreHistory = "not enough data";}
     else{
       console.log("Graph Size: "+graphSize);
-      scoreHistory = [ret[0].value.graph[graphSize-5].score,
+      scoreHistory = [ret[0].value.graph[graphSize-12].score,
+                      ret[0].value.graph[graphSize-11].score,
+                      ret[0].value.graph[graphSize-10].score,
+                      ret[0].value.graph[graphSize-9].score,
+                      ret[0].value.graph[graphSize-8].score,
+                      ret[0].value.graph[graphSize-7].score,
+                      ret[0].value.graph[graphSize-6].score,
+                      ret[0].value.graph[graphSize-5].score,
                       ret[0].value.graph[graphSize-4].score,
                       ret[0].value.graph[graphSize-3].score,
                       ret[0].value.graph[graphSize-2].score,
