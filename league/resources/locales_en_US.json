@@ -7,6 +7,7 @@
   "index.mainnav.live": "Live Match",
   "index.mainnav.table": "Table",
   "index.mainnav.statistic": "Statistics",
+  "index.mainnav.graph": "Graph",
   "live.top10": "Top 10 Players",
   "live.top10.fulltable": "Show full table",
   "table.league.col.header.player": "Player",

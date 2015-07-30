@@ -25,7 +25,11 @@
     "from": "/statistic",
     "to": "/_show/statistic/statistic",
     "method": "GET"
-  }, {
+  },{
+    "from":"/perfectGames",
+    "to":"/_list/perfectGames/perfect_games",
+    "method":"GET"
+  },{
     "from": "/statistic/:name",
     "to":"/_list/user/players",
     "method": "GET",

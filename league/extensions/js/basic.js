@@ -14,6 +14,7 @@ var dependencies = [
   "extensions/js/df/table.js",
   "extensions/js/df/statistic.js",
   "extensions/js/df/user.js",
+  "extensions/js/df/perfectGames.js",
   
   //tracking
   "extensions/js/df/ga.js"
