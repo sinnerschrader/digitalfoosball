@@ -6,7 +6,6 @@ var sys = require("sys"),
     press = require("./press"),
     te = require("./tableevents").TableEvents;
 
-
 var kickertable = {
   view: "home",
   host: undefined,

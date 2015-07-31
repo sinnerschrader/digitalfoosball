@@ -105,7 +105,7 @@ var playerWinPercent = function(key, callback) {
       callback(winPercent);
     });
 };
-var playerScoreHistory = function(key,callback){
+var playerScoreHistory = function(key,number,callback){
   var viewURL = "_design/league/_view/players";
   var ret;
   couch.get(database, viewURL, function(err, resData) {
@@ -119,7 +119,7 @@ var playerScoreHistory = function(key,callback){
     });
     var graphSize = ret[0].value.graph.length;
     var scoreHistory =[];
-    for(var counter = 12; counter > 0; counter--){
+    for(var counter = number; counter > 0; counter--){
       if(graphSize - counter < 0){
         scoreHistory.push("0");
       }
@@ -128,6 +128,22 @@ var playerScoreHistory = function(key,callback){
       }
     }
     callback(scoreHistory);
+  });
+};
+var playerScoreDifference = function(key,callback){
+  var viewURL = "_design/league/_view/players";
+  var ret;
+  couch.get(database, viewURL, function(err, resData) {
+    if(err) {
+          console.error(err);
+          pendingGame.msg = err;
+          return callback([]);
+      }
+    ret = resData.data.rows.filter(function(e) {
+        return e.key == key;
+    });
+    var scoreDiff = ret[0].value.history[0].score;
+    callback(scoreDiff);
   });
 };
 var compareTeam = function(team1,team2){
@@ -264,7 +280,24 @@ te.subscribe("referee:abort", function(game) {
 
 te.subscribe("referee:finalwhistle", function(game) {
   saveDoc(game);
-  resetPending();
+  setTimeout(function(){//this timeout is just to give the database time to calculate the new scores.
+  playerScoreDifference(game.players.home[0],function(scoreDiff1){
+    pendingGame.homeScoreHistory.push(scoreDiff1);
+    playerScoreDifference(game.players.home[1],function(scoreDiff2){
+      pendingGame.homeScoreHistory.push(scoreDiff2);
+      playerScoreDifference(game.players.visitors[0],function(scoreDiff3){
+        pendingGame.visitorsScoreHistory.push(scoreDiff3);
+        playerScoreDifference(game.players.visitors[1],function(scoreDiff4){
+          pendingGame.visitorsScoreHistory.push(scoreDiff4);
+          pendingGame.msg = "gameOver";
+          console.log(pendingGame);
+          te.publish("assistant:pending",pendingGame);
+          resetPending();
+        });
+      });
+    });
+  });
+  },6000);
 });
 
 te.subscribe("referee:fastgoal", function(goal) {
@@ -332,8 +365,7 @@ te.subscribe("arduino:addplayer", function(data) {
     } else {
       var player = res[0].id;
       playerWinPercent(player,function(myPercent){
-        playerScoreHistory(player,function(myScoreHistory){
-          console.log("My Score History: "+myScoreHistory);
+        playerScoreHistory(player,12,function(myScoreHistory){
           if(pendingGame.players[data.team].length < 2) {
 
             pendingGame.players[data.team].push(player);

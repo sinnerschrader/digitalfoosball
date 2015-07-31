@@ -38,34 +38,16 @@
 			<div class="toolbar">
 				<h1>{{locales.global.title}}</h1>
 			</div>
-			<div style = "position: relative; top: 300px;">
+			<div class = "homeDisplay" style = "position: relative; top: 300px;">
 				<h2 class="h1">{{locales.home.headline}}</h2>
 				<h2 class="h2">{{locales.home.text}}</h2>
 			</div>
-		</section>
-		
-		<section id="login" class="page">
-			<div class="toolbar">
-				<a href="#summary" class="back js_home">{{locales.toolbar.home}}</a>
-				<h1>{{locales.global.title}}</h1>
-			</div>
-			<h2 class="h1">{{locales.login.headline}}</h2>
-			<p>{{locales.login.text}}</p>
-			<form action="#" method="get" class="js_start" novalidate="novalidate">
-				<fieldset>
-					<div class="formrow">
-						<div><input type="email" name="team1_user1" /></div>
-						<div><input type="email" name="team1_user2" /></div>
-					</div>
-					<div class="formrow">
-						<div><input type="email" name="team2_user1" /></div>
-						<div><input type="email" name="team2_user2" /></div>
-					</div>
-				</fieldset>
-                <div class="buttonbar">
-                    <input type="submit" class="button" value="{{locales.login.botton.go}}" />
-                </div>
-			</form>
+            <div class = "gameStatsWrapper">
+                <div class = "gameStats" id="homeStats1"></div>
+	            <div class = "gameStats" id="homeStats2"></div>
+        		<div class = "gameStats" id="visitorsStats1"></div>
+                <div class = "gameStats" id="visitorsStats2"></div>
+	        </div>
 		</section>
 		<section id="scoreboard" class="page">
             {{#scoreboard}}

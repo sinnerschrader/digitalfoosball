@@ -14,7 +14,7 @@
 
 </style>
 <body>
-<div id = "myDiv" style="background-color: white"></div>
+<div id = "myDiv"></div>
 <script>
 $(document).ready(function(){
 	var width = 960,
@@ -33,7 +33,8 @@ $(document).ready(function(){
 	var linkExists = function(source,target)
 	{
 		for(var key in graph.links){
-			if(source == graph.links[key].source && target == graph.links[key].target)
+			if((source == graph.links[key].source && target == graph.links[key].target)
+				||(target == graph.links[key].source && source == graph.links[key].target))
 			{
 				return key;
 			}
@@ -80,37 +81,44 @@ $(document).ready(function(){
 		var doesLinkExist = linkExists(pushedPlayers.indexOf(gamesData.games[counter].players.home[0]),pushedPlayers.indexOf(gamesData.games[counter].players.home[1]))
 		if(doesLinkExist)
 		{
-			if(gamesData.games[counter].score.home == 0)
-			{graph.links[doesLinkExist].value -=3;}
-			else{graph.links[doesLinkExist].value +=3;}
+			if(gamesData.games[counter].score.home == 5)
+			{graph.links[doesLinkExist].value +=2;}
+			else{graph.links[doesLinkExist].value -=2;}
 		}
 		else
 		{
-			if(gamesData.games[counter].score.home == 0)
+			if(gamesData.games[counter].score.home == 5)
 			{
-				graph.links.push({"source":pushedPlayers.indexOf(gamesData.games[counter].players.home[0]),"target":pushedPlayers.indexOf(gamesData.games[counter].players.home[1]),"value":-3});	
+				graph.links.push({"source":pushedPlayers.indexOf(gamesData.games[counter].players.home[0]),"target":pushedPlayers.indexOf(gamesData.games[counter].players.home[1]),"value":2});	
 			}
 			else
 			{
-				graph.links.push({"source":pushedPlayers.indexOf(gamesData.games[counter].players.home[0]),"target":pushedPlayers.indexOf(gamesData.games[counter].players.home[1]),"value":3});	
+				graph.links.push({"source":pushedPlayers.indexOf(gamesData.games[counter].players.home[0]),"target":pushedPlayers.indexOf(gamesData.games[counter].players.home[1]),"value":-2});	
 			}
 		}
 		var doesLinkExist = linkExists(pushedPlayers.indexOf(gamesData.games[counter].players.visitors[0]),pushedPlayers.indexOf(gamesData.games[counter].players.visitors[1]))
 		if(doesLinkExist)
 		{
-			if(gamesData.games[counter].score.visitors == 0)
-			{graph.links[doesLinkExist].value -=3;}
-			else{graph.links[doesLinkExist].value +=3;}
+			if(gamesData.games[counter].score.visitors == 5)
+			{
+				graph.links[doesLinkExist].value +=2;
+
+				if(graph.links[doesLinkExist].value == 0){graph.links.splice(doesLinkExist,parseInt(doesLinkExist)+1);}
+			}
+			else{
+				graph.links[doesLinkExist].value -=2;
+				if(graph.links[doesLinkExist].value == 0){graph.links.splice(doesLinkExist,parseInt(doesLinkExist)+1);}
+			}
 		}
 		else
 		{
-			if(gamesData.games[counter].score.visitors == 0)
+			if(gamesData.games[counter].score.visitors == 5)
 			{
-				graph.links.push({"source":pushedPlayers.indexOf(gamesData.games[counter].players.visitors[0]),"target":pushedPlayers.indexOf(gamesData.games[counter].players.visitors[1]),"value":-3});	
+				graph.links.push({"source":pushedPlayers.indexOf(gamesData.games[counter].players.visitors[0]),"target":pushedPlayers.indexOf(gamesData.games[counter].players.visitors[1]),"value":2});	
 			}
 			else
 			{
-				graph.links.push({"source":pushedPlayers.indexOf(gamesData.games[counter].players.visitors[0]),"target":pushedPlayers.indexOf(gamesData.games[counter].players.visitors[1]),"value":3});	
+				graph.links.push({"source":pushedPlayers.indexOf(gamesData.games[counter].players.visitors[0]),"target":pushedPlayers.indexOf(gamesData.games[counter].players.visitors[1]),"value":-2});	
 			}
 		}
 	}
@@ -125,7 +133,7 @@ $(document).ready(function(){
 	    .data(graph.links)
 	    .enter().append("line")
 	    .attr("class", "link")
-	    .style("stroke-width", function(d) { return Math.sqrt(Math.abs(d.value)); })
+	    .style("stroke-width", function(d) { return Math.abs(d.value); })
 	    .style("stroke", function(d){
 	    	if(d.value>0){return "green";}
 	      	else{return "red";}});
@@ -141,10 +149,10 @@ $(document).ready(function(){
 	    .style("fill", "grey");
 
 	node.append("text")
-	  .attr("dx", 10)
+	  .attr("dx", 20)
 	  .attr("dy", ".35em")
 	  .text(function(d) { return d.name })
-	  .style("stroke", "black");
+	  .style("stroke", "white");
 
 
 
@@ -159,37 +167,30 @@ $(document).ready(function(){
 	        .attr("cy", function(d) { return d.y; });
 
 
-    link.attr("x1", function (d) {
-        return d.source.x;
-    })
-        .attr("y1", function (d) {
-        return d.source.y;
-    })
-        .attr("x2", function (d) {
-        return d.target.x;
-    })
-        .attr("y2", function (d) {
-        return d.target.y;
-    });
-    d3.selectAll("circle").attr("cx", function (d) {
-        return d.x;
-    })
-        .attr("cy", function (d) {
-        return d.y;
-    });
-    d3.selectAll("text").attr("x", function (d) {
-        return d.x;
-    })
-        .attr("y", function (d) {
-        return d.y;
-    });
-
-
-
-
-
-
-
+	    link.attr("x1", function (d) {
+	        return d.source.x;
+	    })
+	        .attr("y1", function (d) {
+	        return d.source.y;
+	    })
+	        .attr("x2", function (d) {
+	        return d.target.x;
+	    })
+	        .attr("y2", function (d) {
+	        return d.target.y;
+	    });
+	    d3.selectAll("circle").attr("cx", function (d) {
+	        return d.x;
+	    })
+	        .attr("cy", function (d) {
+	        return d.y;
+	    });
+	    d3.selectAll("text").attr("x", function (d) {
+	        return d.x;
+	    })
+	        .attr("y", function (d) {
+	        return d.y;
+	    });
 	  });
 });
 </script>
