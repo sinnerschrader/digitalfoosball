@@ -43,11 +43,47 @@
 				<h2 class="h2">{{locales.home.text}}</h2>
 			</div>
             <div class = "gameStatsWrapper">
-                <div class = "gameStats" id="homeStats1"></div>
-	            <div class = "gameStats" id="homeStats2"></div>
-        		<div class = "gameStats" id="visitorsStats1"></div>
-                <div class = "gameStats" id="visitorsStats2"></div>
+            	<table class = "gameStats">
+            		<tr>
+            			<td>
+            			</td>
+            			<td>
+            				Previous Score
+            			</td>
+            			<td>
+            				Score Change
+            			</td>
+            			<td>
+            				New Score
+            			</td>
+            		</tr>
+            		<tr style = "color: rgba(51, 173, 255,1);">
+            			<td id = "home1Name"></td>
+        				<td id = "home1Prev"></td>
+        				<td id = "home1Change">Calculating...</td>
+        				<td id = "home1New">Calculating...</td>
+            		</tr>
+            		<tr style = "color: rgba(102, 255, 51,1);">
+            			<td id = "home2Name"></td>
+        				<td id = "home2Prev"></td>
+        				<td id = "home2Change">Calculating...</td>
+        				<td id = "home2New">Calculating...</td>     				
+            		</tr>
+            		<tr style = "color: rgba(255, 255, 102,1);">
+            			<td id = "visitors1Name"></td>
+        				<td id = "visitors1Prev"></td>
+        				<td id = "visitors1Change">Calculating...</td>
+        				<td id = "visitors1New">Calculating...</td>        			
+            		</tr>
+            		<tr style = "color: rgba(255, 92, 51,1);">
+            			<td id = "visitors2Name"></td>
+        				<td id = "visitors2Prev"></td>
+        				<td id = "visitors2Change">Calculating...</td>
+        				<td id = "visitors2New">Calculating...</td>           			
+            		</tr>
+            	</table>
 	        </div>
+	        <div><canvas id = "allPlayersGraph" style = "height: 500px; width: 100%;"></canvas></div>
 		</section>
 		<section id="scoreboard" class="page">
             {{#scoreboard}}

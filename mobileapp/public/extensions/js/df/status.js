@@ -2,6 +2,9 @@ df.status = (function() {
   var lastPing = 0;
   var homePlayers = [];
   var visitorsPlayers = [];
+  var prevH1, prevH2, prevV1, prevV2;
+  var saveHomeScoreHistory = [];
+  var saveVisitorsScoreHistory = [];
   df.subscribe("socket:message", function(msg) {
 
     if(msg.changeMessage == "start game"){
@@ -14,12 +17,18 @@ df.status = (function() {
       $(".homeOdds").text(msg.odds+"%");
       $(".visitorsOdds").text(100 - parseInt(msg.odds)+"%");
 
+      $("#home1Name").text(msg.game.players.home[0]);
+      $("#home2Name").text(msg.game.players.home[1]);
+      $("#visitors1Name").text(msg.game.players.visitors[0]);
+      $("#visitors2Name").text(msg.game.players.visitors[1]);
 
-      //not actually calculating, this is just setup for later
-      $("#homeStats1").text("Calculating...");
-      $("#homeStats2").text("Calculating...");
-      $("#visitorsStats1").text("Calculating...");
-      $("#visitorsStats2").text("Calculating...");
+      saveHomeScoreHistory = msg.homeScoreHistory;
+      saveVisitorsScoreHistory = msg.visitorsScoreHistory;
+
+      $("#home1Prev").text(saveHomeScoreHistory[0][saveHomeScoreHistory[0].length-1]);
+      $("#home2Prev").text(saveHomeScoreHistory[1][saveHomeScoreHistory[1].length-1]);
+      $("#visitors1Prev").text(saveVisitorsScoreHistory[0][saveVisitorsScoreHistory[0].length-1]);
+      $("#visitors2Prev").text(saveVisitorsScoreHistory[1][saveVisitorsScoreHistory[1].length-1]);
     }
     if(msg.changeMessage == "game aborted"){
         displayTempMessage("Game aborted","White",5000);
@@ -43,9 +52,10 @@ df.status = (function() {
     if(msg.changeMessage == "visitors scored game over"){
       displayTempMessage("Black Scored!!","White",5000);
       displayTempMessage("Game Over: Black Wins","White",5000);
+      $("#allPlayersGraph").show();
       $(".gameStatsWrapper").show();
       $(".homeDisplay").hide();
-      setTimeout(function(){$(".gameStatsWrapper").hide();$(".homeDisplay").show();},30000);
+      setTimeout(function(){resetHomePage();},60000);
     }   
     if (msg.changeMessage == "home scored"){
       displayTempMessage("Yellow Scored!!","Yellow",5000);
@@ -53,9 +63,10 @@ df.status = (function() {
     if(msg.changeMessage == "home scored game over"){
       displayTempMessage("Yellow Scored!!","Yellow",5000);
       displayTempMessage("Game Over: Yellow Wins","Yellow",5000);
+      $("#allPlayersGraph").show();
       $(".gameStatsWrapper").show();
       $(".homeDisplay").hide();
-      setTimeout(function(){$(".gameStatsWrapper").hide();$(".homeDisplay").show();},30000);
+      setTimeout(function(){resetHomePage();},60000);
     }
 
     if(msg.changeMessage == "penalty on visitors"){
@@ -65,10 +76,46 @@ df.status = (function() {
       displayTempMessage("Penalty on Yellow","Red",5000);
     }
     if(msg.pending.msg == "gameOver"){
-      $("#homeStats1").text(homePlayers[0]+"'s score change: "+msg.pending.homeScoreHistory[0]);
-      $("#homeStats2").text(homePlayers[1]+"'s score change: "+msg.pending.homeScoreHistory[1]);
-      $("#visitorsStats1").text(visitorsPlayers[0]+"'s score change: "+msg.pending.visitorsScoreHistory[0]);
-      $("#visitorsStats2").text(visitorsPlayers[1]+"'s score change: "+msg.pending.visitorsScoreHistory[1]);
+
+      saveHomeScoreHistory[0].push(saveHomeScoreHistory[0][saveHomeScoreHistory[0].length-1] + msg.pending.homeScoreHistory[0]);
+      saveHomeScoreHistory[1].push(saveHomeScoreHistory[1][saveHomeScoreHistory[1].length-1] + msg.pending.homeScoreHistory[1]);
+      saveVisitorsScoreHistory[0].push(saveVisitorsScoreHistory[0][saveVisitorsScoreHistory[0].length-1] + msg.pending.visitorsScoreHistory[0]);
+      saveVisitorsScoreHistory[1].push(saveVisitorsScoreHistory[1][saveVisitorsScoreHistory[1].length-1] + msg.pending.visitorsScoreHistory[1]);
+
+      $("#home1Change").text(msg.pending.homeScoreHistory[0]);
+      $("#home2Change").text(msg.pending.homeScoreHistory[1]);
+      $("#visitors1Change").text(msg.pending.visitorsScoreHistory[0]);
+      $("#visitors2Change").text(msg.pending.visitorsScoreHistory[1]);
+
+      $("#home1New").text(saveHomeScoreHistory[0][saveHomeScoreHistory[0].length-1]);
+      $("#home2New").text(saveHomeScoreHistory[1][saveHomeScoreHistory[1].length-1]);
+      $("#visitors1New").text(saveVisitorsScoreHistory[0][saveVisitorsScoreHistory[0].length-1]);
+      $("#visitors2New").text(saveVisitorsScoreHistory[1][saveVisitorsScoreHistory[1].length-1]);
+
+      var lineChartData = {
+        labels : ["","","","","","","","","","","","",""],
+        datasets : [
+        {
+          fillColor : "rgba(0,0,0,0)",
+          strokeColor : "rgba(51, 173, 255,1)",
+          data : saveHomeScoreHistory[0]
+        },{
+          fillColor : "rgba(0,0,0,0)",
+          strokeColor : "rgba(102, 255, 51,1)",
+          data : saveHomeScoreHistory[1]
+        },{
+          fillColor : "rgba(0,0,0,0)",
+          strokeColor : "rgba(255, 255, 102,1)",
+          data : saveVisitorsScoreHistory[0]
+        },{
+          fillColor : "rgba(0,0,0,0)",
+          strokeColor : "rgba(255, 92, 51,1)",
+          data : saveVisitorsScoreHistory[1]
+        }]
+      };
+      var ctx = document.getElementById("allPlayersGraph").getContext("2d");
+      var options = {scaleFontColor: "rgba(255, 255, 255,1)"};
+      window.myLine = new Chart(ctx).Line(lineChartData,options);
     }
   });
 
@@ -79,4 +126,18 @@ function displayTempMessage(message,color,time){
       $("#tempMessages").show();
       $("#tempMessages").append("<div id = tempDiv"+rand+" style='height:50px;text-align:center;'><font size='50' color = "+color+" text-align = center>"+message+"</font></div>");
       setTimeout(function(){$('#tempDiv'+rand).remove();if($('#tempMessages').is(':empty')){$("#tempMessages").hide();}},time);
+}
+function resetHomePage(){
+  $(".gameStatsWrapper").hide();
+  $("#allPlayersGraph").hide();
+  $(".homeDisplay").show();
+  document.getElementById('home1Change').innerHTML = "Calculating...";
+  document.getElementById('home1New').innerHTML = "Calculating...";
+  document.getElementById('home2Change').innerHTML = "Calculating...";
+  document.getElementById('home2New').innerHTML = "Calculating...";
+  document.getElementById('visitors1Change').innerHTML = "Calculating...";
+  document.getElementById('visitors1New').innerHTML = "Calculating...";
+  document.getElementById('visitors2Change').innerHTML = "Calculating...";
+  document.getElementById('visitors2New').innerHTML = "Calculating...";
+
 }

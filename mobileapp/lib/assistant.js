@@ -290,7 +290,6 @@ te.subscribe("referee:finalwhistle", function(game) {
         playerScoreDifference(game.players.visitors[1],function(scoreDiff4){
           pendingGame.visitorsScoreHistory.push(scoreDiff4);
           pendingGame.msg = "gameOver";
-          console.log(pendingGame);
           te.publish("assistant:pending",pendingGame);
           resetPending();
         });
