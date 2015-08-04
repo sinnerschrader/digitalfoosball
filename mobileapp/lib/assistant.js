@@ -36,11 +36,15 @@ var saveDoc = function(doc) {
 };
 
 var pendingGame = {
+    msg:"",
     players: {
         home:[],
         visitors:[]
     },
-    msg:"",
+    playerColors: {
+      home:[],
+      visitors: []
+    },
     playerStats: {
       home: [],
       visitors: []
@@ -63,6 +67,10 @@ var resetPending = function() {
       home: [],
       visitors: []
     },
+    playerColors:{
+      home:[],
+      visitors:[]
+    },
     homeScoreHistory: [],
     visitorsScoreHistory: [],
     teamStats: [],
@@ -82,7 +90,6 @@ var lookupPlayer = function(key, callback) {
         var ret = resData.data.rows.filter(function(e) {
             return e.key == key;
         });
-        console.log("Couch search returned ", ret);
         callback(ret);
     });
 };
@@ -98,11 +105,26 @@ var playerWinPercent = function(key, callback) {
       ret = resData.data.rows.filter(function(e) {
           return e.key == key;
       });
-      console.log("Couch search returned ", ret[0].value);
             var wins = ret[0].value.games.won;
             var losses = ret[0].value.games.lost;
             var winPercent = Math.round(100*wins/(wins+losses));
       callback(winPercent);
+    });
+};
+var playerColor = function(key,callback){
+    var viewURL = "_design/league/_view/players";
+    var ret;
+    couch.get(database, viewURL, function(err, resData) {
+      if(err) {
+            console.error(err);
+            pendingGame.msg = err;
+            return callback([]);
+        }
+      ret = resData.data.rows.filter(function(e) {
+          return e.key == key;
+      });
+      var theColor = ret[0].value.color;
+      callback(theColor);
     });
 };
 var playerScoreHistory = function(key,number,callback){
@@ -281,6 +303,11 @@ te.subscribe("referee:abort", function(game) {
 te.subscribe("referee:finalwhistle", function(game) {
   saveDoc(game);
   setTimeout(function(){//this timeout is just to give the database time to calculate the new scores.
+  //var temp1, temp2;
+  //playerScoreDifference(game.players.home[0],function(myTemp){
+  //  temp1 = myTemp; temp2 = myTemp;
+  //  console.log("1: "+temp1+" 2: "+temp2+" myTemp: "+myTemp);
+  //  while(temp1 == temp2){playerScoreDifference(game.players.home[0],function(myTemp){temp2 =myTemp; console.log("BBBBBBBB  "+temp2);});console.log("1: "+temp1+ "   2: "+temp2);}
   playerScoreDifference(game.players.home[0],function(scoreDiff1){
     pendingGame.homeScoreHistory.push(scoreDiff1);
     playerScoreDifference(game.players.home[1],function(scoreDiff2){
@@ -363,24 +390,28 @@ te.subscribe("arduino:addplayer", function(data) {
       sendMessage();
     } else {
       var player = res[0].id;
+
       playerWinPercent(player,function(myPercent){
         playerScoreHistory(player,12,function(myScoreHistory){
-          if(pendingGame.players[data.team].length < 2) {
+          playerColor(player,function(myPlayerColor){
+            if(pendingGame.players[data.team].length < 2) {
+              pendingGame.players[data.team].push(player);
 
-            pendingGame.players[data.team].push(player);
-
-            if(data.team == "home"){
-              pendingGame.playerStats.home.push(myPercent);
-              pendingGame.homeScoreHistory.push(myScoreHistory);
-            }else{
-              pendingGame.playerStats.visitors.push(myPercent);
-              pendingGame.visitorsScoreHistory.push(myScoreHistory);
+              if(data.team == "home"){
+                pendingGame.playerStats.home.push(myPercent);
+                pendingGame.homeScoreHistory.push(myScoreHistory);
+                pendingGame.playerColors.home.push(myPlayerColor);
+              }else{
+                pendingGame.playerStats.visitors.push(myPercent);
+                pendingGame.visitorsScoreHistory.push(myScoreHistory);
+                pendingGame.playerColors.visitors.push(myPlayerColor);
+              }
+            }else {
+              console.error("Cannot add "+player+" to "+data.team+" because team already has "+pendingGame.players[data.team].length);
+              pendingGame.msg = player+" ignored: "+data.team+" is full";
             }
-          }else {
-            console.error("Cannot add "+player+" to "+data.team+" because team already has "+pendingGame.players[data.team].length);
-            pendingGame.msg = player+" ignored: "+data.team+" is full";
-          }
-          sendMessage();
+            sendMessage();
+          });
         });
       });
     }

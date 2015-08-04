@@ -2,9 +2,12 @@ df.status = (function() {
   var lastPing = 0;
   var homePlayers = [];
   var visitorsPlayers = [];
-  var prevH1, prevH2, prevV1, prevV2;
   var saveHomeScoreHistory = [];
   var saveVisitorsScoreHistory = [];
+  var myPlayerColors = {
+    home:[],
+    visitors:[]
+  };
   df.subscribe("socket:message", function(msg) {
 
     if(msg.changeMessage == "start game"){
@@ -21,6 +24,12 @@ df.status = (function() {
       $("#home2Name").text(msg.game.players.home[1]);
       $("#visitors1Name").text(msg.game.players.visitors[0]);
       $("#visitors2Name").text(msg.game.players.visitors[1]);
+
+      myPlayerColors = msg.playerColors;
+      document.getElementById("home1Row").style.color = myPlayerColors.home[0];
+      document.getElementById("home2Row").style.color = myPlayerColors.home[1];
+      document.getElementById("visitors1Row").style.color = myPlayerColors.visitors[0];
+      document.getElementById("visitors2Row").style.color = myPlayerColors.visitors[1];
 
       saveHomeScoreHistory = msg.homeScoreHistory;
       saveVisitorsScoreHistory = msg.visitorsScoreHistory;
@@ -97,19 +106,19 @@ df.status = (function() {
         datasets : [
         {
           fillColor : "rgba(0,0,0,0)",
-          strokeColor : "rgba(51, 173, 255,1)",
+          strokeColor : myPlayerColors.home[0],
           data : saveHomeScoreHistory[0]
         },{
           fillColor : "rgba(0,0,0,0)",
-          strokeColor : "rgba(102, 255, 51,1)",
+          strokeColor : myPlayerColors.home[1],
           data : saveHomeScoreHistory[1]
         },{
           fillColor : "rgba(0,0,0,0)",
-          strokeColor : "rgba(255, 255, 102,1)",
+          strokeColor : myPlayerColors.visitors[0],
           data : saveVisitorsScoreHistory[0]
         },{
           fillColor : "rgba(0,0,0,0)",
-          strokeColor : "rgba(255, 92, 51,1)",
+          strokeColor : myPlayerColors.visitors[1],
           data : saveVisitorsScoreHistory[1]
         }]
       };

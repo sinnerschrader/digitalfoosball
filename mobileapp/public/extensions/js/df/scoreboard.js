@@ -27,18 +27,18 @@ df.scoreboard = (function() {
     if (players != cplayers) {
       if(typeof msg.game.players.home[0] === 'undefined' ){$home[0].text("");document.getElementById("canvas1").style.display = "none";}
       else{
-        $home[0].text(msg.game.players.home[0]+": "+msg.playerStats.home[0]+"%")
+        $home[0].text(msg.game.players.home[0]+": "+msg.playerStats.home[0]+"%");
         var lineChartData = {
           labels : ["","","","","","","","","","","",""],
           datasets : [
           {
             fillColor : "rgba(0,0,0,0)",
-            strokeColor : "rgba(51, 173, 255,1)",
+            strokeColor : msg.pending.playerColors.home[0],
             data : msg.homeScoreHistory[0]
           }]
         };
         document.getElementById("canvas1").style.display = "inline";
-        var options = {scaleFontColor: "rgba(51, 173, 255,1)"};
+        var options = {scaleFontColor: msg.pending.playerColors.home[0]};
         var ctx = document.getElementById("canvas1").getContext("2d");
         window.myLine = new Chart(ctx).Line(lineChartData,options);
       }
@@ -50,12 +50,12 @@ df.scoreboard = (function() {
           datasets : [
           {
             fillColor : "rgba(0,0,0,0)",
-            strokeColor : "rgba(102, 255, 51,1)",
+            strokeColor : msg.pending.playerColors.home[1],
             data : msg.homeScoreHistory[1]
           }]
         };
         document.getElementById("canvas2").style.display = "inline";
-        var options = {scaleFontColor: "rgba(102, 255, 51,1)"};
+        var options = {scaleFontColor: msg.pending.playerColors.home[1]};
         var ctx = document.getElementById("canvas2").getContext("2d");
         window.myLine = new Chart(ctx).Line(lineChartData,options);
       }
@@ -67,12 +67,12 @@ df.scoreboard = (function() {
           datasets : [
           {
             fillColor : "rgba(0,0,0,0)",
-            strokeColor : "rgba(255, 255, 102,1)",
+            strokeColor : msg.pending.playerColors.visitors[0],
             data : msg.visitorsScoreHistory[0]
           }]
         };
         document.getElementById("canvas3").style.display = "inline";
-        var options = {scaleFontColor : "rgba(255, 255, 102,1)"};
+        var options = {scaleFontColor : msg.pending.playerColors.visitors[0]};
         var ctx = document.getElementById("canvas3").getContext("2d");
         window.myLine = new Chart(ctx).Line(lineChartData,options);
       }
@@ -84,12 +84,12 @@ df.scoreboard = (function() {
           datasets : [
           {
             fillColor : "rgba(0,0,0,0)",
-            strokeColor : "rgba(255, 92, 51,1)",
+            strokeColor : msg.pending.playerColors.visitors[1],
             data : msg.visitorsScoreHistory[1]
           }]
         };
         document.getElementById("canvas4").style.display = "inline";
-        var options = {scaleFontColor: "rgba(255, 92, 51,1)"};
+        var options = {scaleFontColor: msg.pending.playerColors.visitors[1]};
         var ctx = document.getElementById("canvas4").getContext("2d");
         window.myLine = new Chart(ctx).Line(lineChartData,options);
       }

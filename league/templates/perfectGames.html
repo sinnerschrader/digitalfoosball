@@ -18,7 +18,7 @@
 <script>
 $(document).ready(function(){
 	var width = 960,
-	    height = 1000;
+	    height = 800;
 
 	var force = d3.layout.force()
 	    .charge(-120)
@@ -123,7 +123,33 @@ $(document).ready(function(){
 		}
 	}
 
-
+var padding = 50, // separation between circles
+    radius=15;
+function collide(alpha) {
+  var quadtree = d3.geom.quadtree(graph.nodes);
+  return function(d) {
+    var rb = 2*radius + padding,
+        nx1 = d.x - rb,
+        nx2 = d.x + rb,
+        ny1 = d.y - rb,
+        ny2 = d.y + rb;
+    quadtree.visit(function(quad, x1, y1, x2, y2) {
+      if (quad.point && (quad.point !== d)) {
+        var x = d.x - quad.point.x,
+            y = d.y - quad.point.y,
+            l = Math.sqrt(x * x + y * y);
+          if (l < rb) {
+           l = (l - rb) / l * alpha;
+           d.x -= x *= l;
+           d.y -= y *= l;
+           quad.point.x += x;
+           quad.point.y += y;
+         }
+       }
+       return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
+     });
+   };
+ }
 	force
 	    .nodes(graph.nodes)
 	    .links(graph.links)
@@ -166,7 +192,6 @@ $(document).ready(function(){
 	    node.attr("cx", function(d) { return d.x; })
 	        .attr("cy", function(d) { return d.y; });
 
-
 	    link.attr("x1", function (d) {
 	        return d.source.x;
 	    })
@@ -191,7 +216,31 @@ $(document).ready(function(){
 	        .attr("y", function (d) {
 	        return d.y;
 	    });
+	             node.each(collide(0.5)); //Added 
+
+
 	  });
+  /*	force.on("tick", function () {
+	    link.attr("x1", function (d) {
+	        return d.source.x;
+	    })
+	        .attr("y1", function (d) {
+	        return d.source.y;
+	    })
+	        .attr("x2", function (d) {
+	        return d.target.x;
+	    })
+	        .attr("y2", function (d) {
+	        return d.target.y;
+	    });
+	    node.attr("cx", function (d) {
+	        return d.x;
+	    })
+	        .attr("cy", function (d) {
+	        return d.y;
+	    });
+     node.each(collide(0.5)); //Added 
+});*/
 });
 </script>
 </body>

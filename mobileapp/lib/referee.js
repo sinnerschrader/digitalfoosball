@@ -15,6 +15,10 @@ var kickertable = {
     home:[],
     visitors:[]
   },
+  playerColors:{
+    home:[],
+    visitors: []
+  },
   homeScoreHistory: [],
   visitorsScoreHistory: [],
   teamStats: [],
@@ -39,6 +43,7 @@ var resetKicker = function(){
   kickertable.view = "home";
   kickertable.changeMessage = "";
   kickertable.playerStats = {home:[],visitors:[]};
+  kickertable.playerColors = {home:[],visitors:[]};
   kickertable.homeScoreHistory = [];
   kickertable.visitorsScoreHistory = [];
   kickertable.teamStats = [];
@@ -70,6 +75,7 @@ var events = {
     kickertable.view = "scoreboard";
     kickertable.changeMessage = "start game";
     kickertable.playerStats = data.playerStats;
+    kickertable.playerColors = data.playerColors;
     kickertable.homeScoreHistory = data.homeScoreHistory;
     kickertable.visitorsScoreHistory = data.visitorsScoreHistory;
     kickertable.teamStats = data.teamStats;
