@@ -302,28 +302,34 @@ te.subscribe("referee:abort", function(game) {
 
 te.subscribe("referee:finalwhistle", function(game) {
   saveDoc(game);
-  setTimeout(function(){//this timeout is just to give the database time to calculate the new scores.
-  //var temp1, temp2;
-  //playerScoreDifference(game.players.home[0],function(myTemp){
-  //  temp1 = myTemp; temp2 = myTemp;
-  //  console.log("1: "+temp1+" 2: "+temp2+" myTemp: "+myTemp);
-  //  while(temp1 == temp2){playerScoreDifference(game.players.home[0],function(myTemp){temp2 =myTemp; console.log("BBBBBBBB  "+temp2);});console.log("1: "+temp1+ "   2: "+temp2);}
-  playerScoreDifference(game.players.home[0],function(scoreDiff1){
-    pendingGame.homeScoreHistory.push(scoreDiff1);
-    playerScoreDifference(game.players.home[1],function(scoreDiff2){
-      pendingGame.homeScoreHistory.push(scoreDiff2);
-      playerScoreDifference(game.players.visitors[0],function(scoreDiff3){
-        pendingGame.visitorsScoreHistory.push(scoreDiff3);
-        playerScoreDifference(game.players.visitors[1],function(scoreDiff4){
-          pendingGame.visitorsScoreHistory.push(scoreDiff4);
-          pendingGame.msg = "gameOver";
-          te.publish("assistant:pending",pendingGame);
-          resetPending();
-        });
-      });
+
+  var prev = 0;
+  var firstPass = true;
+  var interval = setInterval(function(){
+    playerScoreDifference(game.players.home[0],function(myTemp){
+      console.log("myTemp: "+myTemp+"   prev: "+prev);
+      if(myTemp != prev && !firstPass){
+        clearInterval(interval);
+        playerScoreDifference(game.players.home[0],function(scoreDiff1){
+          pendingGame.homeScoreHistory.push(scoreDiff1);
+          playerScoreDifference(game.players.home[1],function(scoreDiff2){
+            pendingGame.homeScoreHistory.push(scoreDiff2);
+            playerScoreDifference(game.players.visitors[0],function(scoreDiff3){
+              pendingGame.visitorsScoreHistory.push(scoreDiff3);
+              playerScoreDifference(game.players.visitors[1],function(scoreDiff4){
+                pendingGame.visitorsScoreHistory.push(scoreDiff4);
+                pendingGame.msg = "gameOver";
+                te.publish("assistant:pending",pendingGame);
+                resetPending();
+              });
+            });
+          });
+        });        
+      }
+      firstPass = false;
+      prev = myTemp;
     });
-  });
-  },6000);
+  },50);
 });
 
 te.subscribe("referee:fastgoal", function(goal) {

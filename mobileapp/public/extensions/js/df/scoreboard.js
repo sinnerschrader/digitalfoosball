@@ -14,6 +14,13 @@ df.scoreboard = (function() {
 
   df.subscribe("socket:message", function(msg) {
     if (msg.view !== "scoreboard") { return; }
+    var myPlayerColors = {
+      home: [],
+      visitors: []
+    };
+    if(msg.pending.playerColors.home.length != 0 || msg.pending.playerColors.visitors.length != 0){
+      myPlayerColors = msg.pending.playerColors;
+    }
     var goals = msg.game.goals.reduce(function(prev, curr) {prev[curr.scorer]+=curr.value; return prev; }, {home: 0, visitors: 0}),
         cplayers = msg.game.players.home.concat(msg.game.players.visitors).join(",");
         
@@ -28,6 +35,7 @@ df.scoreboard = (function() {
       if(typeof msg.game.players.home[0] === 'undefined' ){$home[0].text("");document.getElementById("canvas1").style.display = "none";}
       else{
         $home[0].text(msg.game.players.home[0]+": "+msg.playerStats.home[0]+"%");
+        document.getElementById("home1").style.color = myPlayerColors.home[0];
         var lineChartData = {
           labels : ["","","","","","","","","","","",""],
           datasets : [
@@ -45,6 +53,8 @@ df.scoreboard = (function() {
       if(typeof msg.game.players.home[1] === 'undefined' ){$home[1].text("");document.getElementById("canvas2").style.display = "none";}
       else{
         $home[1].text(msg.game.players.home[1]+": "+msg.playerStats.home[1]+"%");
+        document.getElementById("home2").style.color = myPlayerColors.home[1];
+
         var lineChartData = {
           labels : ["","","","","","","","","","","",""],
           datasets : [
@@ -62,6 +72,8 @@ df.scoreboard = (function() {
       if(typeof msg.game.players.visitors[0] === 'undefined' ){$visitors[0].text("");document.getElementById("canvas3").style.display = "none";}
       else{
         $visitors[0].text(msg.game.players.visitors[0]+": "+msg.playerStats.visitors[0]+"%");
+        document.getElementById("visitors1").style.color = myPlayerColors.visitors[0];
+
         var lineChartData = {
           labels : ["","","","","","","","","","","",""],
           datasets : [
@@ -79,6 +91,7 @@ df.scoreboard = (function() {
       if(typeof msg.game.players.visitors[1] === 'undefined' ){$visitors[1].text("");document.getElementById("canvas4").style.display = "none";}
       else{
         $visitors[1].text(msg.game.players.visitors[1]+": "+msg.playerStats.visitors[1]+"%");
+        document.getElementById("visitors2").style.color = myPlayerColors.visitors[1];        
         var lineChartData = {
           labels : ["","","","","","","","","","","",""],
           datasets : [
