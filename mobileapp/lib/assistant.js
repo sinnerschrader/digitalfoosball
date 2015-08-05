@@ -208,6 +208,7 @@ var teamStats = function(team,callback){
     var homeGoals = 0;
     var visitorsGoals = 0;
     var teamWinPercent = 0;
+    var counter = 0;
     couch.get(database, viewURL, function(err, resData) {
       if(err) {
             console.error(err);
@@ -217,6 +218,7 @@ var teamStats = function(team,callback){
       resData.data.rows.filter(function(e) {
         if(compareTeam(e.value.players.home,team))
         {
+          counter++;
           for(var i = 0;i<e.value.goals.length;i++)
           {
               if(e.value.goals[i].scorer == "home"){homeGoals++;}
@@ -228,17 +230,20 @@ var teamStats = function(team,callback){
           visitorsGoals = 0;
         } 
         else if(compareTeam(e.value.players.visitors,team)){
+          counter++;
           for(var i = 0;i<e.value.goals.length;i++)
           {
-              if(e.value.goals[i].scorer == "home"){visitorsGoals++;}
-              else if(e.value.goals[i].scorer == "visitors"){homeGoals++;}
+              if(e.value.goals[i].scorer == "home"){homeGoals++;}
+              else if(e.value.goals[i].scorer == "visitors"){visitorsGoals++;}
           }
-          if(homeGoals>visitorsGoals){winCounter++;}
-          else{lossCounter++;}
+          if(homeGoals>visitorsGoals){lossCounter++;}
+          else{winCounter++;}
           homeGoals = 0;
           visitorsGoals = 0;
-        }      
+        }
       });
+      console.log("AAAAAAAAAAAAAAAAA"+counter+ "  wins: "+winCounter+"  losses: "+lossCounter);      
+
       if(winCounter == 0){
         if(lossCounter == 0){
           teamWinPercent = "no data";
@@ -279,11 +284,11 @@ var calcMatchupStats = function(homeTeam,visitorsTeam,callback){
         else if(compareTeam(e.value.players.visitors,homeTeam) && compareTeam(e.value.players.home, visitorsTeam)){
           for(var i = 0;i<e.value.goals.length;i++)
           {
-              if(e.value.goals[i].scorer == "home"){visitorsGoals++;}
-              else if(e.value.goals[i].scorer == "visitors"){homeGoals++;}
+              if(e.value.goals[i].scorer == "home"){homeGoals++;}
+              else if(e.value.goals[i].scorer == "visitors"){visitorsGoals++;}
           }
-          if(homeGoals<visitorsGoals){homeWinCounter++;}
-          else{homeLossCounter++;}
+          if(homeGoals>visitorsGoals){homeLossCounter++;}
+          else{homeWinCounter++;}
           homeGoals = 0;
           visitorsGoals = 0;
         }
