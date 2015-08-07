@@ -291,3 +291,4 @@ te.subscribe("arduino:dogkick", function() {
 });
 
 te.publish("referee:ready");
+module.exports.kickertable = kickertable;

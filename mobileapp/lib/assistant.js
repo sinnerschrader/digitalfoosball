@@ -242,8 +242,6 @@ var teamStats = function(team,callback){
           visitorsGoals = 0;
         }
       });
-      console.log("AAAAAAAAAAAAAAAAA"+counter+ "  wins: "+winCounter+"  losses: "+lossCounter);      
-
       if(winCounter == 0){
         if(lossCounter == 0){
           teamWinPercent = "no data";

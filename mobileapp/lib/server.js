@@ -12,7 +12,28 @@ var http = require("http"),
 
 var app = express.createServer(),
     sockapp = express.createServer(); 
-
+var kTable = referee.kickertable;
+app.get("/game",function(req,res){
+    var goals = kTable.game.goals;
+    var homeScore = 0, visitorsScore = 0;
+    console.log("Dylan was here");
+    console.log(goals);
+    for(var counter = 0; counter<goals.length; counter++)
+    {
+      if(goals[counter].scorer == 'home')
+      {
+        homeScore++;
+      }
+      else
+      {
+        visitorsScore++;
+      }
+    }
+    console.log("hs: "+homeScore+" vs: "+visitorsScore);
+    var opts = {"Content-Type": "application/json"};
+    res.writeHead(200,opts);
+    res.end(JSON.stringify("nope"));
+});
 app.configure(function() {
   app.set("views", __dirname + "/../views");
   app.set("view options", {layout: false});
