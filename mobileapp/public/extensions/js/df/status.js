@@ -64,6 +64,7 @@ df.status = (function() {
       $("#allPlayersGraph").show();
       $(".gameStatsWrapper").show();
       $(".homeDisplay").hide();
+
       setTimeout(function(){resetHomePage();},60000);
     }   
     if (msg.changeMessage == "home scored"){
@@ -75,6 +76,7 @@ df.status = (function() {
       $("#allPlayersGraph").show();
       $(".gameStatsWrapper").show();
       $(".homeDisplay").hide();
+
       setTimeout(function(){resetHomePage();},60000);
     }
 
@@ -85,7 +87,12 @@ df.status = (function() {
       displayTempMessage("Penalty on Yellow","Red",5000);
     }
     if(msg.pending.msg == "gameOver"){
-
+      $(".homeWinPercent").text(" ");
+      $(".visitorsWinPercent").text(" ");
+      $(".homeMatchupWins").text(" ");
+      $(".visitorsMatchupWins").text(" ");
+      $(".homeOdds").text(" ");
+      $(".visitorsOdds").text(" ");
       saveHomeScoreHistory[0].push(saveHomeScoreHistory[0][saveHomeScoreHistory[0].length-1] + msg.pending.homeScoreHistory[0]);
       saveHomeScoreHistory[1].push(saveHomeScoreHistory[1][saveHomeScoreHistory[1].length-1] + msg.pending.homeScoreHistory[1]);
       saveVisitorsScoreHistory[0].push(saveVisitorsScoreHistory[0][saveVisitorsScoreHistory[0].length-1] + msg.pending.visitorsScoreHistory[0]);

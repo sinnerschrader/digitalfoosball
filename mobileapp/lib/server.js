@@ -16,8 +16,6 @@ var kTable = referee.kickertable;
 app.get("/game",function(req,res){
     var goals = kTable.game.goals;
     var homeScore = 0, visitorsScore = 0;
-    console.log("Dylan was here");
-    console.log(goals);
     for(var counter = 0; counter<goals.length; counter++)
     {
       if(goals[counter].scorer == 'home')
