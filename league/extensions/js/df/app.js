@@ -44,6 +44,14 @@ df.app = (function() {
       });
     });
 
+    this.route("get", "#!/perfectGames", function() {
+      var self = this;
+      $.get("perfectGames", function(partial) {
+        partial = navigate(self.path, partial);
+        df.publish("app:perfectGames", partial);
+      });
+    });
+
     this.route("get", "#!/statistic/:name", function() {
       var self = this;
       $.get("statistic/" + this.params["name"], function(partial) {

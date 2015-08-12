@@ -1,57 +1,45 @@
-# Digital Foosball #
+# Cybernated Foosball #
 
-Bringing the analog foosball table into the digital age.
+Digital Foosball 2.0
 
 ---
-This is german engineering, so please read all instructions carefully. :-)
-
+The goal of this fork is to add raspberry pi support along with other features we want.  We added player tracking via RFID badges and buttons to control how we play.
 
 ## Background ##
-Because the web is our DNA, we're using Web-Technologies to get it online. We also want to make usage of the latest and greatest HTML5/CSS3/JavaScript technologies to show what's possible today. We're using this project as a Technology-Demo.
 
-Of course is our Agency Foosball Table also powered by this software and it's daily used by dozens of people - and ourselves. So we make sure it's always usable and fun...
+Head over to [Digital Foosball](https://github.com/sinnerschrader/digitalfoosball/) for background and instructions.
 
+## Raspberry Pi ##
 
-## Which modules are included ##
+We *were* going to do Arduino, but someone in the office already had a Raspberry on hand, so here we are. All code is in Python using REST to talk to the existing (and added) digitalfoosball/mobileapp node.js endpoints.
 
-### Arduino ###
-Hardware mounted to the foosball table, including light barriers und an Arduino board with Wifi shield.
-See our [Wiki](https://github.com/sinnerschrader/digitalfoosball/wiki/Installation-Instructions:-Part-1:-Hardware) where we explain the first part, how to turn an analog foosball table into a digital one, sending HTTP POSTs on every goal.
+## Hardware ##
 
-### HTML5 Mobile Webapp with app server ###
-The mobile Webapp to start and stop the games and follow the score. It also includes the web server which sends the game events to the CouchDB and Twitter.
-Look at the included readme file and our [Wiki](https://github.com/sinnerschrader/digitalfoosball/wiki/Installation-Instructions:-Part-2:-Mobile-Webapp) for installation help.
+* Raspberry Pi B+: [Canakit](http://www.amazon.com/CanaKit-Raspberry-Complete-Original-Preloaded/dp/B008XVAVAW)
+* Breadboard + breakout: [Eleduino](http://www.amazon.com/Eleduino-Raspberry-Model-T-Cobbler-Breakout/dp/B00NKH9S7Q)
+* Goal detection: [Geeetech infrared sensors](http://www.amazon.com/Geeetech-Infrared-proximity-compatible-Arduino/dp/B00AMC1V2C)
+* Player detection: [Ebay Chinese 125khz USB RFID Reader](http://www.ebay.com/itm/311140956799)
+* Undo/Reset button: [19mm Momentary Push Button Normally Open](http://www.amazon.com/gp/product/B00KDDAJF0)
+* RFID cards: [125Khz Cards](http://www.amazon.com/gp/product/B008NGTJJG)
+* Level Converter: [Geeetech level converter](http://www.amazon.com/gp/product/B00CI2EK7M)
+* Solderable Breadboard: [SB404](http://www.amazon.com/gp/product/B00LLO4Q7W)
+* PCB Mount: [5mm screw terminal block](http://www.amazon.com/gp/product/B00EZ3QPCU)
+* Pin Header Strip: [Omall 2.54mm] (http://www.amazon.com/gp/product/B00UVPT5RI)
 
-### HTML5 CouchApp (League) ###
-The website which displays the game feeds, league and statistics.
-Look at the included readme file and our [Wiki](https://github.com/sinnerschrader/digitalfoosball/wiki/Installation-Instructions:-Part-3:-League-CouchApp) for installation help.
+## Schematic ##
+![](images/schematic.png?raw=true)
 
-## Q&A ##
-
-### Which platform do you support? ###
-To work with bleeding edge technologies, we have chosen Webkit-based Browsers as developing target. It has the widest support of HTML5 and CSS3 standards and it's available on many platforms (Chrome, Safari and Android, iOS). Additionally it's rendering and developing super fast.
-
-### What about other current browsers? ###
-We have used vendor extensions for HTML5/CSS3 draft features. So if other engines implement these feature too, it will work like a charm. We won't do further support to keep the code as sleek and fast as possible.
-
-### Will you add support for older browsers? ###
-Nope. And we won't add it at all.
-
-### Which Browser do you recommend? ###
-The developers are Apple Fanboys, so we recommend newest Safari and iPhone. :-)
-
-### Is there more help? ###
-Checkout the [Wiki](https://github.com/sinnerschrader/digitalfoosball/wiki)
-
-### I want to contribute ###
-That's great. Before you start coding, just send us a message with your plan. We have already a feature roadmap in mind. See also the Wiki-Page of [Upcoming Features](https://github.com/sinnerschrader/digitalfoosball/wiki/Upcoming-Features). This should avoid double coding...
-
-### I'd like to connect it to Skynet ###
-That's fine for us.
-
----
-You've read all instructions? Well done.
-Viel Spaß mit dem Projekt.
+## Images ##
+![](images/IMG_20150430_090902148.jpg?raw=true)
+![](images/IMG_20150430_091015148.jpg?raw=true)
+![](images/IMG_20150430_091039475.jpg?raw=true)
+![](images/IMG_20150604_164850463.jpg?raw=true)
+![](images/IMG_20150604_164901678.jpg?raw=true)
+![](images/IMG_20150604_164912012.jpg?raw=true)
+![](images/IMG_20150604_164924444.jpg?raw=true)
+![](images/IMG_20150605_083541989.jpg?raw=true)
+![](images/IMG_20150605_083550730.jpg?raw=true)
+![](images/IMG_20150605_083558708.jpg?raw=true)
 
 ---
 See `LICENSE`

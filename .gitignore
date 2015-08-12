@@ -1,3 +1,5 @@
 config.json
 backup.json
 .couchapprc
+*.pyc
+node_modules

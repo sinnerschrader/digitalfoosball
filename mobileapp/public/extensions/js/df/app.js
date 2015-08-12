@@ -50,7 +50,7 @@ df.app = (function() {
 
   $(".js_homeminus").live("click",function(e) {
     e.preventDefault();
-    (~~(localStorage.getItem("df.scoreboard.score.home")) > 0) && actionIfPermitted(function() {
+    (~~(localStorage.getItem("df.scoreboard.score.home")) > -5) && actionIfPermitted(function() {
       df.publish("socket:event", "amend",{"score": "home", "goal":"minus"});
     });
   });
@@ -64,7 +64,7 @@ df.app = (function() {
 
   $(".js_visitorsminus").live("click",function(e) {
     e.preventDefault();
-    (~~(localStorage.getItem("df.scoreboard.score.visitors")) > 0) && actionIfPermitted(function() {
+    (~~(localStorage.getItem("df.scoreboard.score.visitors")) > -5) && actionIfPermitted(function() {
       df.publish("socket:event", "amend",{"score": "visitors", "goal":"minus"});
     });
   });

@@ -5,13 +5,13 @@ df.live = (function() {
 
   var formatTime = function(t) {
     var d = new Date(t);
-    return [format2digits(d.getHours()), format2digits(d.getMinutes())].join(":") + " Uhr";
+    return [format2digits(d.getHours()), format2digits(d.getMinutes())].join(":");
   };
 
   var formatTimespan = function(t1, t2) {
     var diff = t2 - t1,
         d = new Date(diff > 0 ? diff : 0);
-    return [format2digits(d.getMinutes()), format2digits(d.getSeconds())].join(":") + " Min";
+    return format2digits(d.getMinutes()) + " min, " + format2digits(d.getSeconds()) + " sec";
   };
 
   var updateTimer = function(time) {
@@ -33,7 +33,7 @@ df.live = (function() {
           cplayers = game.players.home.concat(game.players.visitors).join(",");
 
       ["home", "visitors"].forEach(function(side) {
-        $("#score" + side).attr("class", ["scorecard", ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"][goals[side]] || "full"].join(" "));
+        $("#score" + side).attr("class", ["scorecard", ["neg nine", "neg eight", "neg seven", "neg six", "neg fiv", "neg four", "neg three", "neg two", "neg one", "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"][goals[side]+9] || "full"].join(" "));
       });
 
       updateTimer(game.start);

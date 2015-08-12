@@ -12,6 +12,7 @@ var dependencies = [
   "extensions/js/df/scoreboard.js",
   "extensions/js/df/summary.js",
   "extensions/js/df/dialog.js",
+  "extensions/js/df/status.js",
 
   //development
   "extensions/js/df/dev.js",

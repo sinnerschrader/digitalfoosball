@@ -9,7 +9,7 @@ var sys = require("sys"),
 te.subscribe("referee:finalwhistle", function(game) {
   if(!config.twitter) { return; }
 
-  var goals = game.goals.reduce(function(prev, curr) {++prev[curr.scorer]; return prev; }, {home: 0, visitors: 0}),
+  var goals = game.goals.reduce(function(prev, curr) {prev[curr.scorer]+=curr.value; return prev; }, {home: 0, visitors: 0}),
       home_won = goals.home > goals.visitors;
   goals.winner = home_won ? goals.home : goals.visitors;
   goals.loser = !home_won ? goals.home : goals.visitors;
@@ -26,15 +26,15 @@ te.subscribe("referee:finalwhistle", function(game) {
       tweet = mustache.to_html(locales[["press.tweet.", game.players.home.concat(game.players.visitors).length, "players"].join("")], data);
 
   oAuth = new OAuth(
-    "http://twitter.com/oauth/request_token",
-    "http://twitter.com/oauth/access_token",
+    "https://twitter.com/oauth/request_token",
+    "https://twitter.com/oauth/access_token",
     config.twitter.consumerKey,
     config.twitter.consumerSecret,
     "1.0A", null, "HMAC-SHA1"
   );
 
   oAuth.post(
-    "http://api.twitter.com/1/statuses/update.json?trim_user=true",
+    "https://api.twitter.com/1.1/statuses/update.json?trim_user=true",
     config.twitter.accessToken,
     config.twitter.accessTokenSecret,
     {"status": tweet},

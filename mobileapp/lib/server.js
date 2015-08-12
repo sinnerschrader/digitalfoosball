@@ -1,4 +1,5 @@
 var http = require("http"),
+    url = require("url"),
     sys = require("sys"),
     socketio = require("socket.io"),
     fs = require("fs"),
@@ -11,7 +12,26 @@ var http = require("http"),
 
 var app = express.createServer(),
     sockapp = express.createServer(); 
-
+var kTable = referee.kickertable;
+app.get("/game",function(req,res){
+    var goals = kTable.game.goals;
+    var homeScore = 0, visitorsScore = 0;
+    for(var counter = 0; counter<goals.length; counter++)
+    {
+      if(goals[counter].scorer == 'home')
+      {
+        homeScore++;
+      }
+      else
+      {
+        visitorsScore++;
+      }
+    }
+    console.log("hs: "+homeScore+" vs: "+visitorsScore);
+    var opts = {"Content-Type": "application/json"};
+    res.writeHead(200,opts);
+    res.end(JSON.stringify("nope"));
+});
 app.configure(function() {
   app.set("views", __dirname + "/../views");
   app.set("view options", {layout: false});
@@ -47,17 +67,48 @@ app.configure("development", function() {
   }));
 });
 
+app.post("/events/*kick*", function(req, res) {
+  var opts = {"Content-Type": "text/plain"};
+  te.publish("arduino:dogkick", {});
+  res.writeHead(200, opts);
+  res.end("YIP!");
+});
+
+app.post("/events/addplayer*", function(req, res) {
+  var parse = url.parse(req.url, true),
+      query = parse.query,
+      parts = parse.pathname.split("/"),
+      team = parts[3],
+      opts = {"Content-Type": "text/plain"};
+
+  if({visitors: true, home: true}[team] && query.id) {
+    te.publish("arduino:addplayer", {id:query.id, team:team});
+    res.writeHead(200, opts);
+    res.end("Added player by ID");
+  } else {
+    res.writeHead(400, opts);
+    res.end();
+  }
+});
+
+app.post("/events/abort*", function(req, res) {
+  var opts = {"Content-Type": "text/plain"};
+  te.publish("arduino:abort", {});
+  res.writeHead(200, opts);
+  res.end("Game aborted");
+});
+
 app.post("/events/*", function(req, res){
   var parts = req.url.split("/"),
       type = parts[2],
       action = parts[3],
       opts = {"Content-Type": "text/plain"};
 
-  if ({goals:true, undo:true}[type] && {visitors: true, home: true}[action]) {
+  if ({goals:true, undo:true, abort:true, penalty:true}[type] && {visitors: true, home: true}[action]) {
     te.publish("arduino:"+type, action);
 
     res.writeHead(200, opts);
-    res.end("Added Goal for " + action);
+    res.end("Handled " + type + " for " + action);
   } else {
     res.writeHead(404, opts);
     res.end();

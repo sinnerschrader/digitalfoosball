@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.node {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+.link {
+  stroke: #999;
+  stroke-opacity: .6;
+}
+
+</style>
+<body>
+<div id = "myDiv"></div>
+<script>
+$(document).ready(function(){
+	var width = 960,
+	    height = 800;
+
+	var force = d3.layout.force()
+	    .charge(-120)
+	    .linkDistance(300)
+	    .size([width, height]);
+
+	var svg = d3.select("#myDiv").append("svg")
+	    .attr("width", width)
+	    .attr("height", height);
+
+
+	var linkExists = function(source,target)
+	{
+		for(var key in graph.links){
+			if((source == graph.links[key].source && target == graph.links[key].target)
+				||(target == graph.links[key].source && source == graph.links[key].target))
+			{
+				return key;
+			}
+		}
+		return false;
+	};
+
+
+	var graph = {
+		"nodes":[],
+		"links":[]
+	};
+
+
+
+
+	var gamesData = {{{data}}};
+	var pushedPlayers = [];
+
+	for(var counter = 0; counter<gamesData.games.length; counter++)
+	{
+		if(pushedPlayers.indexOf(gamesData.games[counter].players.home[0]) == -1)
+		{
+			graph.nodes.push({"name":gamesData.games[counter].players.home[0]});
+			pushedPlayers.push(gamesData.games[counter].players.home[0]);
+		}
+		if(pushedPlayers.indexOf(gamesData.games[counter].players.home[1]) == -1)
+		{
+			graph.nodes.push({"name":gamesData.games[counter].players.home[1]});
+			pushedPlayers.push(gamesData.games[counter].players.home[1]);
+		}
+		if(pushedPlayers.indexOf(gamesData.games[counter].players.visitors[0]) == -1)
+		{
+			graph.nodes.push({"name":gamesData.games[counter].players.visitors[0]});
+			pushedPlayers.push(gamesData.games[counter].players.visitors[0]);
+		}
+		if(pushedPlayers.indexOf(gamesData.games[counter].players.visitors[1]) == -1)
+		{
+			graph.nodes.push({"name":gamesData.games[counter].players.visitors[1]});
+			pushedPlayers.push(gamesData.games[counter].players.visitors[1]);
+		}
+		
+
+		var doesLinkExist = linkExists(pushedPlayers.indexOf(gamesData.games[counter].players.home[0]),pushedPlayers.indexOf(gamesData.games[counter].players.home[1]))
+		if(doesLinkExist)
+		{
+			if(gamesData.games[counter].score.home == 5)
+			{graph.links[doesLinkExist].value +=2;}
+			else{graph.links[doesLinkExist].value -=2;}
+		}
+		else
+		{
+			if(gamesData.games[counter].score.home == 5)
+			{
+				graph.links.push({"source":pushedPlayers.indexOf(gamesData.games[counter].players.home[0]),"target":pushedPlayers.indexOf(gamesData.games[counter].players.home[1]),"value":2});	
+			}
+			else
+			{
+				graph.links.push({"source":pushedPlayers.indexOf(gamesData.games[counter].players.home[0]),"target":pushedPlayers.indexOf(gamesData.games[counter].players.home[1]),"value":-2});	
+			}
+		}
+		var doesLinkExist = linkExists(pushedPlayers.indexOf(gamesData.games[counter].players.visitors[0]),pushedPlayers.indexOf(gamesData.games[counter].players.visitors[1]))
+		if(doesLinkExist)
+		{
+			if(gamesData.games[counter].score.visitors == 5)
+			{
+				graph.links[doesLinkExist].value +=2;
+
+				if(graph.links[doesLinkExist].value == 0){graph.links.splice(doesLinkExist,parseInt(doesLinkExist)+1);}
+			}
+			else{
+				graph.links[doesLinkExist].value -=2;
+				if(graph.links[doesLinkExist].value == 0){graph.links.splice(doesLinkExist,parseInt(doesLinkExist)+1);}
+			}
+		}
+		else
+		{
+			if(gamesData.games[counter].score.visitors == 5)
+			{
+				graph.links.push({"source":pushedPlayers.indexOf(gamesData.games[counter].players.visitors[0]),"target":pushedPlayers.indexOf(gamesData.games[counter].players.visitors[1]),"value":2});	
+			}
+			else
+			{
+				graph.links.push({"source":pushedPlayers.indexOf(gamesData.games[counter].players.visitors[0]),"target":pushedPlayers.indexOf(gamesData.games[counter].players.visitors[1]),"value":-2});	
+			}
+		}
+	}
+
+var padding = 50, // separation between circles
+    radius=15;
+function collide(alpha) {
+  var quadtree = d3.geom.quadtree(graph.nodes);
+  return function(d) {
+    var rb = 2*radius + padding,
+        nx1 = d.x - rb,
+        nx2 = d.x + rb,
+        ny1 = d.y - rb,
+        ny2 = d.y + rb;
+    quadtree.visit(function(quad, x1, y1, x2, y2) {
+      if (quad.point && (quad.point !== d)) {
+        var x = d.x - quad.point.x,
+            y = d.y - quad.point.y,
+            l = Math.sqrt(x * x + y * y);
+          if (l < rb) {
+           l = (l - rb) / l * alpha;
+           d.x -= x *= l;
+           d.y -= y *= l;
+           quad.point.x += x;
+           quad.point.y += y;
+         }
+       }
+       return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
+     });
+   };
+ }
+	force
+	    .nodes(graph.nodes)
+	    .links(graph.links)
+	    .start();
+
+	var link = svg.selectAll(".link")
+	    .data(graph.links)
+	    .enter().append("line")
+	    .attr("class", "link")
+	    .style("stroke-width", function(d) { return Math.abs(d.value); })
+	    .style("stroke", function(d){
+	    	if(d.value>0){return "green";}
+	      	else{return "red";}});
+	      
+	var node = svg.selectAll(".node")
+	    .data(graph.nodes)
+	    .enter().append("g")
+	    .attr("class", "node")
+	    .call(force.drag);
+
+	node.append("circle")
+	    .attr("r", 15)
+	    .style("fill", "grey");
+
+	node.append("text")
+	  .attr("dx", 20)
+	  .attr("dy", ".35em")
+	  .text(function(d) { return d.name })
+	  .style("stroke", "white");
+
+
+
+
+	  force.on("tick", function() {
+	    link.attr("x1", function(d) { return d.source.x; })
+	        .attr("y1", function(d) { return d.source.y; })
+	        .attr("x2", function(d) { return d.target.x; })
+	        .attr("y2", function(d) { return d.target.y; });
+
+	    node.attr("cx", function(d) { return d.x; })
+	        .attr("cy", function(d) { return d.y; });
+
+	    link.attr("x1", function (d) {
+	        return d.source.x;
+	    })
+	        .attr("y1", function (d) {
+	        return d.source.y;
+	    })
+	        .attr("x2", function (d) {
+	        return d.target.x;
+	    })
+	        .attr("y2", function (d) {
+	        return d.target.y;
+	    });
+	    d3.selectAll("circle").attr("cx", function (d) {
+	        return d.x;
+	    })
+	        .attr("cy", function (d) {
+	        return d.y;
+	    });
+	    d3.selectAll("text").attr("x", function (d) {
+	        return d.x;
+	    })
+	        .attr("y", function (d) {
+	        return d.y;
+	    });
+	             node.each(collide(0.5)); //Added 
+
+
+	  });
+  /*	force.on("tick", function () {
+	    link.attr("x1", function (d) {
+	        return d.source.x;
+	    })
+	        .attr("y1", function (d) {
+	        return d.source.y;
+	    })
+	        .attr("x2", function (d) {
+	        return d.target.x;
+	    })
+	        .attr("y2", function (d) {
+	        return d.target.y;
+	    });
+	    node.attr("cx", function (d) {
+	        return d.x;
+	    })
+	        .attr("cy", function (d) {
+	        return d.y;
+	    });
+     node.each(collide(0.5)); //Added 
+});*/
+});
+</script>
+</body>

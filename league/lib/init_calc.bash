@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NODE_BIN=/usr/local/bin/node
+NODE_BIN=/usr/bin/node
 SCRIPT_NAME=`which $0`
 SCRIPT_PATH=`dirname $SCRIPT_NAME`
 CALC_BIN=$SCRIPT_PATH/calc.js

@@ -1,0 +1,27 @@
+{
+  "name": "mobileapp",
+  "version": "0.3.0",
+  "description": "Digital foosball 2.0!",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^2.4.7",
+    "mustache": "^0.3.1-dev",
+    "node-couchdb": "^0.3.1",
+    "oauth": "^0.9.12",
+    "socket.io": "^0.8.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elwaxoro/cybernatedfoosball.git"
+  },
+  "author": "https://github.com/elwaxoro",
+  "license": "wtfpl",
+  "bugs": {
+    "url": "https://github.com/elwaxoro/cybernatedfoosball/issues"
+  },
+  "homepage": "https://github.com/elwaxoro/cybernatedfoosball#readme"
+}

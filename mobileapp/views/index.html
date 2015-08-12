@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,7 +7,7 @@
 	<meta name="language" content="{{locales.locale}}" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
 
 	<!-- <meta name="description" content="🏆"/> -->
 	<meta name="robots" content="noindex,nofollow" />
@@ -24,7 +25,10 @@
 {{^production}}
 	<link rel="stylesheet/less" type="text/css" href="/extensions/css/mobileapp.less" media="screen,projection,print" />
 	<script type="text/javascript" src="/extensions/js/ext/less-1.1.3.min.js"></script>
+	<script src="Chart.js-master/Chart.js"></script>
+
 {{/production}}
+
 </head>
 
 
@@ -34,44 +38,54 @@
 			<div class="toolbar">
 				<h1>{{locales.global.title}}</h1>
 			</div>
-			<h2 class="h1">{{locales.home.headline}}</h2>
-			<p>{{locales.home.text}}</p>
-			<ul id="gametypes">
-				<li class="two"><a href="#login2" class="js_login" data-opponents="2">{{locales.home.gametype.2}}</a></li>
-				<li class="four"><a href="#login4" class="js_login" data-opponents="4">{{locales.home.gametype.4}}</a></li>
-				<li class="quick"><a href="#scoreboard" class="js_quickstart">{{locales.home.gametype.0}}</a></li>
-			</ul>
-		</section>
-		<section id="login" class="page">
-			<div class="toolbar">
-				<a href="#summary" class="back js_home">{{locales.toolbar.home}}</a>
-				<h1>{{locales.global.title}}</h1>
+			<div class = "homeDisplay" style = "position: relative; top: 300px;">
+				<h2 class="h1">{{locales.home.headline}}</h2>
+				<h2 class="h2">{{locales.home.text}}</h2>
 			</div>
-			<h2 class="h1">{{locales.login.headline}}</h2>
-			<p>{{locales.login.text}}</p>
-			<form action="#" method="get" class="js_start" novalidate="novalidate">
-				<fieldset>
-					<div class="formrow">
-						<div><input type="email" name="team1_user1" /></div>
-						<div><input type="email" name="team1_user2" /></div>
-					</div>
-					<div class="formrow">
-						<div><input type="email" name="team2_user1" /></div>
-						<div><input type="email" name="team2_user2" /></div>
-					</div>
-				</fieldset>
-                <div class="buttonbar">
-                    <input type="submit" class="button" value="{{locales.login.botton.go}}" />
-                </div>
-			</form>
+            <div class = "gameStatsWrapper">
+            	<table class = "gameStats">
+            		<tr>
+            			<td>
+            			</td>
+            			<td>
+            				Previous Score
+            			</td>
+            			<td>
+            				Score Change
+            			</td>
+            			<td>
+            				New Score
+            			</td>
+            		</tr>
+            		<tr id = "home1Row">
+            			<td id = "home1Name"></td>
+        				<td id = "home1Prev"></td>
+        				<td id = "home1Change">Calculating...</td>
+        				<td id = "home1New">Calculating...</td>
+            		</tr>
+            		<tr id = "home2Row">
+            			<td id = "home2Name"></td>
+        				<td id = "home2Prev"></td>
+        				<td id = "home2Change">Calculating...</td>
+        				<td id = "home2New">Calculating...</td>     				
+            		</tr>
+            		<tr id = "visitors1Row">
+            			<td id = "visitors1Name"></td>
+        				<td id = "visitors1Prev"></td>
+        				<td id = "visitors1Change">Calculating...</td>
+        				<td id = "visitors1New">Calculating...</td>        			
+            		</tr>
+            		<tr id = "visitors2Row">
+            			<td id = "visitors2Name"></td>
+        				<td id = "visitors2Prev"></td>
+        				<td id = "visitors2Change">Calculating...</td>
+        				<td id = "visitors2New">Calculating...</td>           			
+            		</tr>
+            	</table>
+	        </div>
+	        <div><canvas id = "allPlayersGraph" style = "height: 500px; width: 100%;"></canvas></div>
 		</section>
 		<section id="scoreboard" class="page">
-			<div class="toolbar">
-				<a href="#settings" class="settings js_setup">⚙</a>
-				<a href="#scoreboard" class="undo hide js_undo">{{locales.toolbar.undo}}</a>
-				<h1>{{locales.global.title}}</h1>
-				<a href="#summary" class="cancel js_abort">{{locales.toolbar.cancel}}</a>
-			</div>
             {{#scoreboard}}
             <dl class="board {{#inverted}}inverted{{/inverted}}">
                 <dt>{{home}}</dt>
@@ -80,18 +94,59 @@
                 <dd id="scorevisitors" class="scorecard full"></dd>
             </dl>
             {{/scoreboard}}
-            <div class="players">
-                <div>
-                    <div class="formrow">
-                        <div class="home1">&nbsp;</div>
-                        <div class="home2">&nbsp;</div>
-                    </div>
-                    <div class="formrow">
-                        <div class="visitors1">&nbsp;</div>
-                        <div class="visitors2">&nbsp;</div>
-                    </div>
-                </div>
-            </div>
+            <div class = "playerWrapper">
+            	<ul>
+            		<li class = "playerList">
+			            <div class="players">
+			                <div class="formrowHome">
+			                    <div class="home1" id = "home1">&nbsp;</div>
+			                    <div><canvas class = "graphCanvas" id="canvas1"></canvas></div>
+    				            <div class="home2" id = "home2">&nbsp;</div>
+			                    <div><canvas class = "graphCanvas" id="canvas2"></canvas></div>
+			                </div>
+			            </div>
+		            </li>
+            		<li class = "playerList">
+			            <div class="players">
+			                <div class="formrowVisitors">
+	                    		<div class="visitors1" id = "visitors1">&nbsp;</div>
+			                    <canvas class = "graphCanvas" id="canvas3"></canvas>
+			                    <div class="visitors2" id = "visitors2">&nbsp;</div>
+	                    		<canvas class = "graphCanvas" id="canvas4"></canvas>
+			                </div>
+			            </div>
+		            </li>
+		        </ul>
+	        </div>
+	        <div class = "statsWrapper">
+            	Team Win Percentage
+	        	<ul>
+	        		<li class = "statsList">
+	        			<div class = "homeWinPercent"></div>
+	        		</li>
+	        		<li class = "statsList">
+	        			<div class = "visitorsWinPercent"></div>
+	        		</li>
+        		</ul>
+        		Matchup Stats
+	        	<ul>
+	        		<li class = "statsList">
+	        			<div class = "homeMatchupWins"></div>
+	        		</li>
+	        		<li class = "statsList">
+	        			<div class = "visitorsMatchupWins"></div>
+	        		</li>
+        		</ul>
+        		Odds
+	        	<ul>
+	        		<li class = "statsList">
+	        			<div class = "homeOdds"></div>
+	        		</li>
+	        		<li class = "statsList">
+	        			<div class = "visitorsOdds"></div>
+	        		</li>
+        		</ul>
+	        </div>
             <div class="settings">
                 <a href="#settings" class="btn change js_invert">⇔</a><!-- ⇌↔ -->
                 <a href="#settings" class="btn home plus js_homeplus">▲</a>
@@ -114,6 +169,10 @@
 		</section>
 	</section>
 
+	<div id="status">
+		<div id="tempMessages" style="display:none"></div>
+		<!--<p id="statusdebug">TestingTesting</p>	-->
+	</div>
   <script type="text/javascript">
     df = (function(df) {
       df.config = {{{config}}};
@@ -130,4 +189,3 @@
 {{/production}}
 </body>
 </html>
-
