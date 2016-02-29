@@ -84,6 +84,7 @@ var events = {
     te.publish("referee:openingwhistle", kickertable.game);
   },
   abort: function() {
+    console.log("Game aborted.");
     kickertable.game.end = new Date().getTime();
     kickertable.changeMessage = "";
     te.publish("referee:abort", kickertable.game);
@@ -137,7 +138,7 @@ var addPenalty = function(side) {
       changeMessage = "";
       addGoal(side, -1);
       kickertable.changeMessage = "penalty on "+side;
-      
+
   }
 }
 
@@ -146,14 +147,14 @@ var addGoal = function(scorer, points) {
   if(points == -1){
     kickertable.changeMessage = "";
   }
-  var goal = { 
-    type: "goal", 
-    scorer: scorer, 
+  var goal = {
+    type: "goal",
+    scorer: scorer,
     time: new Date().getTime(),
     value: points ? points : 1
   };
 
-  
+
   if (kickertable.view == "scoreboard") {
 
     var goals = kickertable.game.goals.reduce(function(prev, curr) {prev[curr.scorer] += curr.value; return prev; }, {home: 0, visitors: 0});
@@ -239,7 +240,7 @@ te.subscribe("press:wrote", function(tweetURL) {
 
 te.subscribe("announcer:announcement", function(msg) {
   kickertable.game.feed.push(msg);
-  te.publish("referee:update", kickertable); 
+  te.publish("referee:update", kickertable);
 });
 
 te.subscribe("arduino:goals", function(scorer) {

@@ -51,7 +51,7 @@ var getStatistic = function(cb) {
       "accept": "application/json"
     }
   };
-  
+
   http.get(opts, function(res) {
     var ret = "";
     res.setEncoding("utf8");
@@ -94,7 +94,7 @@ var getSince = function(cb) {
       "accept": "application/json"
     }
   };
-  
+
   http.get(opts, function(res) {
     var ret = "";
     res.setEncoding("utf8");
@@ -119,7 +119,7 @@ var observe = function(since) {
       "accept": "application/json"
     }
   };
-  
+
   http.get(opts, function(res) {
     var buffer = "";
     res.setEncoding("utf8");
@@ -194,7 +194,7 @@ var calcPlayer = function(player, teammate, opponents, score, won, currGame, goa
   player.score = operations[verb](player.score, score);
   if (alreadyCalced) {
     player.history[0].score = operations[verb](player.history[0].score, score);
-  } else { 
+  } else {
     player.goals.scored += goals[won ? winner : loser];
     player.goals.conceded += goals[won ? loser : winner];
     ++player.games[verb];
@@ -208,7 +208,7 @@ var calcPlayer = function(player, teammate, opponents, score, won, currGame, goa
       ++op[verb];
       opponent.avatar && (op.avatar = opponent.avatar);
     });
-    
+
     var graph = {score: player.score, time: currGame.end};
     if (player.graph.length && sameday(player.graph[player.graph.length - 1].time, graph.time)) {
       player.graph[player.graph.length - 1] = graph;
@@ -229,7 +229,7 @@ var calc = function() {
   });
 
   var currGame = queue.shift();
-  
+
   if (!currGame) {
     busy = false;
     return;
@@ -328,10 +328,14 @@ var calc = function() {
         });
         res.on("end", function() {
           ret = JSON.parse(ret);
-
-          statistic["_rev"] = ret.filter(function(doc) { if (doc.id === "statistic") { return doc; }})[0].rev;
-          lastGame = currGame;
-          calc();
+          if(ret.error) {
+            console.error("Calc Req error: "+ret.error);
+            process.exit(-1);
+          } else {
+            statistic["_rev"] = ret.filter(function(doc) { if (doc.id === "statistic") { return doc; }})[0].rev;
+            lastGame = currGame;
+            calc();
+          }
         });
       });
 
@@ -372,4 +376,3 @@ getLastGame(function() {
     });
   });
 });
-

@@ -228,7 +228,7 @@ var teamStats = function(team,callback){
           else{lossCounter++;}
           homeGoals = 0;
           visitorsGoals = 0;
-        } 
+        }
         else if(compareTeam(e.value.players.visitors,team)){
           counter++;
           for(var i = 0;i<e.value.goals.length;i++)
@@ -310,7 +310,7 @@ te.subscribe("referee:finalwhistle", function(game) {
   var firstPass = true;
   var interval = setInterval(function(){
     playerScoreDifference(game.players.home[0],function(myTemp){
-      console.log("myTemp: "+myTemp+"   prev: "+prev);
+      // console.log("myTemp: "+myTemp+"   prev: "+prev);
       if(myTemp != prev && !firstPass){
         clearInterval(interval);
         playerScoreDifference(game.players.home[0],function(scoreDiff1){
@@ -322,12 +322,14 @@ te.subscribe("referee:finalwhistle", function(game) {
               playerScoreDifference(game.players.visitors[1],function(scoreDiff4){
                 pendingGame.visitorsScoreHistory.push(scoreDiff4);
                 pendingGame.msg = "gameOver";
+                console.log("Sending player calculations!");
+                console.dir(pendingGame);
                 te.publish("assistant:pending",pendingGame);
                 resetPending();
               });
             });
           });
-        });        
+        });
       }
       firstPass = false;
       prev = myTemp;
@@ -369,7 +371,7 @@ te.subscribe("arduino:addplayer", function(data) {
   var sendMessage = function(){
     if(pendingGame.players.home.length == 2 && pendingGame.players.visitors.length == 2) {
       te.publish("assistant:pending", pendingGame);
-      
+
       teamStats(pendingGame.players.home,function(percent1){
         pendingGame.teamStats.push(percent1);
         teamStats(pendingGame.players.visitors,function(percent2){
@@ -389,8 +391,6 @@ te.subscribe("arduino:addplayer", function(data) {
         te.publish("assistant:pending", pendingGame);
     }
   }
-  
-
 
   lookupPlayer(data.id, function(res) {
     if(res.length != 1) {
@@ -431,4 +431,3 @@ te.subscribe("referee:refusenewgame", function() {
     console.log("Attempted a newgame, but referee refused. Resetting RFID");
     resetPending();
 });
-

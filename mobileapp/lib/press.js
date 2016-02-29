@@ -14,6 +14,8 @@ te.subscribe("referee:finalwhistle", function(game) {
   goals.winner = home_won ? goals.home : goals.visitors;
   goals.loser = !home_won ? goals.home : goals.visitors;
 
+// console.log("##################### Combining "+game.players.home+" with "+game.players.visitors);
+
   var data = {
         id: new Date(game.start).getTime(),
         players: {
@@ -22,32 +24,32 @@ te.subscribe("referee:finalwhistle", function(game) {
         },
         goals: goals,
         hashtags: config.twitter.hashtags || []
-      },
-      tweet = mustache.to_html(locales[["press.tweet.", game.players.home.concat(game.players.visitors).length, "players"].join("")], data);
-
-  oAuth = new OAuth(
-    "https://twitter.com/oauth/request_token",
-    "https://twitter.com/oauth/access_token",
-    config.twitter.consumerKey,
-    config.twitter.consumerSecret,
-    "1.0A", null, "HMAC-SHA1"
-  );
-
-  oAuth.post(
-    "https://api.twitter.com/1.1/statuses/update.json?trim_user=true",
-    config.twitter.accessToken,
-    config.twitter.accessTokenSecret,
-    {"status": tweet},
-    function(error, data) {
-      if (error) {
-        sys.debug(sys.inspect(error));
-        te.publish("press:wrote", "-1");
-      } else {
-        sys.debug(data);
-        te.publish("press:wrote", "https://twitter.com/#!/" + config.twitter.userId + "/status/" + JSON.parse(data).id_str);
       };
-    }
-  );
+
+  // tweet = mustache.to_html(locales[["press.tweet.", game.players.home.concat(game.players.visitors).length, "players"].join("")], data);
+  // oAuth = new OAuth(
+  //   "https://twitter.com/oauth/request_token",
+  //   "https://twitter.com/oauth/access_token",
+  //   config.twitter.consumerKey,
+  //   config.twitter.consumerSecret,
+  //   "1.0A", null, "HMAC-SHA1"
+  // );
+  // oAuth.post(
+  //   "https://api.twitter.com/1.1/statuses/update.json?trim_user=true",
+  //   config.twitter.accessToken,
+  //   config.twitter.accessTokenSecret,
+  //   {"status": tweet},
+  //   function(error, data) {
+  //     if (error) {
+  //       sys.debug("Twitter post error: "+sys.inspect(error));
+  //       te.publish("press:wrote", "-1");
+  //     } else {
+  //       sys.debug("Twitter post reponse: "+ data);
+  //       te.publish("press:wrote", "https://twitter.com/#!/" + config.twitter.userId + "/status/" + JSON.parse(data).id_str);
+  //     };
+  //   }
+  // );
+  te.publish("press:wrote", "http://localhost/twitterunsupported");
 });
 
 te.subscribe("referee:openingwhistle", function(game) {
@@ -85,4 +87,3 @@ te.subscribe("referee:openingwhistle", function(game) {
     fetchFromTwitter(player);
   });
 });
-

@@ -11,9 +11,11 @@ var http = require("http"),
     te = require("./tableevents").TableEvents;
 
 var app = express.createServer(),
-    sockapp = express.createServer(); 
+    sockapp = express.createServer();
 var kTable = referee.kickertable;
-app.get("/game",function(req,res){
+app.get("/game",function(req,res) {
+    var opts = {"Content-Type": "application/json"};
+
     var goals = kTable.game.goals;
     var homeScore = 0, visitorsScore = 0;
     for(var counter = 0; counter<goals.length; counter++)
@@ -27,10 +29,22 @@ app.get("/game",function(req,res){
         visitorsScore++;
       }
     }
-    console.log("hs: "+homeScore+" vs: "+visitorsScore);
-    var opts = {"Content-Type": "application/json"};
-    res.writeHead(200,opts);
-    res.end(JSON.stringify("nope"));
+
+    ret = {
+      start: kTable.game.start,
+      end: kTable.game.end,
+      players: {
+        home: kTable.game.players.home,
+        visitors: kTable.game.players.visitors
+      },
+      score: {
+        home: homeScore,
+        visitors: visitorsScore
+      }
+    }
+
+    res.writeHead(200, opts);
+    res.end(JSON.stringify(ret));
 });
 app.configure(function() {
   app.set("views", __dirname + "/../views");
@@ -84,10 +98,10 @@ app.post("/events/addplayer*", function(req, res) {
   if({visitors: true, home: true}[team] && query.id) {
     te.publish("arduino:addplayer", {id:query.id, team:team});
     res.writeHead(200, opts);
-    res.end("Added player by ID");
+    res.end("Trying to add player by RFID: "+query.id+" to team "+team);
   } else {
     res.writeHead(400, opts);
-    res.end();
+    res.end("Invalid player request");
   }
 });
 
@@ -135,7 +149,7 @@ for (var key in locales) {
 app.get('/', function(req, res){
   //don't switch scoreboard on wall mounted iPad
   //should be checked with cookie value
-  if(req.headers['user-agent'].indexOf("iPad") != -1) { 
+  if(req.headers['user-agent'].indexOf("iPad") != -1) {
     data.scoreboard.inverted = false;
   }
   res.render("index", data);
@@ -175,6 +189,8 @@ te.subscribe("referee:update", function(msg) {
 
 process.on("uncaughtException", function (err) {
   sys.debug("[UNCAUGHT EXCEPTION] " + err + "\n" + JSON.stringify(err, null, " "));
+  if(err.stack) {
+    console.log(err.stack);
+  }
   process.exit();
 });
-
