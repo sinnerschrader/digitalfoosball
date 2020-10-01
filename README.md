@@ -1,4 +1,4 @@
-# Digital Foosball #
+# Digital Foosball # digital 
 
 Bringing the analog foosball table into the digital age.
 
